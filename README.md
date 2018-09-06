@@ -1,4 +1,3 @@
-# T.U.R.I.N.G.
 **T**raining **U**nsettling **R**enders **I**n **N**eural **G**raphs
 
 A research repository consisting of various experiments and sample code in aid of the "TURING" project.
