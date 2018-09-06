@@ -6,7 +6,7 @@ from keras.applications import inception_v3
 model = inception_v3.InceptionV3()
 
 # Load the image file and convert it to a numpy array
-img = image.load_img("cat.jpg", target_size=(299, 299))
+img = image.load_img("/home/niemtec/tmp/Project-Turing/pre-trained-network/cat.png", target_size=(299, 299))
 input_image = image.img_to_array(img)
 
 # Scale the image so all pixel intensities are between [-1, 1] as the model expects
