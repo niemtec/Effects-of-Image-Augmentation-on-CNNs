@@ -790,8 +790,8 @@ benign = ["ISIC_0009869", "ISIC_0009870", "ISIC_0009871", "ISIC_0009872", "ISIC_
           "ISIC_0001136", "ISIC_0001139", "ISIC_0001144", "ISIC_0001145", "ISIC_0001146", "ISIC_0001147",
           "ISIC_0001150", "ISIC_0001153", "ISIC_0001155", "ISIC_0001156", "ISIC_0001158"]
 
-directory = 'C://Users//janie//Documents//GitHub//Project-Turing//isdis-dataset//benign'
-dest_directory = 'C://Users//janie//Documents//GitHub//Project-Turing//isdis-dataset//benign-removed'
+directory = 'C://Users//janie//Documents//GitHub//Project-Turing//isdis-dataset//malignant'
+dest_directory = 'C://Users//janie//Documents//GitHub//Project-Turing//isdis-dataset//malignant-testing-set'
 
 # for filename in os.listdir(directory):
 #     # Get current filename without the extension
@@ -803,11 +803,9 @@ dest_directory = 'C://Users//janie//Documents//GitHub//Project-Turing//isdis-dat
 #         print("Copying ", raw_filename)
 #         copyfile(directory + "//" + filename, dest_filename)
 
-for x in range(2327):
+for x in range(108):
     filename = random.choice(os.listdir(directory))
     raw_filename = filename.split('.')[0]
     dest_filename = dest_directory + "//" + filename
     print(filename)
     shutil.move(directory + "//" + filename, dest_filename)
-
-
