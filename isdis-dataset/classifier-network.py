@@ -5,17 +5,17 @@ from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_a
 
 
 model = Sequential()
-model.add(Conv2D(32, (3, 3), input_shape=(3, 150, 150), data_format='channels_first'))
+model.add(Conv2D(32, (3, 3), input_shape=(150, 150, 3), data_format='channels_last'))
 model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2), data_format='channels_first'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
 
-model.add(Conv2D(32, (3, 3), data_format='channels_first'))
+model.add(Conv2D(32, (3, 3)))
 model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2), data_format='channels_first'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
 
-model.add(Conv2D(64, (3, 3), data_format='channels_first'))
+model.add(Conv2D(64, (3, 3)))
 model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2), data_format='channels_first'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
 
 # the model so far outputs 3D feature maps (height, width, features)
 
@@ -48,14 +48,14 @@ test_datagen = ImageDataGenerator(rescale=1./255)
 # subfolers of 'data/train', and indefinitely generate
 # batches of augmented image data
 train_generator = train_datagen.flow_from_directory(
-    'data/train',  # this is the target directory
+    '/home/niemtec/tmp/Project-Turing/isdis-dataset/train',  # this is the target directory
     target_size=(150, 150),  # all images will be resized to 150x150
     batch_size=batch_size,
     class_mode='binary')  # since we use binary_crossentropy loss, we need binary labels
 
 # this is a similar generator, for validation data
 validation_generator = test_datagen.flow_from_directory(
-    'data/validation',
+    '/home/niemtec/tmp/Project-Turing/isdis-dataset/validation',
     target_size=(150, 150),
     batch_size=batch_size,
     class_mode='binary')
@@ -66,4 +66,5 @@ model.fit_generator(
     epochs=50,
     validation_data=validation_generator,
     validation_steps=800 // batch_size)
-model.save_weights('first_try.h5')  # always save your weights after training or during training
+
+model.save_weights('/home/niemtec/tmp/Project-Turing/isdis-dataset/first_try.h5')  # always save your weights after training or during training
