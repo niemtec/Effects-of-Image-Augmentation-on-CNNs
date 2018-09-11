@@ -77,8 +77,8 @@ validation_generator = test_datagen.flow_from_directory(
 model.fit_generator(
     train_generator,
     steps_per_epoch=2000 // batch_size,
-    epochs=50,
+    epochs=10,
     validation_data=validation_generator,
     validation_steps=800 // batch_size)
 
-model.save_weights('C://Users//janie//Documents//GitHub//Project-Turing//isdis-dataset//first_try.h5')  # always save your weights after training or during training
+model.save_weights('C://Users//janie//Documents//GitHub//Project-Turing//isdis-dataset//shorter_run.h5')  # always save your weights after training or during training
