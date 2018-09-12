@@ -45,7 +45,7 @@ model.add(Activation('sigmoid'))    # Sigmoid activation function
 model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 
 # Data Preparation
-batch_size = 16
+batch_size = 10
 
 # this is the augmentation configuration we will use for training
 train_datagen = ImageDataGenerator(
@@ -77,8 +77,8 @@ validation_generator = test_datagen.flow_from_directory(
 model.fit_generator(
     train_generator,
     steps_per_epoch=2000 // batch_size,
-    epochs=10,
+    epochs=50,
     validation_data=validation_generator,
     validation_steps=800 // batch_size)
 
-model.save_weights('C://Users//janie//Documents//GitHub//Project-Turing//isdis-dataset//shorter_run.h5')  # always save your weights after training or during training
+model.save_weights('C://Users//janie//Documents//GitHub//Project-Turing//isdis-dataset//epoch_50_batch_of_10_rotation_enabled.h5')  # always save your weights after training or during training
