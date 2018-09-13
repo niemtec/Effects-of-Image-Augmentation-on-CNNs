@@ -45,14 +45,12 @@ model.add(Activation('sigmoid'))    # Sigmoid activation function
 model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 
 # Data Preparation
-batch_size = 10
+batch_size = 15
 
 # this is the augmentation configuration we will use for training
 train_datagen = ImageDataGenerator(
-    rescale=1./255,
-    shear_range=0.2,
-    zoom_range=0.2,
-    horizontal_flip=True)
+    rescale=1./255
+)
 
 # this is the augmentation configuration we will use for testing:
 # only rescaling
@@ -77,7 +75,7 @@ validation_generator = test_datagen.flow_from_directory(
 model.fit_generator(
     train_generator,
     steps_per_epoch=2000 // batch_size,
-    epochs=50,
+    epochs=80,
     validation_data=validation_generator,
     validation_steps=800 // batch_size)
 

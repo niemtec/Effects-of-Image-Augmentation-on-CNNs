@@ -4,11 +4,10 @@ from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_a
 
 # Image distortion preprocessing
 datagen = ImageDataGenerator(
-    rotation_range=20,
+    rotation_range=40,
     rescale=1./255,
     zoom_range=0.2,
-    horizontal_flip=True,
-    fill_mode='nearest')
+    horizontal_flip=True)
 
 directory = "C://Users//janie//Documents//GitHub//Project-Turing//isdis-dataset//train//benign"
 for image in os.listdir(directory):
@@ -23,5 +22,5 @@ for image in os.listdir(directory):
     for batch in datagen.flow(x, batch_size=1, save_to_dir='C://Users//janie//Documents//GitHub//Project-Turing//isdis-dataset//train//benign_aug', save_prefix='aug_', save_format='jpeg'):
         i += 1
         print("    >  Augmenting Batch: " + str(i))
-        if i > 10:
+        if i > 4:
             break  # otherwise the generator would loop indefinitely
