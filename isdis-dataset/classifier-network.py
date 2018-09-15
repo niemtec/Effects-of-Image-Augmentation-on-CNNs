@@ -4,6 +4,7 @@ from keras.layers import Conv2D, MaxPooling2D
 from keras.layers import Activation, Dropout, Flatten, Dense
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 from keras.backend.tensorflow_backend import set_session
+import time
 
 # Network configuration to use GPUs
 config = tf.ConfigProto(
@@ -45,7 +46,7 @@ model.add(Activation('sigmoid'))    # Sigmoid activation function
 model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 
 # Data Preparation
-batch_size = 15
+batch_size = 30
 
 # this is the augmentation configuration we will use for training
 train_datagen = ImageDataGenerator(
@@ -74,9 +75,11 @@ validation_generator = test_datagen.flow_from_directory(
 
 model.fit_generator(
     train_generator,
-    steps_per_epoch=2000 // batch_size,
-    epochs=80,
+    #steps_per_epoch=1000 // batch_size,
+    epochs=5,
     validation_data=validation_generator,
     validation_steps=800 // batch_size)
 
-model.save_weights('C://Users//janie//Documents//GitHub//Project-Turing//isdis-dataset//epoch_50_batch_of_10_rotation_enabled.h5')  # always save your weights after training or during training
+datestamp = time.time()
+
+model.save_weights("C://Users//janie//Documents//GitHub//Project-Turing//isdis-dataset//" + datestamp + ".h5")  # always save your weights after training or during training
