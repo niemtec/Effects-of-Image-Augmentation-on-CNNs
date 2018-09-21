@@ -80,6 +80,12 @@ model.fit_generator(
     validation_data=validation_generator,
     validation_steps=800 // batch_size)
 
-datestamp = time.time()
+# Serialise the model to JSON
+model_json = model.to_json()
+with open("classifier-network-v1.json", "w") as json_file:
+    json_file.write(model_json)
 
+# Serialise weights to HDF5
+datestamp = time.time()
 model.save_weights("C://Users//janie//Documents//GitHub//Project-Turing//isdis-dataset//" + datestamp + ".h5")  # always save your weights after training or during training
+print("Runtime Complete. Model Saved to Disk.")
