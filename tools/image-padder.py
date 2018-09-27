@@ -24,10 +24,21 @@ def padImage(path_to_image, path_to_processed_directory):
     new_im.paste(im, ((desired_size-new_size[0])//2,
                     (desired_size-new_size[1])//2))
 
-    new_im.show()
+    #new_im.show()
     path, new_filename = os.path.split(path_to_image)
 
-    new_im.save((path_to_processed_directory + "//" + new_filename), "JPG")
+    new_im.save((path_to_processed_directory + "//" + new_filename), "PNG")
 
-padImage("C://Users//janie//PycharmProjects//Project-Turing//train//benign//ISIC_0000003.jpg",
-             "C://Users//janie//PycharmProjects//Project-Turing")
+working_directory = "C://Users//janie//PycharmProjects//Project-Turing//validation//malignant"
+
+for file in os.listdir(working_directory):
+    print(file)
+    output_path = "C://Users//janie//PycharmProjects//Project-Turing//padded-dataset//validation//malignant"
+    padImage(working_directory + "//" + file, output_path)
+
+working_directory = "C://Users//janie//PycharmProjects//Project-Turing//validation//benign"
+
+for file in os.listdir(working_directory):
+    print(file)
+    output_path = "C://Users//janie//PycharmProjects//Project-Turing//padded-dataset//validation//benign"
+    padImage(working_directory + "//" + file, output_path)
