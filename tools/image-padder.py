@@ -36,9 +36,3 @@ for file in os.listdir(working_directory):
     output_path = "C://Users//janie//PycharmProjects//Project-Turing//padded-dataset//validation//malignant"
     padImage(working_directory + "//" + file, output_path)
 
-working_directory = "C://Users//janie//PycharmProjects//Project-Turing//validation//benign"
-
-for file in os.listdir(working_directory):
-    print(file)
-    output_path = "C://Users//janie//PycharmProjects//Project-Turing//padded-dataset//validation//benign"
-    padImage(working_directory + "//" + file, output_path)
