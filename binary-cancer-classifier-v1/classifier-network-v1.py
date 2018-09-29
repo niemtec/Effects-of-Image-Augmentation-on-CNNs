@@ -4,6 +4,7 @@ from keras.layers import Conv2D, MaxPooling2D
 from keras.layers import Activation, Dropout, Flatten, Dense
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 from keras.backend.tensorflow_backend import set_session
+import matplotlib.pyplot as plt
 import time
 
 # Network configuration to use GPUs
@@ -49,16 +50,14 @@ model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accurac
 batch_size = 30
 
 # this is the augmentation configuration we will use for training
-train_datagen = ImageDataGenerator(
-    rescale=1./255
-)
+train_datagen = ImageDataGenerator(rescale=1./255)
 
 # this is the augmentation configuration we will use for testing:
 # only rescaling
 test_datagen = ImageDataGenerator(rescale=1./255)
 
 # this is a generator that will read pictures found in
-# subfolers of 'data/train', and indefinitely generate
+# sub-folers of 'data/train', and indefinitely generate
 # batches of augmented image data
 train_generator = train_datagen.flow_from_directory(
     'C://Users//janie//PycharmProjects//Project-Turing//train',  # this is the target directory
@@ -73,12 +72,31 @@ validation_generator = test_datagen.flow_from_directory(
     batch_size=batch_size,
     class_mode='binary')
 
-model.fit_generator(
+history = model.fit_generator(
     train_generator,
     steps_per_epoch=1000 // batch_size,
-    epochs=50,
+    epochs=5,
     validation_data=validation_generator,
     validation_steps=800 // batch_size)
+
+# list all data in history
+print(history.history.keys())
+# summarize history for accuracy
+plt.plot(history.history['acc'])
+plt.plot(history.history['val_acc'])
+plt.title('model accuracy')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
+# summarize history for loss
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('model loss')
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
 
 # Serialise the model to JSON
 model_json = model.to_json()
