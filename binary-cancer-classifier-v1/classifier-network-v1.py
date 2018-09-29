@@ -61,14 +61,14 @@ test_datagen = ImageDataGenerator(rescale=1./255)
 # subfolers of 'data/train', and indefinitely generate
 # batches of augmented image data
 train_generator = train_datagen.flow_from_directory(
-    'C://Users//janie//PycharmProjects//Project-Turing//isdis-dataset//train',  # this is the target directory
+    'C://Users//janie//PycharmProjects//Project-Turing//train',  # this is the target directory
     target_size=(150, 150),  # all images will be resized to 150x150
     batch_size=batch_size,
     class_mode='binary')  # since we use binary_crossentropy loss, we need binary labels
 
 # this is a similar generator, for validation data
 validation_generator = test_datagen.flow_from_directory(
-    'C://Users//janie//PycharmProjects//Project-Turing//isdis-dataset//validation',
+    'C://Users//janie//PycharmProjects//Project-Turing//validation',
     target_size=(150, 150),
     batch_size=batch_size,
     class_mode='binary')
@@ -76,16 +76,16 @@ validation_generator = test_datagen.flow_from_directory(
 model.fit_generator(
     train_generator,
     steps_per_epoch=1000 // batch_size,
-    epochs=1,
+    epochs=50,
     validation_data=validation_generator,
     validation_steps=800 // batch_size)
 
 # Serialise the model to JSON
 model_json = model.to_json()
-with open("C://Users//janie//PycharmProjects//Project-Turing//isdis-dataset//classifier-network-v1.json", "w") as json_file:
+with open("C://Users//janie//PycharmProjects//Project-Turing//classifier-network-v1.json", "w") as json_file:
     json_file.write(model_json)
 
 # Serialise weights to HDF5
 datestamp = time.time()
-model.save_weights("C://Users//janie//PycharmProjects//Project-Turing//isdis-dataset//" + str(datestamp) + ".h5")  # always save your weights after training or during training
+model.save_weights("C://Users//janie//PycharmProjects//Project-Turing//" + str(datestamp) + ".h5")  # always save your weights after training or during training
 print("Runtime Complete. Model Saved to Disk.")
