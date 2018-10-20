@@ -75,7 +75,7 @@ validation_generator = test_datagen.flow_from_directory(
 history = model.fit_generator(
     train_generator,
     steps_per_epoch=1000 // batch_size,
-    epochs=100,
+    epochs=200,
     validation_data=validation_generator,
     validation_steps=800 // batch_size)
 
