@@ -1,12 +1,12 @@
 from keras.models import Sequential
-from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten
+from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten, Activation
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 import matplotlib.pyplot as plt
 import time
 
 # Control Variables
 input_shape = (150, 150, 3)  # Input shape of the images (H x W x D)
-nClasses = 2  # Number of classes for binary classification
+nClasses = 1  # Number of classes for binary classification
 batch_size = 540  # Number of samples to present to the network
 epochs = 100  # Number of epochs to run for
 train_dir = 'C://Users//janie//PycharmProjects//Project-Turing//train'
@@ -16,7 +16,7 @@ val_dir = 'C://Users//janie//PycharmProjects//Project-Turing//validation'
 
 # Input Layer
 model = Sequential()
-model.add(Conv2D(32, (3, 3), padding='same', activation='relu', input_shape=input_shape))
+model.add(Conv2D(32, (3, 3), padding='same', activation='relu', input_shape=input_shape, data_format='channels_last'))
 model.add(Conv2D(32, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
@@ -37,24 +37,37 @@ model.add(Dropout(0.25))
 model.add(Flatten())  # This converts 3D feature maps to 1D feature vectors
 model.add(Dense(512, activation='relu'))
 model.add(Dropout(0.5))
-model.add(Dense(nClasses, activation='softmax'))  # Using softmax instead of sigmoid
+model.add(Dense(1))
+model.add(Activation('sigmoid'))
+#model.add(Dense(nClasses, activation='softmax'))  # Using softmax instead of sigmoid
 
 # Using binary crossentropy loss for the model
-model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
+model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy'])
 
-train_datagen = ImageDataGenerator()
-validation_datagen = ImageDataGenerator()
+train_datagen = ImageDataGenerator(rescale=1./255)
+validation_datagen = ImageDataGenerator(rescale=1./255)
 
 # Load training dataset
-train_generator = train_datagen.flow_from_directory(directory='train', target_size=(150, 150), batch_size=batch_size,
-                                                    class_mode='binary')
+train_generator = train_datagen.flow_from_directory(
+    directory='train',
+    target_size=(150, 150),
+    batch_size=batch_size,
+    class_mode='binary')
+
 # Load validation dataset
-validation_generator = validation_datagen.flow_from_directory(directory='validation', target_size=(150, 150),
-                                                              batch_size=batch_size, class_mode='binary')
+validation_generator = validation_datagen.flow_from_directory(
+    directory='validation',
+    target_size=(150, 150),
+    batch_size=batch_size,
+    class_mode='binary')
 
 # Save the history of model fitting
-history = model.fit_generator(train_generator, steps_per_epoch=1000 // batch_size, epochs=epochs, verbose=1,
-                              validation_data=validation_generator, validation_steps=800 // batch_size)
+history = model.fit_generator(
+    train_generator,
+    steps_per_epoch=1000 // batch_size,
+    epochs=epochs,
+    validation_data=validation_generator,
+    validation_steps=800 // batch_size)
 
 model.evaluate_generator(validation_generator)
 
