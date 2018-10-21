@@ -2,15 +2,16 @@ from keras.models import Sequential
 from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 import matplotlib.pyplot as plt
-
+import time
 
 # Control Variables
-input_shape = (150, 150, 3)     # Input shape of the images (H x W x D)
-nClasses = 2    # Number of classes for binary classification
-batch_size = 540     # Number of samples to present to the network
-epochs = 100    # Number of epochs to run for
-training_directory = 'C://Users//janie//PycharmProjects//Project-Turing//train'
-validation_directory = 'C://Users//janie//PycharmProjects//Project-Turing//validation'
+input_shape = (150, 150, 3)  # Input shape of the images (H x W x D)
+nClasses = 2  # Number of classes for binary classification
+batch_size = 540  # Number of samples to present to the network
+epochs = 100  # Number of epochs to run for
+train_dir = 'C://Users//janie//PycharmProjects//Project-Turing//train'
+val_dir = 'C://Users//janie//PycharmProjects//Project-Turing//validation'
+
 
 # Defining the network model
 def CreateModel():
@@ -34,28 +35,32 @@ def CreateModel():
     model.add(Dropout(0.25))
 
     # Fully connected layers
-    model.add(Flatten())    # This converts 3D feature maps to 1D feature vectors
+    model.add(Flatten())  # This converts 3D feature maps to 1D feature vectors
     model.add(Dense(512, activation='relu'))
     model.add(Dropout(0.5))
-    model.add(Dense(nClasses, activation='softmax'))    # Using softmax instead of sigmoid
+    model.add(Dense(nClasses, activation='softmax'))  # Using softmax instead of sigmoid
 
     return model
 
-# Load training dataset
-train_datagen = ImageDataGenerator()
-train_data = train_datagen.flow_from_directory(training_directory, target_size=(150, 150), batch_size=batch_size, class_mode='binary')
-
-# Load validation dataset
-validation_datagen = ImageDataGenerator
-validation_data = validation_datagen.flow_from_directory(validation_directory, target_size=(150, 150), batch_size=batch_size, class_mode='binary')
 
 # Build the network model
 model1 = CreateModel()
+
 # Using binary crossentropy loss for the model
-model1.compile(optimiser='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
+model1.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
+
+# Load training dataset
+train_datagen = ImageDataGenerator()
+train_data = train_datagen.flow_from_directory(directory='train', target_size=(150, 150), batch_size=batch_size,
+                                               class_mode='binary')
+# Load validation dataset
+validation_datagen = ImageDataGenerator
+validation_data = validation_datagen.flow_from_directory(directory='validation', target_size=(150, 150),
+                                                         batch_size=batch_size, class_mode='binary')
 
 # Save the history of model fitting
-history = model1.fit_generator(train_data, batch_size=batch_size, epochs=epochs, verbose = 1, validation_data=validation_data)
+history = model1.fit_generator(train_data, batch_size=batch_size, epochs=epochs, verbose=1,
+                               validation_data=validation_data)
 
 model1.evaluate_generator(validation_data)
 
@@ -67,6 +72,7 @@ plt.legend(['Training loss', 'Validation Loss'], fontsize=18)
 plt.xlabel('Epochs ', fontsize=16)
 plt.ylabel('Loss', fontsize=16)
 plt.title('Loss Curves', fontsize=16)
+plt.show()
 
 # Accuracy Curves
 plt.figure(figsize=[8, 6])
@@ -76,6 +82,7 @@ plt.legend(['Training Accuracy', 'Validation Accuracy'], fontsize=18)
 plt.xlabel('Epochs ', fontsize=16)
 plt.ylabel('Accuracy', fontsize=16)
 plt.title('Accuracy Curves', fontsize=16)
+plt.show()
 
 # list all data in history
 print(history.history.keys())
@@ -96,3 +103,13 @@ plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
 plt.show()
+
+# Serialise the model to JSON
+model_json = model1.to_json()
+with open('classifier-network-v2.json', "w") as json_file:
+    json_file.write(model_json)
+
+# Serialise weights to HDF5
+datestamp = time.time()
+model1.save_weights(str(datestamp) + ".h5")  # always save your weights after training or during training
+print("Runtime Complete. Model Saved to Disk.")
