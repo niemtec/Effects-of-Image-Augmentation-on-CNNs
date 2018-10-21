@@ -12,57 +12,51 @@ epochs = 100  # Number of epochs to run for
 train_dir = 'C://Users//janie//PycharmProjects//Project-Turing//train'
 val_dir = 'C://Users//janie//PycharmProjects//Project-Turing//validation'
 
-
 # Defining the network model
-def CreateModel():
-    # Input Layer
-    model = Sequential()
-    model.add(Conv2D(32, (3, 3), padding='same', activation='relu', input_shape=input_shape))
-    model.add(Conv2D(32, (3, 3), activation='relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
 
-    # First convolutional layer
-    model.add(Conv2D(64, (3, 3), padding='same', activation='relu'))
-    model.add(Conv2D(64, (3, 3), activation='relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
+# Input Layer
+model = Sequential()
+model.add(Conv2D(32, (3, 3), padding='same', activation='relu', input_shape=input_shape))
+model.add(Conv2D(32, (3, 3), activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.25))
 
-    # Second convolutional layer
-    model.add(Conv2D(64, (3, 3), padding='same', activation='relu'))
-    model.add(Conv2D(64, (3, 3), activation='relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
+# First convolutional layer
+model.add(Conv2D(64, (3, 3), padding='same', activation='relu'))
+model.add(Conv2D(64, (3, 3), activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.25))
 
-    # Fully connected layers
-    model.add(Flatten())  # This converts 3D feature maps to 1D feature vectors
-    model.add(Dense(512, activation='relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(nClasses, activation='softmax'))  # Using softmax instead of sigmoid
+# Second convolutional layer
+model.add(Conv2D(64, (3, 3), padding='same', activation='relu'))
+model.add(Conv2D(64, (3, 3), activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.25))
 
-    return model
-
-
-# Build the network model
-model1 = CreateModel()
+# Fully connected layers
+model.add(Flatten())  # This converts 3D feature maps to 1D feature vectors
+model.add(Dense(512, activation='relu'))
+model.add(Dropout(0.5))
+model.add(Dense(nClasses, activation='softmax'))  # Using softmax instead of sigmoid
 
 # Using binary crossentropy loss for the model
-model1.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
+model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
+
+train_datagen = ImageDataGenerator()
+validation_datagen = ImageDataGenerator()
 
 # Load training dataset
-train_datagen = ImageDataGenerator()
-train_data = train_datagen.flow_from_directory(directory='train', target_size=(150, 150), batch_size=batch_size,
-                                               class_mode='binary')
+train_generator = train_datagen.flow_from_directory(directory='train', target_size=(150, 150), batch_size=batch_size,
+                                                    class_mode='binary')
 # Load validation dataset
-validation_datagen = ImageDataGenerator
-validation_data = validation_datagen.flow_from_directory(directory='validation', target_size=(150, 150),
-                                                         batch_size=batch_size, class_mode='binary')
+validation_generator = validation_datagen.flow_from_directory(directory='validation', target_size=(150, 150),
+                                                              batch_size=batch_size, class_mode='binary')
 
 # Save the history of model fitting
-history = model1.fit_generator(train_data, batch_size=batch_size, epochs=epochs, verbose=1,
-                               validation_data=validation_data)
+history = model.fit_generator(train_generator, steps_per_epoch=1000 // batch_size, epochs=epochs, verbose=1,
+                              validation_data=validation_generator, validation_steps=800 // batch_size)
 
-model1.evaluate_generator(validation_data)
+model.evaluate_generator(validation_generator)
 
 # Loss Curves
 plt.figure(figsize=[8, 6])
@@ -105,11 +99,11 @@ plt.legend(['train', 'test'], loc='upper left')
 plt.show()
 
 # Serialise the model to JSON
-model_json = model1.to_json()
+model_json = model.to_json()
 with open('classifier-network-v2.json', "w") as json_file:
     json_file.write(model_json)
 
 # Serialise weights to HDF5
 datestamp = time.time()
-model1.save_weights(str(datestamp) + ".h5")  # always save your weights after training or during training
+model.save_weights(str(datestamp) + ".h5")  # always save your weights after training or during training
 print("Runtime Complete. Model Saved to Disk.")
