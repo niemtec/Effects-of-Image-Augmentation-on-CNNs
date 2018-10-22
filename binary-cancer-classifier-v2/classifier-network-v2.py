@@ -1,3 +1,4 @@
+from keras.backend import set_session, tf
 from keras.models import Sequential
 from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten, Activation
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
@@ -7,13 +8,14 @@ import time
 # Control Variables
 input_shape = (150, 150, 3)  # Input shape of the images (H x W x D)
 nClasses = 1  # Number of classes for binary classification
-batch_size = 540  # Number of samples to present to the network
-epochs = 100  # Number of epochs to run for
+batch_size = 10  # Number of samples to present to the network
+epochs = 10  # Number of epochs to run for
+number_of_samples = None
+number_of_evaluation_samples = 206;
 train_dir = 'C://Users//janie//PycharmProjects//Project-Turing//train'
 val_dir = 'C://Users//janie//PycharmProjects//Project-Turing//validation'
 
 # Defining the network model
-
 # Input Layer
 model = Sequential()
 model.add(Conv2D(32, (3, 3), padding='same', activation='relu', input_shape=input_shape, data_format='channels_last'))
@@ -69,7 +71,7 @@ history = model.fit_generator(
     validation_data=validation_generator,
     validation_steps=800 // batch_size)
 
-model.evaluate_generator(validation_generator)
+model.evaluate_generator(validation_generator, steps=number_of_evaluation_samples // batch_size)
 
 # Loss Curves
 plt.figure(figsize=[8, 6])
