@@ -11,9 +11,8 @@ nClasses = 1  # Number of classes for binary classification
 batch_size = 10  # Number of samples to present to the network
 epochs = 10  # Number of epochs to run for
 number_of_samples = None
-number_of_evaluation_samples = 206;
-train_dir = 'C://Users//janie//PycharmProjects//Project-Turing//train'
-val_dir = 'C://Users//janie//PycharmProjects//Project-Turing//validation'
+number_of_evaluation_samples = 206
+
 
 # Defining the network model
 # Input Layer
@@ -51,14 +50,14 @@ validation_datagen = ImageDataGenerator(rescale=1./255)
 
 # Load training dataset
 train_generator = train_datagen.flow_from_directory(
-    directory='train',
+    directory='rescaled-dataset/train',
     target_size=(150, 150),
     batch_size=batch_size,
     class_mode='binary')
 
 # Load validation dataset
 validation_generator = validation_datagen.flow_from_directory(
-    directory='validation',
+    directory='rescaled-dataset/validation',
     target_size=(150, 150),
     batch_size=batch_size,
     class_mode='binary')
