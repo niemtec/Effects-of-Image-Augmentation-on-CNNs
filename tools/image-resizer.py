@@ -4,7 +4,7 @@ import os
 from PIL import Image, ImageOps
 
 def resizeImage(path_to_image, path_to_processed_directory):
-    desired_size = 128, 128
+    desired_size = 512, 512
 
     im = Image.open(path_to_image)
     im.thumbnail(desired_size, Image.ANTIALIAS)
@@ -12,10 +12,10 @@ def resizeImage(path_to_image, path_to_processed_directory):
 
     im.save((path_to_processed_directory + "//" + new_filename), "PNG")
 
-working_directory = "C://Users//janie//PycharmProjects//Project-Turing//padded-dataset//validation//malignant"
+working_directory = "padded-dataset//train//benign"
 
 for file in os.listdir(working_directory):
     print(file)
-    output_path = "C://Users//janie//PycharmProjects//Project-Turing//rescaled-dataset//validation//malignant"
+    output_path = "rescaled-dataset-512//train//benign"
     resizeImage(working_directory + "//" + file, output_path)
 
