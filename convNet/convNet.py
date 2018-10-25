@@ -75,6 +75,15 @@ validation_generator = validation_datagen.flow_from_directory(
    class_mode = 'binary')
 
 # Save the model according to the conditions
-checkpoint = ModelCheckpoint("convNet/vgg16_1.h5", monitor='val_acc', verbose=1, save_best_only=True, save_weights_only=False, mode='auto', period=1)
-early = EarlyStopping(monitor='convNet/val_acc', min_delta=0, patience=10, verbose=1, mode='auto')
+checkpoint = ModelCheckpoint("convNet/vgg16_1.h5", monitor = 'val_acc', verbose = 1, save_best_only = True,
+                             save_weights_only = False, mode = 'auto', period = 1)
+early = EarlyStopping(monitor = 'convNet/val_acc', min_delta = 0, patience = 10, verbose = 1, mode = 'auto')
 
+# Train the model
+model_final.fit_generator(
+   train_generator,
+   samples_per_epoch = nb_train_samples,
+   epochs = epochs,
+   validation_data = validation_generator,
+   nb_val_samples = nb_validation_samples,
+   callbacks = [checkpoint, early])
