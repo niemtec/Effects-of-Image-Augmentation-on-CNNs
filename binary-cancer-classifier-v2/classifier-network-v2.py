@@ -13,8 +13,8 @@ batch_size = 10  # Number of samples to present to the network
 epochs = 100  # Number of epochs to run for
 number_of_samples = 540
 number_of_evaluation_samples = 540
-steps_per_epoch = 1000 // batch_size
-validation_steps = 800 // batch_size
+steps_per_epoch = None # None = default = number of samples / batch size
+validation_steps = None
 training_directory = 'train'
 validation_directory = 'validation'
 
