@@ -12,10 +12,10 @@ def resizeImage(path_to_image, path_to_processed_directory):
 
     im.save((path_to_processed_directory + "//" + new_filename), "PNG")
 
-working_directory = "padded-dataset//train//benign"
+working_directory = "padded-dataset//validation//benign"
 
 for file in os.listdir(working_directory):
     print(file)
-    output_path = "rescaled-dataset-512//train//benign"
+    output_path = "rescaled-dataset-512//validation//benign"
     resizeImage(working_directory + "//" + file, output_path)
 

@@ -790,8 +790,8 @@ benign = ["ISIC_0009869", "ISIC_0009870", "ISIC_0009871", "ISIC_0009872", "ISIC_
           "ISIC_0001136", "ISIC_0001139", "ISIC_0001144", "ISIC_0001145", "ISIC_0001146", "ISIC_0001147",
           "ISIC_0001150", "ISIC_0001153", "ISIC_0001155", "ISIC_0001156", "ISIC_0001158"]
 
-directory = 'train/malignant'
-dest_directory = 'validation/malignant'
+directory = 'padded-dataset/train/malignant'
+dest_directory = 'padded-dataset/validation/malignant'
 
 # for filename in os.listdir(directory):
 #     # Get current filename without the extension
