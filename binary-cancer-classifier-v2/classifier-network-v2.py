@@ -1,3 +1,5 @@
+import datetime
+
 from keras.backend import set_session, tf
 from keras.models import Sequential
 from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten, Activation
@@ -6,17 +8,17 @@ import matplotlib.pyplot as plt
 import time
 
 # Control Variables
-input_shape = (150, 150, 3)  # Input shape of the images (H x W x D)
-target_size = (150, 150)
+input_shape = (512, 512, 3)  # Input shape of the images (H x W x D)
+target_size = (512, 512)
 nClasses = 1  # Number of classes for binary classification
-batch_size = 10  # Number of samples to present to the network
-epochs = 100  # Number of epochs to run for
+batch_size = 50  # Number of samples to present to the network
+epochs = 50  # Number of epochs to run for
 number_of_samples = 540
 number_of_evaluation_samples = 540
 steps_per_epoch = None # None = default = number of samples / batch size
 validation_steps = None
-training_directory = 'train'
-validation_directory = 'validation'
+training_directory = 'rescaled-dataset-512/train'
+validation_directory = 'rescaled-dataset-512/validation'
 
 
 # Defining the network model
@@ -70,10 +72,10 @@ validation_generator = validation_datagen.flow_from_directory(
 # Save the history of model fitting
 history = model.fit_generator(
     train_generator,
-    steps_per_epoch=steps_per_epoch,
+    steps_per_epoch=2000 // batch_size,
     epochs=epochs,
     validation_data=validation_generator,
-    validation_steps=validation_steps)
+    validation_steps=800 // batch_size)
 
 evalhistory = model.evaluate_generator(validation_generator, steps=number_of_evaluation_samples // batch_size)
 
@@ -104,7 +106,7 @@ with open('classifier-network-v2.json', "w") as json_file:
     json_file.write(model_json)
 
 # Serialise weights to HDF5
-datestamp = time.time()
+datestamp = datetime.datetime.now()
 model.save_weights(str(datestamp) + ".h5")  # always save your weights after training or during training
 print("Runtime Complete. Model Saved to Disk.")
 
