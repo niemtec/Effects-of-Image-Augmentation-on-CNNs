@@ -18,9 +18,9 @@ batch_size = 16
 epochs = 50
 
 model = applications.VGG19(
-    weights = 'imagenet',
-    include_top = False,
-    input_shape = (img_width, img_height, 3))
+    weights='imagenet',
+    include_top=False,
+    input_shape=(img_width, img_height, 3))
 
 # Freeze the layers which you don't want to train
 for layer in model.layers[:5]:
@@ -35,3 +35,30 @@ x = Dense(1024, activation='relu')(x)
 predictions = Dense(16, activation='softmax')(x)
 
 # Creating the final model
+model_final = Model(
+    input=model.input,
+    output=predictions)
+
+# Compile the model
+model_final.compile(
+    loss='binary_crossentropy',
+    optimizer=optimizers.SGD(lr=0.0001, momentum=0.9),
+    metrics=['accuracy'])
+
+# Initiate the train and test generators with data Augmentation
+train_datagen = ImageDataGenerator(
+    rescale=1./255,
+    horizontal_flip=True,
+    vertical_flip=True,
+    fill_mode='nearest',
+    zoom_range=0.3,
+    rotation_range=30)
+
+test_datagen = ImageDataGenerator(
+    rescale=1./255,
+    horizontal_flip=True,
+    vertical_flip=True,
+    fill_mode='nearest',
+    zoom_range=0.3,
+    rotation_range=30)
+
