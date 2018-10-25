@@ -7,11 +7,16 @@ import time
 
 # Control Variables
 input_shape = (150, 150, 3)  # Input shape of the images (H x W x D)
+target_size = (150, 150)
 nClasses = 1  # Number of classes for binary classification
 batch_size = 10  # Number of samples to present to the network
-epochs = 10  # Number of epochs to run for
-number_of_samples = None
-number_of_evaluation_samples = 206
+epochs = 100  # Number of epochs to run for
+number_of_samples = 540
+number_of_evaluation_samples = 540
+steps_per_epoch = 1000 // batch_size
+validation_steps = 800 // batch_size
+training_directory = 'train'
+validation_directory = 'validation'
 
 
 # Defining the network model
@@ -50,27 +55,29 @@ validation_datagen = ImageDataGenerator(rescale=1./255)
 
 # Load training dataset
 train_generator = train_datagen.flow_from_directory(
-    directory='rescaled-dataset/train',
-    target_size=(150, 150),
+    directory=training_directory,
+    target_size=target_size,
     batch_size=batch_size,
     class_mode='binary')
 
 # Load validation dataset
 validation_generator = validation_datagen.flow_from_directory(
-    directory='rescaled-dataset/validation',
-    target_size=(150, 150),
+    directory=validation_directory,
+    target_size=target_size,
     batch_size=batch_size,
     class_mode='binary')
 
 # Save the history of model fitting
 history = model.fit_generator(
     train_generator,
-    steps_per_epoch=1000 // batch_size,
+    steps_per_epoch=steps_per_epoch,
     epochs=epochs,
     validation_data=validation_generator,
-    validation_steps=800 // batch_size)
+    validation_steps=validation_steps)
 
-model.evaluate_generator(validation_generator, steps=number_of_evaluation_samples // batch_size)
+evalhistory = model.evaluate_generator(validation_generator, steps=number_of_evaluation_samples // batch_size)
+
+
 # list all data in history
 print(history.history.keys())
 # summarize history for accuracy
@@ -100,3 +107,4 @@ with open('classifier-network-v2.json', "w") as json_file:
 datestamp = time.time()
 model.save_weights(str(datestamp) + ".h5")  # always save your weights after training or during training
 print("Runtime Complete. Model Saved to Disk.")
+
