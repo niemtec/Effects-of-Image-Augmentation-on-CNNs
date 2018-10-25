@@ -8,18 +8,15 @@ import matplotlib.pyplot as plt
 import time
 
 # Control Variables
-input_shape = (512, 512, 3)  # Input shape of the images (H x W x D)
-target_size = (512, 512)
+input_shape = (256, 256, 3)  # Input shape of the images (H x W x D)
+target_size = (256, 256)
 nClasses = 1  # Number of classes for binary classification
-batch_size = 50  # Number of samples to present to the network
+batch_size = 10  # Number of samples to present to the network
 epochs = 50  # Number of epochs to run for
 number_of_samples = 540
 number_of_evaluation_samples = 540
-steps_per_epoch = None # None = default = number of samples / batch size
-validation_steps = None
 training_directory = 'rescaled-dataset-512/train'
 validation_directory = 'rescaled-dataset-512/validation'
-
 
 # Defining the network model
 # Input Layer
@@ -47,13 +44,21 @@ model.add(Dense(512, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(1))
 model.add(Activation('sigmoid'))
-#model.add(Dense(nClasses, activation='softmax'))  # Using softmax instead of sigmoid
+# model.add(Dense(nClasses, activation='softmax'))  # Using softmax instead of sigmoid
 
 # Using binary crossentropy loss for the model
 model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy'])
 
-train_datagen = ImageDataGenerator(rescale=1./255)
-validation_datagen = ImageDataGenerator(rescale=1./255)
+train_datagen = ImageDataGenerator(
+    rescale=1,
+    rotation_range=10.,
+    horizontal_flip=True,
+    vertical_flip=True)
+validation_datagen = ImageDataGenerator(
+    rescale=1,
+    rotation_range=10.,
+    horizontal_flip=True,
+    vertical_flip=True)
 
 # Load training dataset
 train_generator = train_datagen.flow_from_directory(
@@ -72,13 +77,12 @@ validation_generator = validation_datagen.flow_from_directory(
 # Save the history of model fitting
 history = model.fit_generator(
     train_generator,
-    steps_per_epoch=2000 // batch_size,
+    steps_per_epoch=number_of_samples // batch_size,
     epochs=epochs,
     validation_data=validation_generator,
-    validation_steps=800 // batch_size)
+    validation_steps=number_of_evaluation_samples // batch_size)
 
 evalhistory = model.evaluate_generator(validation_generator, steps=number_of_evaluation_samples // batch_size)
-
 
 # list all data in history
 print(history.history.keys())
@@ -109,4 +113,3 @@ with open('classifier-network-v2.json', "w") as json_file:
 datestamp = datetime.datetime.now()
 model.save_weights(str(datestamp) + ".h5")  # always save your weights after training or during training
 print("Runtime Complete. Model Saved to Disk.")
-
