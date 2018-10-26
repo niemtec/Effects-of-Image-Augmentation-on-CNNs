@@ -15,7 +15,7 @@ train_data_dir = 'padded-dataset/train'
 validation_data_dir = 'padded-dataset/validation'
 nb_train_samples = 512
 nb_validation_samples = 512
-batch_size = 16
+batch_size = 10
 epochs = 50
 
 model = applications.VGG19(
@@ -33,7 +33,7 @@ x = Flatten()(x)
 x = Dense(1024, activation = 'relu')(x)
 x = Dropout(0.5)(x)
 x = Dense(1024, activation = 'relu')(x)
-predictions = Dense(16, activation = 'softmax')(x)
+predictions = Dense(1, activation = 'softmax')(x)
 
 # Creating the final model
 model_final = Model(
