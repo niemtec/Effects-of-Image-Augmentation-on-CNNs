@@ -200,3 +200,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Ignored Large Network Files
+convNet/vgg16_1_50_50_split_augmentation_enabled_50_epochs.h5
