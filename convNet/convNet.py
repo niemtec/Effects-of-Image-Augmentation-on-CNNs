@@ -9,14 +9,14 @@ from keras import backend as k
 from keras.callbacks import ModelCheckpoint, LearningRateScheduler, TensorBoard, EarlyStopping
 import matplotlib.pyplot as plt
 
-img_width = 256
-img_height = 256
-train_data_dir = 'padded-dataset/train'
-validation_data_dir = 'padded-dataset/validation'
-nb_train_samples = 512
-nb_validation_samples = 512
+img_width = 512
+img_height = 512
+train_data_dir = 'rescaled-dataset-512/train'
+validation_data_dir = 'rescaled-dataset-512/validation'
+nb_train_samples = 100
+nb_validation_samples = 100
 batch_size = 10
-epochs = 50
+epochs = 5
 
 model = applications.VGG19(
    weights = 'imagenet',
@@ -24,8 +24,8 @@ model = applications.VGG19(
    input_shape = (img_width, img_height, 3))
 
 # Freeze the layers which you don't want to train
-for layer in model.layers[:5]:
-   layer.trainable = False
+# for layer in model.layers[:5]:
+#    layer.trainable = False
 
 # Adding custom layers
 x = model.output
@@ -46,7 +46,7 @@ model_final.compile(
    optimizer = optimizers.SGD(lr = 0.0001, momentum = 0.9),
    metrics = ['accuracy'])
 
-# Initiate the train and test generators with data Augmentation
+# Initiate the train and validation generators with data Augmentation
 train_datagen = ImageDataGenerator(
    rescale = 1. / 255,
    horizontal_flip = True,
@@ -76,7 +76,7 @@ validation_generator = validation_datagen.flow_from_directory(
    class_mode = 'binary')
 
 # Save the model according to the conditions
-checkpoint = ModelCheckpoint("convNet/vgg16_1.h5", monitor = 'val_acc', verbose = 1, save_best_only = True,
+checkpoint = ModelCheckpoint("convNet/vgg16_1_raw_dataset.h5", monitor = 'val_acc', verbose = 1, save_best_only = True,
                              save_weights_only = False, mode = 'auto', period = 1)
 early = EarlyStopping(monitor = 'convNet/val_acc', min_delta = 0, patience = 10, verbose = 1, mode = 'auto')
 
@@ -96,7 +96,7 @@ plt.plot(history.history['val_acc'])
 plt.title('model accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc = 'upper left')
+plt.legend(['train', 'validation'], loc = 'upper left')
 plt.show()
 
 # summarize history for loss
@@ -105,5 +105,5 @@ plt.plot(history.history['val_loss'])
 plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc = 'upper left')
+plt.legend(['train', 'validation'], loc = 'upper left')
 plt.show()

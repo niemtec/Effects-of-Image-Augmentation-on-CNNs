@@ -71,7 +71,7 @@ print("n_classes: %d" % n_classes)
 
 
 ###############################################################################
-# Split into a training set and a test set using a stratified k fold
+# Split into a training set and a validation set using a stratified k fold
 
 # split into a training and testing set
 X_train, X_test, y_train, y_test = train_test_split(
@@ -113,9 +113,9 @@ print(clf.best_estimator_)
 
 
 ###############################################################################
-# Quantitative evaluation of the model quality on the test set
+# Quantitative evaluation of the model quality on the validation set
 
-print("Predicting people's names on the test set")
+print("Predicting people's names on the validation set")
 t0 = time()
 y_pred = clf.predict(X_test_pca)
 print("done in %0.3fs" % (time() - t0))
@@ -139,7 +139,7 @@ def plot_gallery(images, titles, h, w, n_row=3, n_col=4):
         plt.yticks(())
 
 
-# plot the result of the prediction on a portion of the test set
+# plot the result of the prediction on a portion of the validation set
 
 def title(y_pred, y_test, target_names, i):
     pred_name = target_names[y_pred[i]].rsplit(' ', 1)[-1]
