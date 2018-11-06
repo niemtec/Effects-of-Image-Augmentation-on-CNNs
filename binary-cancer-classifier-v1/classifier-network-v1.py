@@ -74,7 +74,7 @@ validation_generator = test_datagen.flow_from_directory(
 history = model.fit_generator(
    train_generator,
    steps_per_epoch = 1000 // batch_size,
-   epochs = 200,
+   epochs = 100,
    validation_data = validation_generator,
    validation_steps = 800 // batch_size)
 
@@ -87,7 +87,7 @@ plt.title('model accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(['train', 'validation'], loc = 'upper left')
-plt.savefig('results/500 Epochs/accuracy.png')
+plt.savefig('results/100 Epochs/accuracy.png')
 # summarize history for loss
 plt.plot(history.history['loss'])
 plt.plot(history.history['val_loss'])
@@ -95,15 +95,15 @@ plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'validation'], loc = 'upper left')
-plt.savefig('results/500 Epochs/loss.png')
+plt.savefig('results/100 Epochs/loss.png')
 
 # Serialise the model to JSON
 model_json = model.to_json()
-with open("results/500 Epochs/classifier-network-v1.json", "w") as json_file:
+with open("results/100 Epochs/classifier-network-v1.json", "w") as json_file:
    json_file.write(model_json)
 
 # Serialise weights to HDF5
 datestamp = time.time()
 model.save_weights(
-   "results/500 Epochs" + str(datestamp) + ".h5")  # always save your weights after training or during training
+   "results/100 Epochs" + str(datestamp) + ".h5")  # always save your weights after training or during training
 print("Runtime Complete. Model Saved to Disk.")
