@@ -15,8 +15,8 @@ batch_size = 10  # Number of samples to present to the network
 epochs = 10  # Number of epochs to run for
 number_of_samples = 6250
 number_of_evaluation_samples = 6250
-training_directory = 'datasets/cats-dogs/train'
-validation_directory = 'datasets/cats-dogs/validation'
+training_directory = '../datasets/cats-dogs/train'
+validation_directory = '../datasets/cats-dogs/validation'
 
 # Defining the network model
 # Input Layer
