@@ -8,8 +8,8 @@ from keras import applications
 img_width, img_height = 150, 150
 
 top_model_weights_path = 'bottleneck_fc_model.h5'
-train_data_dir = '../datasets/cats-dogs/train'
-validation_data_dir = '../datasets/cats-dogs/validation'
+train_data_dir = 'datasets/cats-dogs/train'
+validation_data_dir = 'datasets/cats-dogs/validation'
 nb_train_samples = 6250
 nb_validation_samples = 6250
 epochs = 50
