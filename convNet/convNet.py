@@ -11,12 +11,12 @@ import matplotlib.pyplot as plt
 
 img_width = 512
 img_height = 512
-train_data_dir = 'rescaled-dataset-512/train'
-validation_data_dir = 'rescaled-dataset-512/validation'
+train_data_dir = '../datasets/cats-dogs'
+validation_data_dir = '../datasets/cats-dogs'
 nb_train_samples = 100
 nb_validation_samples = 100
 batch_size = 10
-epochs = 5
+epochs = 100
 
 model = applications.VGG19(
    weights = 'imagenet',
@@ -76,9 +76,9 @@ validation_generator = validation_datagen.flow_from_directory(
    class_mode = 'binary')
 
 # Save the model according to the conditions
-checkpoint = ModelCheckpoint("convNet/vgg16_1_raw_dataset.h5", monitor = 'val_acc', verbose = 1, save_best_only = True,
+checkpoint = ModelCheckpoint("../convNet/vgg16_1_raw_dataset.h5", monitor = 'val_acc', verbose = 1, save_best_only = True,
                              save_weights_only = False, mode = 'auto', period = 1)
-early = EarlyStopping(monitor = 'convNet/val_acc', min_delta = 0, patience = 10, verbose = 1, mode = 'auto')
+early = EarlyStopping(monitor = '../convNet/val_acc', min_delta = 0, patience = 10, verbose = 1, mode = 'auto')
 
 # Train the model
 history = model_final.fit_generator(
@@ -97,7 +97,7 @@ plt.title('model accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(['train', 'validation'], loc = 'upper left')
-plt.show()
+plt.savefig('accuracy-animal-dataset.png')
 
 # summarize history for loss
 plt.plot(history.history['loss'])
@@ -106,4 +106,4 @@ plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'validation'], loc = 'upper left')
-plt.show()
+plt.savefig('loss-animal-dataset.png')
