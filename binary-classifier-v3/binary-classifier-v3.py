@@ -17,7 +17,7 @@ number_of_steps_per_epoch = 2000 // batch_size
 number_of_validation_steps = 800 // batch_size
 training_directory = '../datasets/cats-dogs/train'
 validation_directory = '../datasets/cats-dogs/validation'
-model_name = 'binary-classifier-v3-with-flip-only-augmentation'
+model_name = 'binary-classifier-v3-with-flip-only-augmentation-train-and-test'
 ########################################################################################################################
 
 # Build the sequential convolutional model for image classification
@@ -59,7 +59,10 @@ train_datagen = ImageDataGenerator(
    )
 
 # This is the augmentation configuration used for testing:
-test_datagen = ImageDataGenerator(rescale = 1. / 255)
+test_datagen = ImageDataGenerator(rescale = 1. / 255,
+                                  horizontal_flip = True,
+                                  vertical_flip = True,
+                                  )
 
 # These generators will read pictures found in sub-folders and generate batches of augmented image data
 train_generator = train_datagen.flow_from_directory(
