@@ -11,13 +11,13 @@ import matplotlib.pyplot as plt
 ########################################################################################################################
 # CONTROL VARIABLES
 batch_size = 30
-number_of_epochs = 50
+number_of_epochs = 100
 number_of_samples = None
 number_of_steps_per_epoch = 2000 // batch_size
 number_of_validation_steps = 800 // batch_size
 training_directory = '../datasets/cats-dogs/train'
 validation_directory = '../datasets/cats-dogs/validation'
-model_name = 'binary-classifier-v3'
+model_name = 'binary-classifier-v3-with-flip-only-augmentation'
 ########################################################################################################################
 
 # Build the sequential convolutional model for image classification
@@ -53,9 +53,10 @@ train_datagen = ImageDataGenerator(
    rescale = 1. / 255,
    horizontal_flip = True,
    vertical_flip = True,
-   zoom_range = 0.2,
-   rotation_range = 90,
-   fill_mode = 'nearest')
+   #zoom_range = 0.2,
+   #rotation_range = 90,
+   #fill_mode = 'nearest'
+   )
 
 # This is the augmentation configuration used for testing:
 test_datagen = ImageDataGenerator(rescale = 1. / 255)
@@ -80,24 +81,16 @@ history = model.fit_generator(
    validation_data = validation_generator,
    validation_steps = number_of_validation_steps)
 
-# Serialise the model to JSON
-model_json = model.to_json()
-with open(model_name + ".json", "w") as json_file:
-   json_file.write(model_json)
-
-# Serialise weights to HDF5
-date_stamp = datetime.datetime.now()
-model.save_weights(model_name + "-" + str(date_stamp) + ".h5")
-print("Runtime Complete. Model Saved to Disk.")
-
+print(history.history.keys())
 # Summarize history for accuracy
 plt.plot(history.history['acc'])
 plt.plot(history.history['val_acc'])
 plt.title('model accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
-plt.legend(['train', 'validation'], loc = 'upper left')
-plt.savefig(model_name + "-accuracy.png")
+plt.legend(['train', 'test'], loc='upper left')
+plt.savefig('Results/' + model_name + "-accuracy.png")
+plt.close()
 
 # Summarize history for loss
 plt.plot(history.history['loss'])
@@ -105,5 +98,19 @@ plt.plot(history.history['val_loss'])
 plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
-plt.legend(['train', 'validation'], loc = 'upper left')
-plt.savefig(model_name + "-loss.png")
+plt.legend(['train', 'test'], loc='upper left')
+plt.savefig('Results/' + model_name + "-loss.png")
+plt.close()
+
+# Serialise the model to JSON
+model_json = model.to_json()
+with open(model_name + ".json", "w") as json_file:
+   json_file.write(model_json)
+
+# Serialise weights to HDF5
+date_stamp = datetime.datetime.now().isoformat()
+weights_filename = str(model_name + '-' + str(date_stamp) + '.h5')
+model.save_weights(weights_filename)
+print("Runtime Complete. Model Saved to Disk.")
+
+
