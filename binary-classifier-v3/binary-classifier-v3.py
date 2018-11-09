@@ -11,13 +11,14 @@ import matplotlib.pyplot as plt
 ########################################################################################################################
 # CONTROL VARIABLES
 batch_size = 30
-number_of_epochs = 100
+number_of_epochs = 1000
 number_of_samples = None
 number_of_steps_per_epoch = 2000 // batch_size
 number_of_validation_steps = 800 // batch_size
+graph_size=(15,10)   # Size of result plots
 training_directory = '../datasets/cats-dogs/train'
 validation_directory = '../datasets/cats-dogs/validation'
-model_name = 'binary-classifier-v3-with-flip-only-augmentation-train-and-test'
+model_name = 'binary-classifier-v3-1000-epochs'
 ########################################################################################################################
 
 # Build the sequential convolutional model for image classification
@@ -51,18 +52,15 @@ model.compile(loss = 'binary_crossentropy', optimizer = 'rmsprop', metrics = ['a
 # This is the augmentation configuration used for training
 train_datagen = ImageDataGenerator(
    rescale = 1. / 255,
-   horizontal_flip = True,
-   vertical_flip = True,
+   #horizontal_flip = True,
+   #vertical_flip = True,
    #zoom_range = 0.2,
    #rotation_range = 90,
    #fill_mode = 'nearest'
    )
 
 # This is the augmentation configuration used for testing:
-test_datagen = ImageDataGenerator(rescale = 1. / 255,
-                                  horizontal_flip = True,
-                                  vertical_flip = True,
-                                  )
+test_datagen = ImageDataGenerator(rescale = 1. / 255)
 
 # These generators will read pictures found in sub-folders and generate batches of augmented image data
 train_generator = train_datagen.flow_from_directory(
@@ -86,6 +84,8 @@ history = model.fit_generator(
 
 print(history.history.keys())
 # Summarize history for accuracy
+plt.figure(figsize = graph_size, dpi = 300)
+plt.grid(True, which = 'both')
 plt.plot(history.history['acc'])
 plt.plot(history.history['val_acc'])
 plt.title('model accuracy')
@@ -96,6 +96,8 @@ plt.savefig('Results/' + model_name + "-accuracy.png")
 plt.close()
 
 # Summarize history for loss
+plt.figure(figsize = graph_size, dpi = 300)
+plt.grid(True, which = 'both')
 plt.plot(history.history['loss'])
 plt.plot(history.history['val_loss'])
 plt.title('model loss')
