@@ -15,7 +15,7 @@ number_of_epochs = 200
 number_of_samples = None
 number_of_steps_per_epoch = 2000 // batch_size
 number_of_validation_steps = 800 // batch_size
-graph_size=(15,10)   # Size of result plots
+graph_size = (15, 10)  # Size of result plots
 training_directory = '../datasets/cats-dogs/train'
 validation_directory = '../datasets/cats-dogs/validation'
 model_name = 'binary-classifier-v3'
@@ -52,12 +52,12 @@ model.compile(loss = 'binary_crossentropy', optimizer = 'rmsprop', metrics = ['a
 # This is the augmentation configuration used for training
 train_datagen = ImageDataGenerator(
    rescale = 1. / 255,
-   #horizontal_flip = True,
-   #vertical_flip = True,
-   #zoom_range = 0.2,
-   #rotation_range = 90,
-   #fill_mode = 'nearest'
-   )
+   # horizontal_flip = True,
+   # vertical_flip = True,
+   # zoom_range = 0.2,
+   # rotation_range = 90,
+   # fill_mode = 'nearest'
+)
 
 # This is the augmentation configuration used for testing:
 test_datagen = ImageDataGenerator(rescale = 1. / 255)
@@ -91,7 +91,7 @@ plt.plot(history.history['val_acc'])
 plt.title('model accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
+plt.legend(['train', 'test'], loc = 'upper left')
 plt.savefig('Results/' + model_name + "-accuracy.png")
 plt.close()
 
@@ -103,7 +103,7 @@ plt.plot(history.history['val_loss'])
 plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
+plt.legend(['train', 'test'], loc = 'upper left')
 plt.savefig('Results/' + model_name + "-loss.png")
 plt.close()
 
@@ -117,5 +117,3 @@ date_stamp = datetime.datetime.now().isoformat()
 weights_filename = str(model_name + '-' + str(date_stamp) + '.h5')
 model.save_weights(weights_filename)
 print("Runtime Complete. Model Saved to Disk.")
-
-
