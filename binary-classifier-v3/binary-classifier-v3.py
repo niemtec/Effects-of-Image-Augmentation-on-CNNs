@@ -11,14 +11,14 @@ import matplotlib.pyplot as plt
 ########################################################################################################################
 # CONTROL VARIABLES
 batch_size = 30
-number_of_epochs = 1000
+number_of_epochs = 200
 number_of_samples = None
 number_of_steps_per_epoch = 2000 // batch_size
 number_of_validation_steps = 800 // batch_size
 graph_size=(15,10)   # Size of result plots
 training_directory = '../datasets/cats-dogs/train'
 validation_directory = '../datasets/cats-dogs/validation'
-model_name = 'binary-classifier-v3-1000-epochs'
+model_name = 'binary-classifier-v3'
 ########################################################################################################################
 
 # Build the sequential convolutional model for image classification
