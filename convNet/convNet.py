@@ -9,23 +9,27 @@ from keras import backend as k
 from keras.callbacks import ModelCheckpoint, LearningRateScheduler, TensorBoard, EarlyStopping
 import matplotlib.pyplot as plt
 
-img_width = 512
-img_height = 512
+img_width = 150
+img_height = 150
 train_data_dir = '../datasets/cats-dogs'
 validation_data_dir = '../datasets/cats-dogs'
-nb_train_samples = 100
-nb_validation_samples = 100
-batch_size = 10
-epochs = 100
+nb_train_samples = 300
+nb_validation_samples = 300
+batch_size = 30
+epochs = 200
 
 model = applications.VGG19(
    weights = 'imagenet',
    include_top = False,
    input_shape = (img_width, img_height, 3))
 
+# Configuration Parameters for Freezing Layers
+################################################################################################################
 # Freeze the layers which you don't want to train
 # for layer in model.layers[:5]:
 #    layer.trainable = False
+
+################################################################################################################
 
 # Adding custom layers
 x = model.output
