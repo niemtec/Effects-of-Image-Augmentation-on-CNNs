@@ -36,6 +36,31 @@ class LeNet:
       if K.image_data_format() == 'channels_first':
          inputShape = (depth, height, width)
 
+      # First set of Convolutional > Relu > Pooling layers
+      model.add(Conv2D(20, (5, 5), padding = "same", input_shape = inputShape))
+      model.add(Activation("relu"))
+      model.add(MaxPooling2D(pool_size = (2, 2), strides = (2, 2)))
+
+      # Second set of Convlolutional > Relu > Pooling layers
+      model.add(Conv2D(50, (5, 5), padding = "same"))
+      model.add(Activation("relu"))
+      model.add(MaxPooling2D(pool_size = (2, 2), strides = (2, 2)))
+
+      # The only set of FC and RELU layers
+      model.add(Flatten())
+      model.add(Dense(500))
+      model.add(Activation("relu"))
+
+      # Softmax Classifier
+      model.add(Dense(classes))
+      model.add(Activation("softmax"))
+
+      # Return the constructed network achitecture
+      return model
+
+
+
+
 # print(history.history.keys())
 # # Summarize history for accuracy
 # plt.figure(figsize = graph_size, dpi = 300)

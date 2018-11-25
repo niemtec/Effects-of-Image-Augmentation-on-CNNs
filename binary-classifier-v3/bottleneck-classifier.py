@@ -10,9 +10,9 @@ img_width, img_height = 150, 150
 top_model_weights_path = 'bottleneck_fc_model.h5'
 train_data_dir = '../datasets/cats-dogs/train'
 validation_data_dir = '../datasets/cats-dogs/validation'
-nb_train_samples = 500
-nb_validation_samples = 500
-epochs = 50
+nb_train_samples = 6000
+nb_validation_samples = 4000
+epochs = 100
 batch_size = 16
 
 
@@ -48,11 +48,11 @@ def save_bottlebeck_features():
 def train_top_model():
    train_data = np.load('bottleneck_features_train.npy')
    train_labels = np.array(
-      [0] * (nb_train_samples / 2) + [1] * (nb_train_samples / 2))
+      [0] * (int(nb_train_samples / 2)) + [1] * (int(nb_train_samples / 2)))
 
    validation_data = np.load('bottleneck_features_validation.npy')
    validation_labels = np.array(
-      [0] * (nb_validation_samples / 2) + [1] * (nb_validation_samples / 2))
+      [0] * (int(nb_validation_samples / 2)) + [1] * (int(nb_validation_samples / 2)))
 
    model = Sequential()
    model.add(Flatten(input_shape = train_data.shape[1:]))

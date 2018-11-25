@@ -13,10 +13,13 @@ img_width = 150
 img_height = 150
 train_data_dir = '../datasets/cats-dogs'
 validation_data_dir = '../datasets/cats-dogs'
-nb_train_samples = 300
-nb_validation_samples = 300
+nb_train_samples = 1000
+nb_train_samples = 1000
+nb_train_samples = 1000
+nb_validation_samples = 1000
 batch_size = 30
 epochs = 200
+model_name = 'convnet-200-epochs'
 
 model = applications.VGG19(
    weights = 'imagenet',
@@ -94,20 +97,26 @@ history = model_final.fit_generator(
    callbacks = [checkpoint, early])
 
 print(history.history.keys())
-# summarize history for accuracy
+# Summarize history for accuracy
+plt.figure(figsize = graph_size, dpi = 300)
+plt.grid(True, which = 'both')
 plt.plot(history.history['acc'])
 plt.plot(history.history['val_acc'])
 plt.title('model accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
-plt.legend(['train', 'validation'], loc = 'upper left')
-plt.savefig('accuracy-animal-dataset.png')
+plt.legend(['train', 'test'], loc = 'upper left')
+plt.savefig('Results/' + model_name + "-accuracy.png")
+plt.close()
 
-# summarize history for loss
+# Summarize history for loss
+plt.figure(figsize = graph_size, dpi = 300)
+plt.grid(True, which = 'both')
 plt.plot(history.history['loss'])
 plt.plot(history.history['val_loss'])
 plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
-plt.legend(['train', 'validation'], loc = 'upper left')
-plt.savefig('loss-animal-dataset.png')
+plt.legend(['train', 'test'], loc = 'upper left')
+plt.savefig('Results/' + model_name + "-loss.png")
+plt.close()
