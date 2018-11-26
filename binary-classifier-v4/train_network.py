@@ -147,7 +147,9 @@ history = model.fit_generator(aug.flow(trainX, trainY, batch_size = batchSize), 
 
 # Save the model to disk
 print("Saving Network Model")
-model.save(modelName)
+model_json = model.to_json()
+with open(modelName + ".json", "w") as json_file:
+    json_file.write(model_json)
 
 # # plot the training loss and accuracy
 # plt.style.use("ggplot")
