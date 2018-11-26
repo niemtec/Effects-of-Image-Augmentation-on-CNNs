@@ -1,9 +1,4 @@
-# set the matplotlib backend so figures can be saved in the background
 import matplotlib
-
-matplotlib.use("Agg")
-
-# import the necessary packages
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam
 from sklearn.model_selection import train_test_split
@@ -22,6 +17,9 @@ import random
 import cv2
 import os
 
+# Set the matplotlib backend so figures can be saved in the background
+matplotlib.use("Agg")
+
 
 # Determine whether given file is an image or not
 def file_is_image(path_to_file):
@@ -32,6 +30,7 @@ def file_is_image(path_to_file):
         return True
 
 
+# Build the network structure
 def build_lenet_model(width, height, depth, classes):
     # Initialise the model
     model = Sequential()
@@ -150,19 +149,19 @@ history = model.fit_generator(aug.flow(trainX, trainY, batch_size = batchSize), 
 print("Saving Network Model")
 model.save(modelName)
 
-# plot the training loss and accuracy
-plt.style.use("ggplot")
-plt.figure()
-N = noEpochs
-plt.plot(np.arange(0, N), history.history["loss"], label = "train_loss")
-plt.plot(np.arange(0, N), history.history["val_loss"], label = "val_loss")
-plt.plot(np.arange(0, N), history.history["acc"], label = "train_acc")
-plt.plot(np.arange(0, N), history.history["val_acc"], label = "val_acc")
-plt.title("Training Loss and Accuracy on Santa/Not Santa")
-plt.xlabel("Epoch #")
-plt.ylabel("Loss/Accuracy")
-plt.legend(loc = "lower left")
-plt.savefig(plotName)
+# # plot the training loss and accuracy
+# plt.style.use("ggplot")
+# plt.figure()
+# N = noEpochs
+# plt.plot(np.arange(0, N), history.history["loss"], label = "train_loss")
+# plt.plot(np.arange(0, N), history.history["val_loss"], label = "val_loss")
+# plt.plot(np.arange(0, N), history.history["acc"], label = "train_acc")
+# plt.plot(np.arange(0, N), history.history["val_acc"], label = "val_acc")
+# plt.title("Training Loss and Accuracy on Santa/Not Santa")
+# plt.xlabel("Epoch #")
+# plt.ylabel("Loss/Accuracy")
+# plt.legend(loc = "lower left")
+# plt.savefig(plotName)
 
 # Summarize history for accuracy
 plt.figure(figsize = graphSize, dpi = 300)
@@ -187,7 +186,3 @@ plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc = 'upper left')
 plt.savefig('Results/' + modelName + "-loss.png")
 plt.close()
-
-# TODO: Standardise graphs to the ones used across all experiments
-# TODO: Remove redundant print outs
-# TODO: Clean up annotations
