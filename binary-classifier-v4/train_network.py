@@ -66,12 +66,12 @@ def build_lenet_model(width, height, depth, classes):
 
 
 # Control Variables
-modelName = 'classifier-v4'
+modelName = 'classifier-v4-no-augmentation'
 datasetPath = '../datasets/cats-dogs/train'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
-noEpochs = 1000
+noEpochs = 300
 initialLearningRate = 1e-3
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
@@ -83,7 +83,7 @@ testDatasetSize = 0.25  # Using 75% of the data for training and the remaining 2
 randomSeed = 42  # For repeatability
 imageHeight = 28
 imageWidth = 28
-imageDepth = 2
+imageDepth = 3
 
 # Initialize the data and labels arrays
 sortedData = []
@@ -98,7 +98,6 @@ for datasetCategory in os.listdir(datasetPath):
     # Go through category 1 and then category 2 of the dataset
     for sample in os.listdir(datasetCategoryPath):
         if file_is_image(datasetCategoryPath + "/" + sample):
-            print(sample)
             image = cv2.imread(datasetCategoryPath + "/" + sample)
             image = cv2.resize(image, (28, 28))  # Network only accepts 28 x 28 so resize the image accordingly
             image = img_to_array(image)
@@ -116,7 +115,6 @@ for datasetCategory in os.listdir(datasetPath):
 combined = list(zip(sortedData, sortedLabels))
 random.shuffle(combined)
 data[:], labels[:] = zip(*combined)
-print(labels)
 
 # Scale the raw pixel intensities to the range [0, 1]
 data = np.array(data, dtype = "float") / 255.0
@@ -131,8 +129,15 @@ testY = to_categorical(testY, num_classes = numberOfClasses)
 
 # TODO: Check results with these parameters disabled
 # Construct the image generator for data augmentation
-aug = ImageDataGenerator(rotation_range = 30, width_shift_range = 0.1, height_shift_range = 0.1, shear_range = 0.2,
-                         zoom_range = 0.2, horizontal_flip = True, fill_mode = "nearest")
+aug = ImageDataGenerator(
+    # rotation_range = 90,
+    # width_shift_range = 0.1,
+    # height_shift_range = 0.1,
+    # shear_range = 0.2,
+    # zoom_range = 0.2,
+    horizontal_flip = True,
+    fill_mode = "nearest"
+)
 
 # Initialize the model
 print("Compiling Network Model")
@@ -166,7 +171,7 @@ with open(modelName + ".json", "w") as json_file:
 # plt.savefig(plotName)
 
 # Summarize history for accuracy
-plt.figure(figsize = graphSize, dpi = 300)
+plt.figure(figsize = graphSize, dpi = 75)
 plt.grid(True, which = 'both')
 plt.plot(history.history['acc'])
 plt.plot(history.history['val_acc'])
@@ -178,7 +183,7 @@ plt.savefig('Results/' + modelName + "-accuracy.png")
 plt.close()
 
 # Summarize history for loss
-plt.figure(figsize = graphSize, dpi = 300)
+plt.figure(figsize = graphSize, dpi = 75)
 plt.grid(True, which = 'both')
 plt.plot(history.history['loss'])
 plt.plot(history.history['val_loss'])
