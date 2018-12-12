@@ -92,6 +92,7 @@ data = []
 labels = []
 
 # Go through dataset directory
+print("Classifying the Dataset")
 for datasetCategory in os.listdir(datasetPath):
     datasetCategoryPath = datasetPath + "/" + datasetCategory
 
