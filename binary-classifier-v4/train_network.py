@@ -66,8 +66,8 @@ def build_lenet_model(width, height, depth, classes):
 
 
 # Control Variables
-modelName = 'classifier-v4-no-augmentation'
-datasetPath = '../datasets/cats-dogs/train'
+modelName = 'classifier-v4-cancer-dataset-no-augmentation'
+datasetPath = '../datasets/isic/train'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
@@ -77,8 +77,8 @@ batchSize = 32
 decayRate = initialLearningRate / noEpochs
 
 numberOfClasses = 2
-categoryOne = 'cat'
-categoryTwo = 'dog'
+categoryOne = 'benign'
+categoryTwo = 'malignant'
 testDatasetSize = 0.25  # Using 75% of the data for training and the remaining 25% for testing
 randomSeed = 42  # For repeatability
 imageHeight = 28
