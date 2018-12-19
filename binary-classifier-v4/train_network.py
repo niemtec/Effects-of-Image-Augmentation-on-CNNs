@@ -98,6 +98,7 @@ for datasetCategory in os.listdir(datasetPath):
 
     # Go through category 1 and then category 2 of the dataset
     for sample in os.listdir(datasetCategoryPath):
+        print(sample)
         if file_is_image(datasetCategoryPath + "/" + sample):
             image = cv2.imread(datasetCategoryPath + "/" + sample)
             image = cv2.resize(image, (28, 28))  # Network only accepts 28 x 28 so resize the image accordingly
