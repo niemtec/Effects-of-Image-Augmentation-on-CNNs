@@ -66,8 +66,8 @@ def build_lenet_model(width, height, depth, classes):
 
 
 # Control Variables
-modelName = 'classifier-v4-no-augmentation'
-datasetPath = '../datasets/cats-dogs/train'
+modelName = 'classifier-v4-cancer-dataset-no-augmentation'
+datasetPath = '../datasets/isic/train'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
@@ -77,8 +77,8 @@ batchSize = 32
 decayRate = initialLearningRate / noEpochs
 
 numberOfClasses = 2
-categoryOne = 'cat'
-categoryTwo = 'dog'
+categoryOne = 'benign'
+categoryTwo = 'malignant'
 testDatasetSize = 0.25  # Using 75% of the data for training and the remaining 25% for testing
 randomSeed = 42  # For repeatability
 imageHeight = 28
@@ -92,11 +92,13 @@ data = []
 labels = []
 
 # Go through dataset directory
+print("Classifying the Dataset")
 for datasetCategory in os.listdir(datasetPath):
     datasetCategoryPath = datasetPath + "/" + datasetCategory
 
     # Go through category 1 and then category 2 of the dataset
     for sample in os.listdir(datasetCategoryPath):
+        print(sample)
         if file_is_image(datasetCategoryPath + "/" + sample):
             image = cv2.imread(datasetCategoryPath + "/" + sample)
             image = cv2.resize(image, (28, 28))  # Network only accepts 28 x 28 so resize the image accordingly
