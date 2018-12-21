@@ -66,19 +66,20 @@ def build_lenet_model(width, height, depth, classes):
 
 
 # Control Variables
-modelName = 'classifier-v4-cancer-dataset-no-augmentation'
-datasetPath = '../datasets/isic/train'
+modelName = 'classifier-v4-cats-dogs-dataset-no-augmentation'
+datasetPath = '../datasets/cats-dogs'
+resultsPath = '../Results/Image-Augmentation-Experiments'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
-noEpochs = 300
+noEpochs = 100
 initialLearningRate = 1e-3
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
 
 numberOfClasses = 2
-categoryOne = 'benign'
-categoryTwo = 'malignant'
+categoryOne = 'cat'
+categoryTwo = 'dog'
 testDatasetSize = 0.25  # Using 75% of the data for training and the remaining 25% for testing
 randomSeed = 42  # For repeatability
 imageHeight = 28
@@ -137,9 +138,10 @@ aug = ImageDataGenerator(
     # height_shift_range = 0.1,
     # shear_range = 0.2,
     # zoom_range = 0.2,
-    horizontal_flip = True,
-    fill_mode = "nearest"
+    # horizontal_flip = True,
+    # fill_mode = "nearest"
 )
+
 
 # Initialize the model
 print("Compiling Network Model")
@@ -155,22 +157,9 @@ history = model.fit_generator(aug.flow(trainX, trainY, batch_size = batchSize), 
 # Save the model to disk
 print("Saving Network Model")
 model_json = model.to_json()
-with open(modelName + ".json", "w") as json_file:
+with open(resultsPath + '/' + modelName + ".json", "w") as json_file:
     json_file.write(model_json)
 
-# # plot the training loss and accuracy
-# plt.style.use("ggplot")
-# plt.figure()
-# N = noEpochs
-# plt.plot(np.arange(0, N), history.history["loss"], label = "train_loss")
-# plt.plot(np.arange(0, N), history.history["val_loss"], label = "val_loss")
-# plt.plot(np.arange(0, N), history.history["acc"], label = "train_acc")
-# plt.plot(np.arange(0, N), history.history["val_acc"], label = "val_acc")
-# plt.title("Training Loss and Accuracy on Santa/Not Santa")
-# plt.xlabel("Epoch #")
-# plt.ylabel("Loss/Accuracy")
-# plt.legend(loc = "lower left")
-# plt.savefig(plotName)
 
 # Summarize history for accuracy
 plt.figure(figsize = graphSize, dpi = 75)
@@ -181,8 +170,9 @@ plt.title('model accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc = 'upper left')
-plt.savefig('Results/' + modelName + "-accuracy.png")
+plt.savefig(resultsPath + '/' + modelName + "-accuracy.png")
 plt.close()
+
 
 # Summarize history for loss
 plt.figure(figsize = graphSize, dpi = 75)
@@ -193,5 +183,5 @@ plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc = 'upper left')
-plt.savefig('Results/' + modelName + "-loss.png")
+plt.savefig(resultsPath + '/' + modelName + "-loss.png")
 plt.close()
