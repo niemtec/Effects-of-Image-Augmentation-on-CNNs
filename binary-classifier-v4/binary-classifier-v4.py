@@ -66,13 +66,13 @@ def build_lenet_model(width, height, depth, classes):
 
 
 # Control Variables
-modelName = 'classifier-v4-cats-dogs-dataset-no-augmentation'
+modelName = 'classifier-v4-cats-dogs-dataset-optimal-optimisation-test'
 datasetPath = '../datasets/cats-dogs'
-resultsPath = '../Results/Image-Augmentation-Experiments'
+resultsPath = 'Results/Image-Augmentation-Experiments'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
-noEpochs = 100
+noEpochs = 50
 initialLearningRate = 1e-3
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
@@ -130,18 +130,16 @@ labels = np.array(labels)
 trainY = to_categorical(trainY, num_classes = numberOfClasses)
 testY = to_categorical(testY, num_classes = numberOfClasses)
 
-# TODO: Check results with these parameters disabled
 # Construct the image generator for data augmentation
 aug = ImageDataGenerator(
-    # rotation_range = 90,
+    rotation_range = 180,
+    horizontal_flip = True,
+    zoom_range = 0.9
     # width_shift_range = 0.1,
     # height_shift_range = 0.1,
     # shear_range = 0.2,
-    # zoom_range = 0.2,
-    # horizontal_flip = True,
     # fill_mode = "nearest"
 )
-
 
 # Initialize the model
 print("Compiling Network Model")
@@ -160,7 +158,6 @@ model_json = model.to_json()
 with open(resultsPath + '/' + modelName + ".json", "w") as json_file:
     json_file.write(model_json)
 
-
 # Summarize history for accuracy
 plt.figure(figsize = graphSize, dpi = 75)
 plt.grid(True, which = 'both')
@@ -172,7 +169,6 @@ plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc = 'upper left')
 plt.savefig(resultsPath + '/' + modelName + "-accuracy.png")
 plt.close()
-
 
 # Summarize history for loss
 plt.figure(figsize = graphSize, dpi = 75)
