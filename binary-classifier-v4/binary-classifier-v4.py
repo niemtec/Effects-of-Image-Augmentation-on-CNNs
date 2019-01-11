@@ -66,13 +66,13 @@ def build_lenet_model(width, height, depth, classes):
 
 
 # Control Variables
-modelName = 'classifier-v4-cats-dogs-dataset-optimal-optimisation-test-500-epochs'
+modelName = 'classifier-v4-cats-dogs-dataset-no-optimisation-1000-epochs'
 datasetPath = '../datasets/cats-dogs'
 resultsPath = 'Results/Image-Augmentation-Experiments'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
-noEpochs = 500
+noEpochs = 8000
 initialLearningRate = 1e-3
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
