@@ -133,7 +133,7 @@ testY = to_categorical(testY, num_classes = numberOfClasses)
 # Construct the image generator for data augmentation
 aug = ImageDataGenerator(
     rotation_range = 25
-    # vertical_flip = True,
+    # vertical_flip = True
     # horizontal_flip= True
     # zoom_range = 1.0
     # width_shift_range = 0.1,
