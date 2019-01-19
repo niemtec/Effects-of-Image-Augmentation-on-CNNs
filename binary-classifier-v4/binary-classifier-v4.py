@@ -66,13 +66,13 @@ def build_lenet_model(width, height, depth, classes):
 
 
 # Control Variables
-modelName = 'classifier-v4-cats-dogs-dataset-no-optimisation-1000-epochs'
+modelName = 'classifier-v4-animal-dataset-rotation-25-100-epochs'
 datasetPath = '../datasets/cats-dogs'
 resultsPath = 'Results/Image-Augmentation-Experiments'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
-noEpochs = 8000
+noEpochs = 100
 initialLearningRate = 1e-3
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
@@ -132,9 +132,10 @@ testY = to_categorical(testY, num_classes = numberOfClasses)
 
 # Construct the image generator for data augmentation
 aug = ImageDataGenerator(
-    rotation_range = 180,
-    horizontal_flip = True,
-    zoom_range = 0.9
+    rotation_range = 25
+    # vertical_flip = True,
+    # horizontal_flip= True
+    # zoom_range = 1.0
     # width_shift_range = 0.1,
     # height_shift_range = 0.1,
     # shear_range = 0.2,
@@ -157,6 +158,17 @@ print("Saving Network Model")
 model_json = model.to_json()
 with open(resultsPath + '/' + modelName + ".json", "w") as json_file:
     json_file.write(model_json)
+
+# Save the final scores
+print("Saving Keras Log")
+history_loss = history.history['loss']
+history_acc = history.history['acc']
+history_val_loss = history.history['val_loss']
+history_val_acc = history.history['val_acc']
+with open(resultsPath + '/' + modelName + ".txt", "w") as history_log:
+    history_log.write(history_loss + "," + history_acc + "," + history_val_loss + "," + history_val_acc)
+
+
 
 # Summarize history for accuracy
 plt.figure(figsize = graphSize, dpi = 75)
