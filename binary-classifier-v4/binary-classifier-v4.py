@@ -67,13 +67,13 @@ def build_lenet_model(width, height, depth, classes):
 
 # Control Variables
 home = os.environ['HOME']
-modelName = 'classifier-v4-animal-dataset-log-saving-test3'
+modelName = 'classifier-v4-animal-dataset-log-rotation-30-100-epochs'
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs'
 resultsPath = home + '/home/Downloads/Project-Turing/TeamCityResults'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
-noEpochs = 2
+noEpochs = 100
 initialLearningRate = 1e-3
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
@@ -133,9 +133,9 @@ testY = to_categorical(testY, num_classes = numberOfClasses)
 
 # Construct the image generator for data augmentation
 aug = ImageDataGenerator(
-    # rotation_range = 180
-    vertical_flip = True,
-    horizontal_flip = True
+    rotation_range = 30
+    # vertical_flip = True,
+    # horizontal_flip = True
     # zoom_range = 1.0
     # width_shift_range = 0.1,
     # height_shift_range = 0.1,
@@ -173,7 +173,7 @@ history_val_acc = history.history['val_acc']
 history_val_acc = str(history_val_acc[-1])
 
 with open(resultsPath + '/' + modelName + ".txt", "w") as history_log:
-    history_log.write(history_loss + "," + history_acc + "," + history_val_loss + "," + history_val_acc + "Third Run")
+    history_log.write(history_loss + "," + history_acc + "," + history_val_loss + "," + history_val_acc)
 
 # Summarize history for accuracy
 plt.figure(figsize = graphSize, dpi = 75)
