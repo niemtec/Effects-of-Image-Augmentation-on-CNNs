@@ -67,7 +67,7 @@ def build_lenet_model(width, height, depth, classes):
 
 # Control Variables
 home = os.environ['HOME']
-modelName = 'classifier-v4-animal-dataset-log-saving-test'
+modelName = 'classifier-v4-animal-dataset-log-saving-test2'
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs'
 resultsPath = home + '/home/Downloads/Project-Turing/TeamCityResults'
 plotName = modelName
