@@ -67,7 +67,7 @@ def build_lenet_model(width, height, depth, classes):
 
 # Control Variables
 home = os.environ['HOME']
-modelName = 'classifier-v4-animal-dataset-log-saving-test1'
+modelName = 'classifier-v4-animal-dataset-log-saving-test2'
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs'
 resultsPath = home + '/home/Downloads/Project-Turing/TeamCityResults'
 plotName = modelName
@@ -173,7 +173,7 @@ history_val_acc = history.history['val_acc']
 history_val_acc = str(history_val_acc[-1])
 
 with open(resultsPath + '/' + modelName + ".txt", "w") as history_log:
-    history_log.write(history_loss + "," + history_acc + "," + history_val_loss + "," + history_val_acc + "First Run")
+    history_log.write(history_loss + "," + history_acc + "," + history_val_loss + "," + history_val_acc + "Second Run")
 
 # Summarize history for accuracy
 plt.figure(figsize = graphSize, dpi = 75)
