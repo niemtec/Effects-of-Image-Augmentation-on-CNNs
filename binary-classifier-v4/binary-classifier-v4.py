@@ -67,13 +67,13 @@ def build_lenet_model(width, height, depth, classes):
 
 # Control Variables
 home = os.environ['HOME']
-modelName = 'classifier-v4-animal-dataset-rotation-25-100-epochs'
+modelName = 'classifier-v4-animal-dataset-file-save-test'
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs'
 resultsPath = home + '/home/Downloads/Project-Turing/binary-classifier-v4/Results/Image-Augmentation-Experiments'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
-noEpochs = 100
+noEpochs = 1
 initialLearningRate = 1e-3
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
