@@ -133,7 +133,7 @@ testY = to_categorical(testY, num_classes = numberOfClasses)
 # Construct the image generator for data augmentation
 aug = ImageDataGenerator(
     rotation_range = 25
-    # vertical_flip = True
+    # vertical_flip = True,
     # horizontal_flip= True
     # zoom_range = 1.0
     # width_shift_range = 0.1,
@@ -161,10 +161,10 @@ with open(resultsPath + '/' + modelName + ".json", "w") as json_file:
 
 # Save the final scores
 print("Saving Keras Log")
-history_loss = history.history['loss']
-history_acc = history.history['acc']
-history_val_loss = history.history['val_loss']
-history_val_acc = history.history['val_acc']
+history_loss = str(history.history['loss'])
+history_acc = str(history.history['acc'])
+history_val_loss = str(history.history['val_loss'])
+history_val_acc = str(history.history['val_acc'])
 with open(resultsPath + '/' + modelName + ".txt", "w") as history_log:
     history_log.write(history_loss + "," + history_acc + "," + history_val_loss + "," + history_val_acc)
 
