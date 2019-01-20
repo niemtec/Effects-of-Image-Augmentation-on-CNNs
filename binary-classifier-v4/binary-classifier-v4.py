@@ -67,13 +67,13 @@ def build_lenet_model(width, height, depth, classes):
 
 # Control Variables
 home = os.environ['HOME']
-modelName = 'classifier-v4-animal-dataset-flip-horizontal-and-vertical-epochs'
+modelName = 'classifier-v4-animal-dataset-log-saving-test'
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs'
-resultsPath = home + '/home/Downloads/Project-Turing/binary-classifier-v4/Results/Image-Augmentation-Experiments'
+resultsPath = home + '/home/Downloads/Project-Turing/TeamCityResults'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
-noEpochs = 100
+noEpochs = 2
 initialLearningRate = 1e-3
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
@@ -159,17 +159,21 @@ print("Saving Network Model")
 model_json = model.to_json()
 with open(resultsPath + '/' + modelName + ".json", "w") as json_file:
     json_file.write(model_json)
-json_file.close()
 
 # Save the final scores
 print("Saving Keras Log")
-history_loss = str(history.history['loss'])
-history_acc = str(history.history['acc'])
-history_val_loss = str(history.history['val_loss'])
-history_val_acc = str(history.history['val_acc'])
+
+history_loss = history.history['loss']
+history_loss = str(history_loss[-1])
+history_acc = history.history['acc']
+history_acc = str(history_acc[-1])
+history_val_loss = history.history['val_loss']
+history_val_loss = str(history_val_loss[-1])
+history_val_acc = history.history['val_acc']
+history_val_acc = str(history_val_acc[-1])
+
 with open(resultsPath + '/' + modelName + ".txt", "w") as history_log:
     history_log.write(history_loss + "," + history_acc + "," + history_val_loss + "," + history_val_acc)
-history_log.close()
 
 # Summarize history for accuracy
 plt.figure(figsize = graphSize, dpi = 75)
