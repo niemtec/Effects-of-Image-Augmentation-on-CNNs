@@ -173,7 +173,7 @@ history_val_acc = history.history['val_acc']
 history_val_acc = str(history_val_acc[-1])
 
 with open(resultsPath + '/' + modelName + ".txt", "w") as history_log:
-    history_log.write(history_loss + "," + history_acc + "," + history_val_loss + "," + history_val_acc + "Fourth Run")
+    history_log.write(history_loss + "," + history_acc + "," + history_val_loss + "," + history_val_acc + "Fifth Run")
 
 # Summarize history for accuracy
 plt.figure(figsize = graphSize, dpi = 75)
