@@ -67,8 +67,8 @@ def build_lenet_model(width, height, depth, classes):
 
 # Control Variables
 modelName = 'classifier-v4-animal-dataset-rotation-25-100-epochs'
-datasetPath = '../datasets/cats-dogs'
-resultsPath = 'Results/Image-Augmentation-Experiments'
+datasetPath = '/home/Downloads/Project-Turing/datasets/cats-dogs'
+resultsPath = '/home/Downloads/Project-Turing/Results/Image-Augmentation-Experiments'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
@@ -133,7 +133,7 @@ testY = to_categorical(testY, num_classes = numberOfClasses)
 # Construct the image generator for data augmentation
 aug = ImageDataGenerator(
     rotation_range = 25
-    # vertical_flip = True,
+    # vertical_flip = True
     # horizontal_flip= True
     # zoom_range = 1.0
     # width_shift_range = 0.1,

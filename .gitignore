@@ -1,8 +1,33 @@
-# User defined
+# Created by .ignore support plugin (hsz.mobi)
 
-face-dataset/lfw/
-face-dataset/lfw.tar
+binary-classifier-v4/Results/*
+old-networks.zip
 
+
+### Windows template
+# Windows thumbnail cache files
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+
+# Dump file
+*.stackdump
+
+# Folder config file
+[Dd]esktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
 ### Python template
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -108,6 +133,20 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+### Linux template
+*~
+
+# temporary files which can be created if a process still has a handle open of a deleted file
+.fuse_hidden*
+
+# KDE directory preferences
+.directory
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+# .nfs files are created when an open file is removed but is still being accessed
+.nfs*
 ### JetBrains template
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
@@ -115,7 +154,6 @@ venv.bak/
 # User-specific stuff
 .idea/**/workspace.xml
 .idea/**/tasks.xml
-.idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
 
@@ -132,16 +170,9 @@ venv.bak/
 .idea/**/gradle.xml
 .idea/**/libraries
 
-# Gradle and Maven with auto-import
-# When using Gradle or Maven with auto-import, you should exclude module files,
-# since they will be recreated, and may cause churn.  Uncomment if using
-# auto-import.
-# .idea/modules.xml
-# .idea/*.iml
-# .idea/modules
-
 # CMake
-cmake-build-*/
+cmake-build-debug/
+cmake-build-release/
 
 # Mongo Explorer plugin
 .idea/**/mongoSettings.xml
@@ -169,37 +200,5 @@ fabric.properties
 
 # Editor-based Rest Client
 .idea/httpRequests
-### Example user template template
-### Example user template
 
-# IntelliJ project files
-.idea
-*.iml
-out
-gen### Windows template
-# Windows thumbnail cache files
-Thumbs.db
-ehthumbs.db
-ehthumbs_vista.db
-
-# Dump file
-*.stackdump
-
-# Folder config file
-[Dd]esktop.ini
-
-# Recycle Bin used on file shares
-$RECYCLE.BIN/
-
-# Windows Installer files
-*.cab
-*.msi
-*.msix
-*.msm
-*.msp
-
-# Windows shortcuts
-*.lnk
-
-# Ignored Large Network Files
-convNet/vgg16_1_50_50_split_augmentation_enabled_50_epochs.h5
+/old-networks.zip
