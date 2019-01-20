@@ -67,7 +67,7 @@ def build_lenet_model(width, height, depth, classes):
 
 # Control Variables
 home = os.environ['HOME']
-modelName = 'classifier-v4-animal-dataset-flip-vertical-100-epochs'
+modelName = 'classifier-v4-animal-dataset-flip-vertical-and-horizontal-100-epochs'
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs'
 resultsPath = home + '/home/Downloads/Project-Turing/binary-classifier-v4/Results/Image-Augmentation-Experiments'
 plotName = modelName
@@ -134,8 +134,8 @@ testY = to_categorical(testY, num_classes = numberOfClasses)
 # Construct the image generator for data augmentation
 aug = ImageDataGenerator(
     # rotation_range = 180
-    vertical_flip = True
-    # horizontal_flip = True
+    vertical_flip = True,
+    horizontal_flip = True
     # zoom_range = 1.0
     # width_shift_range = 0.1,
     # height_shift_range = 0.1,
