@@ -66,9 +66,10 @@ def build_lenet_model(width, height, depth, classes):
 
 
 # Control Variables
+home = os.environ['HOME']
 modelName = 'classifier-v4-animal-dataset-rotation-25-100-epochs'
-datasetPath = '/home/Downloads/Project-Turing/datasets/cats-dogs'
-resultsPath = '/home/Downloads/Project-Turing/Results/Image-Augmentation-Experiments'
+datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs'
+resultsPath = home + '/home/Downloads/Project-Turing/Results/Image-Augmentation-Experiments'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
