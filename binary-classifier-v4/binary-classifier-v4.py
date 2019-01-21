@@ -67,7 +67,7 @@ def build_lenet_model(width, height, depth, classes):
 
 # Control Variables
 home = os.environ['HOME']
-modelName = 'reversed-classifier-v4-animal-dataset-rotation-100-100-epochs'
+modelName = 'reversed-classifier-v4-animal-dataset-rotation-90-100-epochs'
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs'
 resultsPath = home + '/home/Downloads/Project-Turing/TeamCityResults/Reversed-Order-Experiments'
 plotName = modelName
@@ -133,7 +133,7 @@ testY = to_categorical(testY, num_classes = numberOfClasses)
 
 # Construct the image generator for data augmentation
 aug = ImageDataGenerator(
-    rotation_range = 100
+    rotation_range = 90
     # vertical_flip = True,
     # horizontal_flip = True
     # zoom_range = 1.0
