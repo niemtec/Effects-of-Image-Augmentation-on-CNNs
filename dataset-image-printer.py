@@ -23,8 +23,8 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
 # Control Variables
-imageHeight = 56
-imageWidth = 56
+imageHeight = 3
+imageWidth = 3
 
 
 def load_image(pathToImage):
@@ -43,6 +43,12 @@ def plot_image(imageArray, saveDirectory, newImageName):
     plt.show()
     # plt.savefig(saveDirectory + "/" + newImageName + ".png")
 
+
+def alter_image(originalImageArray, augmentationFactor):
+    for masterArray in originalImageArray:
+        for layer
+
+
 ########################################################
 # Load image to display how array looks like
 # img = mpimg.imread("C://Users//janie//PycharmProjects//Project-Turing//datasets//cats-dogs//dog//dog.1.jpg")
@@ -55,3 +61,8 @@ imagePath = "datasets/cats-dogs/dog/dog.24.jpg"
 # plt.imshow(rawImage / 255)
 # plt.show()
 # plot_image(rawImage)
+
+# Display image as an array first
+
+imageArray = load_image(imagePath)
+print(imageArray)
