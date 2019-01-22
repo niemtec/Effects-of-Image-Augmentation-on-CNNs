@@ -18,6 +18,7 @@ import random
 import cv2
 # import Image
 import os
+import math
 
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
@@ -44,10 +45,41 @@ def plot_image(imageArray, saveDirectory, newImageName):
     # plt.savefig(saveDirectory + "/" + newImageName + ".png")
 
 
+def pick_alteration_coordinates(coordinatesLog, width, height):
+    # Pick random co-ordinates to change
+    xAxisChange = random.randint(0, (width - 1))
+    yAxisChange = random.randint(0, (height - 1))
+
+    # Use coordinates as a tuple to ensure same values aren't changed all the time
+    coordinates = (xAxisChange, yAxisChange)
+
+    while coordinates in coordinatesLog:
+        pick_alteration_coordinates(coordinatesLog, width, height)
+    else:
+        # Log altered pixels to avoid repetition
+        coordinatesLog.append(coordinates)
+        return coordinates, coordinatesLog
+
+
 def alter_image(originalImageArray, augmentationFactor):
     # Convert array to a numpy array
     originalImageArray = np.array(originalImageArray)
 
+    # Calculate number of elements to augment per layer
+    layers, width, height = originalImageArray.shape  # Get array dimensions
+    numberOfElementsToChange = math.ceil(augmentationFactor * (width * height))
+
+    # Go through each layer
+    for layer in layers:
+        # Save changed pixels per layer to avoid changing the same element twice
+        coordinatesLog = list()
+
+        # Go through the changes for a given layer
+        for alteration in numberOfElementsToChange:
+            coordinates, coordinatesLog = pick_alteration_coordinates(coordinatesLog, width, height)
+            x, y = coordinates
+            originalImageArray.put(layer, x, y, 0)
+            alteration += 1
 
 
 
