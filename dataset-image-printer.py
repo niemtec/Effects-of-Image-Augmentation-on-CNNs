@@ -45,8 +45,10 @@ def plot_image(imageArray, saveDirectory, newImageName):
 
 
 def alter_image(originalImageArray, augmentationFactor):
-    for masterArray in originalImageArray:
-        for layer
+    # Convert array to a numpy array
+    originalImageArray = np.array(originalImageArray)
+
+
 
 
 ########################################################
