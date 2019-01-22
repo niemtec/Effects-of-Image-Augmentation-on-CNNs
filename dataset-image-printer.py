@@ -15,9 +15,13 @@ def load_image(pathToImage):
     image = cv2.resize(image, imageHeight, imageWidth)
     # Convert image to array
     imageArray = img_to_array(image)
+    return imageArray
 
 
 def plot_image(imageArray, saveDirectory, newImageName):
     # DEBUG: Show image if you want
     plt.imshow(imageArray / 255)  # /255 to make image coloured again
     plt.savefit(saveDirectory + "/" + newImageName + ".png")
+
+########################################################
+# Load image to display how array looks like
