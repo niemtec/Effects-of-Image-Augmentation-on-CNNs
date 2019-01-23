@@ -1,93 +1,63 @@
 # Tool used to print the dataset images for pictographic representation of data augmentation techniques
-import matplotlib
-from keras.preprocessing.image import ImageDataGenerator
-from keras.optimizers import Adam
-from sklearn.model_selection import train_test_split
+
 from keras.preprocessing.image import img_to_array
-from keras.utils import to_categorical
-from keras.models import Sequential
-from keras.layers.convolutional import Conv2D
-from keras.layers.convolutional import MaxPooling2D
-from keras.layers.core import Activation
-from keras.layers.core import Flatten
-from keras.layers.core import Dense
-from keras import backend as K
-import matplotlib.pyplot as plt
-import numpy as np
 import random
 import cv2
-# import Image
-import os
 import math
-
 import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
-
-# Control Variables
-imageHeight = 56
-imageWidth = 56
 
 
-def load_image(pathToImage):
-    # Load the image
-    image = cv2.imread(pathToImage)
-    # Resize the image
+# Resize the image to desired output
+def resize_image(image):
     image = cv2.resize(image, (imageHeight, imageWidth))
+    return image
+
+
+# Method for loading the image from path
+def convert_image_to_array(image):
     # Convert image to array
     imageArray = img_to_array(image)
     return imageArray
 
 
-def plot_image(pathToImage, saveDirectory, newImageName):
-    imageArray = load_image(pathToImage)
-    # DEBUG: Show image if you want
-    plt.imshow(imageArray / 255)  # /255 to make image coloured again
-    plt.show()
-    # plt.savefig(saveDirectory + "/" + newImageName + ".png")
+# Save the image as a file
+def save_image(image, newImagePath):
+    # Save the image with the BGR (default cv2) encoding to avoid colour shift
+    cv2.imwrite(newImagePath, cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
 
 
+# Pick image co-ordinates to alter
 def pick_alteration_coordinates(width, height):
     # Pick random co-ordinates to change
     xAxisChange = random.randint(0, (width - 1))
     yAxisChange = random.randint(0, (height - 1))
-
-    # Use coordinates as a tuple to ensure same values aren't changed all the time
-    coordinates = (xAxisChange, yAxisChange)
-
-    # while coordinates in coordinatesLog:
-    #     pick_alteration_coordinates(coordinatesLog, width, height)
-    # else:
-    #     # Log altered pixels to avoid repetition
-    #     coordinatesLog.append(coordinates)
-    #     return coordinates, coordinatesLog
     return xAxisChange, yAxisChange
 
 
+# Alter the image by turning off pixels at random
 def alter_image(image, augmentationFactor):
     # Get image size
     numberOfElementsToChange = math.ceil(augmentationFactor * (imageHeight * imageWidth))
 
-    # Kill pixels x number of times
-    for alteration in range(numberOfElementsToChange):
+    # Kill pixels n number of times
+    for n in range(numberOfElementsToChange):
         x, y = pick_alteration_coordinates(imageHeight, imageWidth)
-
         # Black out randomly selected pixels
         image[x, y] = [0, 0, 0]
-
     return image
 
 
-
-########################################################
-# Load image to display how array looks like
-# img = mpimg.imread("C://Users//janie//PycharmProjects//Project-Turing//datasets//cats-dogs//dog//dog.1.jpg")
+# Control Variables
+imageHeight = 56
+imageWidth = 56
+augmentationFactor = 0.01  # Decimal percentage
 imagePath = "datasets/cats-dogs/dog/dog.24.jpg"
-plot_image(imagePath, None, None)
+newImagePath = None
+datasetDirectory = "datasets/cats-dogs/dog"
 
-imageToAlter = cv2.imread(imagePath)
-alteredImage = cv2.resize(imageToAlter, (imageHeight, imageWidth))
-alteredImage = alter_image(alteredImage, 0.01)
-alteredImage = img_to_array(alteredImage)
-plt.imshow(alteredImage / 255)  # /255 to make image coloured again
-plt.show()
-# cv2.imshow(alteredImage)
+originalImage = cv2.imread(imagePath)
+newImage = alter_image(originalImage, augmentationFactor)
+save_image(newImage, newImagePath)
+
+# TODO: Does the image need to be resized? Considering that the network does it itself?
+# Just augment the image and do not resize it
