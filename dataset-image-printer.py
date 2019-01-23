@@ -4,6 +4,7 @@ from keras.preprocessing.image import img_to_array
 import random
 import cv2
 import math
+import os
 import matplotlib.pyplot as plt
 
 
@@ -52,12 +53,18 @@ imageHeight = 56
 imageWidth = 56
 augmentationFactor = 0.01  # Decimal percentage
 imagePath = "datasets/cats-dogs/dog/dog.24.jpg"
-newImagePath = None
+newImagePath = "datasets/cats-dogs-noise-001"
 datasetDirectory = "datasets/cats-dogs/dog"
 
-originalImage = cv2.imread(imagePath)
-newImage = alter_image(originalImage, augmentationFactor)
-save_image(newImage, newImagePath)
+# Go through the files in a dataset sub-directory
+for file in os.listdir(datasetDirectory):
+    # Load the original image
+    originalImage = cv2.imread(datasetDirectory + '/' + file)
+    # Change the image
+    newImage = alter_image(originalImage, augmentationFactor)
+    # Save the image in new directory with the same name
+    newFilename = newImagePath + '/' + file
+    save_image(newImage, newFilename)
 
 # TODO: Does the image need to be resized? Considering that the network does it itself?
 # Just augment the image and do not resize it
