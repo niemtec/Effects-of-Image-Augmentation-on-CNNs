@@ -24,8 +24,8 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
 # Control Variables
-imageHeight = 3
-imageWidth = 3
+imageHeight = 56
+imageWidth = 56
 
 
 def load_image(pathToImage):
@@ -38,14 +38,15 @@ def load_image(pathToImage):
     return imageArray
 
 
-def plot_image(imageArray, saveDirectory, newImageName):
+def plot_image(pathToImage, saveDirectory, newImageName):
+    imageArray = load_image(pathToImage)
     # DEBUG: Show image if you want
     plt.imshow(imageArray / 255)  # /255 to make image coloured again
     plt.show()
     # plt.savefig(saveDirectory + "/" + newImageName + ".png")
 
 
-def pick_alteration_coordinates(coordinatesLog, width, height):
+def pick_alteration_coordinates(width, height):
     # Pick random co-ordinates to change
     xAxisChange = random.randint(0, (width - 1))
     yAxisChange = random.randint(0, (height - 1))
@@ -53,33 +54,27 @@ def pick_alteration_coordinates(coordinatesLog, width, height):
     # Use coordinates as a tuple to ensure same values aren't changed all the time
     coordinates = (xAxisChange, yAxisChange)
 
-    while coordinates in coordinatesLog:
-        pick_alteration_coordinates(coordinatesLog, width, height)
-    else:
-        # Log altered pixels to avoid repetition
-        coordinatesLog.append(coordinates)
-        return coordinates, coordinatesLog
+    # while coordinates in coordinatesLog:
+    #     pick_alteration_coordinates(coordinatesLog, width, height)
+    # else:
+    #     # Log altered pixels to avoid repetition
+    #     coordinatesLog.append(coordinates)
+    #     return coordinates, coordinatesLog
+    return xAxisChange, yAxisChange
 
 
-def alter_image(originalImageArray, augmentationFactor):
-    # Convert array to a numpy array
-    originalImageArray = np.array(originalImageArray)
+def alter_image(image, augmentationFactor):
+    # Get image size
+    numberOfElementsToChange = math.ceil(augmentationFactor * (imageHeight * imageWidth))
 
-    # Calculate number of elements to augment per layer
-    layers, width, height = originalImageArray.shape  # Get array dimensions
-    numberOfElementsToChange = math.ceil(augmentationFactor * (width * height))
+    # Kill pixels x number of times
+    for alteration in range(numberOfElementsToChange):
+        x, y = pick_alteration_coordinates(imageHeight, imageWidth)
 
-    # Go through each layer
-    for layer in layers:
-        # Save changed pixels per layer to avoid changing the same element twice
-        coordinatesLog = list()
+        # Black out randomly selected pixels
+        image[x, y] = [0, 0, 0]
 
-        # Go through the changes for a given layer
-        for alteration in numberOfElementsToChange:
-            coordinates, coordinatesLog = pick_alteration_coordinates(coordinatesLog, width, height)
-            x, y = coordinates
-            originalImageArray.put(layer, x, y, 0)
-            alteration += 1
+    return image
 
 
 
@@ -87,16 +82,12 @@ def alter_image(originalImageArray, augmentationFactor):
 # Load image to display how array looks like
 # img = mpimg.imread("C://Users//janie//PycharmProjects//Project-Turing//datasets//cats-dogs//dog//dog.1.jpg")
 imagePath = "datasets/cats-dogs/dog/dog.24.jpg"
-# img = mpimg.imread(imagePath)
-# implot = plt.imshow(img)
-# plt.show()
-#
-# rawImage = load_image(imagePath)
-# plt.imshow(rawImage / 255)
-# plt.show()
-# plot_image(rawImage)
+plot_image(imagePath, None, None)
 
-# Display image as an array first
-
-imageArray = load_image(imagePath)
-print(imageArray)
+imageToAlter = cv2.imread(imagePath)
+alteredImage = cv2.resize(imageToAlter, (imageHeight, imageWidth))
+alteredImage = alter_image(alteredImage, 0.01)
+alteredImage = img_to_array(alteredImage)
+plt.imshow(alteredImage / 255)  # /255 to make image coloured again
+plt.show()
+# cv2.imshow(alteredImage)
