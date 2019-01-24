@@ -67,7 +67,7 @@ def build_lenet_model(width, height, depth, classes):
 
 # Control Variables
 home = os.environ['HOME']
-modelName = 'classifier-v4-animal-dataset-rescale-56-56'
+modelName = 'classifier-v4-animal-dataset-rescale-84-84'
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs'
 resultsPath = home + '/home/Downloads/Project-Turing/binary-classifier-v4/Results/RescaleResults'
 plotName = modelName
@@ -83,8 +83,8 @@ categoryOne = 'cat'
 categoryTwo = 'dog'
 testDatasetSize = 0.25  # Using 75% of the data for training and the remaining 25% for testing
 randomSeed = 42  # For repeatability
-imageHeight = 56
-imageWidth = 56
+imageHeight = 84
+imageWidth = 84
 imageDepth = 3
 
 # Initialize the data and labels arrays
