@@ -6,14 +6,6 @@ import cv2
 import math
 import os
 import matplotlib.pyplot as plt
-
-
-# Resize the image to desired output
-# def resize_image(image):
-#     image = cv2.resize(image, (imageHeight, imageWidth))
-#     return image
-
-
 # Method for loading the image from path
 def convert_image_to_array(image):
     # Convert image to array
