@@ -67,13 +67,13 @@ def build_lenet_model(width, height, depth, classes):
 
 # Control Variables
 home = os.environ['HOME']
-modelName = 'classifier-v4-animal-dataset-file-save-test'
+modelName = 'classifier-v4-animal-dataset-rescale-56-56'
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs'
-resultsPath = home + '/home/Downloads/Project-Turing/binary-classifier-v4/Results/Image-Augmentation-Experiments'
+resultsPath = home + '/home/Downloads/Project-Turing/binary-classifier-v4/Results/RescaleResults'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
-noEpochs = 1
+noEpochs = 50
 initialLearningRate = 1e-3
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
@@ -83,8 +83,8 @@ categoryOne = 'cat'
 categoryTwo = 'dog'
 testDatasetSize = 0.25  # Using 75% of the data for training and the remaining 25% for testing
 randomSeed = 42  # For repeatability
-imageHeight = 28
-imageWidth = 28
+imageHeight = 56
+imageWidth = 56
 imageDepth = 3
 
 # Initialize the data and labels arrays
@@ -103,7 +103,8 @@ for datasetCategory in os.listdir(datasetPath):
         print(sample)
         if file_is_image(datasetCategoryPath + "/" + sample):
             image = cv2.imread(datasetCategoryPath + "/" + sample)
-            image = cv2.resize(image, (28, 28))  # Network only accepts 28 x 28 so resize the image accordingly
+            image = cv2.resize(image, (
+            imageHeight, imageWidth))  # Network only accepts 28 x 28 so resize the image accordingly
             image = img_to_array(image)
             # Save image to the data list
             sortedData.append(image)
@@ -133,7 +134,7 @@ testY = to_categorical(testY, num_classes = numberOfClasses)
 
 # Construct the image generator for data augmentation
 aug = ImageDataGenerator(
-    rotation_range = 25
+    # rotation_range = 25
     # vertical_flip = True
     # horizontal_flip= True
     # zoom_range = 1.0
