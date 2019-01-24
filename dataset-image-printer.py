@@ -9,9 +9,9 @@ import matplotlib.pyplot as plt
 
 
 # Resize the image to desired output
-def resize_image(image):
-    image = cv2.resize(image, (imageHeight, imageWidth))
-    return image
+# def resize_image(image):
+#     image = cv2.resize(image, (imageHeight, imageWidth))
+#     return image
 
 
 # Method for loading the image from path
@@ -24,8 +24,8 @@ def convert_image_to_array(image):
 # Save the image as a file
 def save_image(image, newImagePath):
     # Save the image with the BGR (default cv2) encoding to avoid colour shift
-    cv2.imwrite(newImagePath, cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
-
+    # cv2.imwrite(newImagePath, cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
+    cv2.imwrite(newImagePath, image)
 
 # Pick image co-ordinates to alter
 def pick_alteration_coordinates(width, height):
@@ -38,6 +38,7 @@ def pick_alteration_coordinates(width, height):
 # Alter the image by turning off pixels at random
 def alter_image(image, augmentationFactor):
     # Get image size
+    imageHeight, imageWidth = get_image_size(image)
     numberOfElementsToChange = math.ceil(augmentationFactor * (imageHeight * imageWidth))
 
     # Kill pixels n number of times
@@ -48,23 +49,37 @@ def alter_image(image, augmentationFactor):
     return image
 
 
+# Determine whether given file is an image or not
+def file_is_image(path_to_file):
+    filename, extension = os.path.splitext(path_to_file)
+    if extension != '.jpg':
+        return False
+    else:
+        return True
+
+
+def get_image_size(image):
+    height, width, channels = image.shape
+    return height, width
+
 # Control Variables
-imageHeight = 56
-imageWidth = 56
+# imageHeight = 56
+# imageWidth = 56
 augmentationFactor = 0.01  # Decimal percentage
-imagePath = "datasets/cats-dogs/dog/dog.24.jpg"
-newImagePath = "datasets/cats-dogs-noise-001"
+newImagePath = "datasets/cats-dogs-noise-001/dog"
 datasetDirectory = "datasets/cats-dogs/dog"
 
 # Go through the files in a dataset sub-directory
 for file in os.listdir(datasetDirectory):
-    # Load the original image
-    originalImage = cv2.imread(datasetDirectory + '/' + file)
-    # Change the image
-    newImage = alter_image(originalImage, augmentationFactor)
-    # Save the image in new directory with the same name
-    newFilename = newImagePath + '/' + file
-    save_image(newImage, newFilename)
 
-# TODO: Does the image need to be resized? Considering that the network does it itself?
-# Just augment the image and do not resize it
+    if file_is_image(datasetDirectory + "/" + file):
+        print(file)
+        # Load the original image
+        originalImage = cv2.imread(datasetDirectory + '/' + file)
+        # Change the image
+        newImage = alter_image(originalImage, augmentationFactor)
+        # Save the image in new directory with the same name
+        newFilename = newImagePath + '/' + file
+        save_image(newImage, newFilename)
+
+print("Augmentation Complete")
