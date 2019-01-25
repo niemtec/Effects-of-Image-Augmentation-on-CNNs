@@ -85,14 +85,14 @@ def build_lenet_model(width, height, depth, classes):
 
 # Control Variables
 home = os.environ['HOME']
-modelName = 'classifier-v4-animal-dataset-rescale-84-84'
-resultsFileName = "rescale-84-84"
+modelName = 'classifier-v4-animal-dataset-overfitting-reduction-size-34-lr-1e-3rdLayer-500'
+resultsFileName = "overfitting-reduction-results"
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs'
 resultsPath = home + '/home/Downloads/Project-Turing/binary-classifier-v4/Results/RescaleResults'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
-noEpochs = 50
+noEpochs = 15
 initialLearningRate = 1e-3
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
@@ -102,8 +102,8 @@ categoryOne = 'cat'
 categoryTwo = 'dog'
 testDatasetSize = 0.25  # Using 75% of the data for training and the remaining 25% for testing
 randomSeed = 42  # For repeatability
-imageHeight = 84
-imageWidth = 84
+imageHeight = 34
+imageWidth = 34
 imageDepth = 3
 
 # Initialize the data and labels arrays
