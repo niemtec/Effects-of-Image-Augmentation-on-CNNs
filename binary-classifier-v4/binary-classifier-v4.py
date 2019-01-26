@@ -72,7 +72,7 @@ def build_lenet_model(width, height, depth, classes):
 
     # Third layer | flattening out into fully-connected layers
     model.add(Flatten())
-    model.add(Dense(500))  # 500 nodes
+    model.add(Dense(400))  # 500 nodes
     model.add(Activation("relu"))
 
     # Softmax classifier
@@ -85,7 +85,7 @@ def build_lenet_model(width, height, depth, classes):
 
 # Control Variables
 home = os.environ['HOME']
-modelName = 'classifier-v4-animal-dataset-overfitting-reduction-size-34-lr-1e-5-3rdLayer-500'
+modelName = 'classifier-v4-animal-dataset-overfitting-reduction-size-34-lr-1e-3-3rdLayer-400'
 resultsFileName = "overfitting-reduction-results"
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs'
 resultsPath = home + '/home/Downloads/Project-Turing/binary-classifier-v4/Results/RescaleResults'
@@ -93,7 +93,7 @@ plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
 noEpochs = 15
-initialLearningRate = 1e-5
+initialLearningRate = 1e-3
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
 
