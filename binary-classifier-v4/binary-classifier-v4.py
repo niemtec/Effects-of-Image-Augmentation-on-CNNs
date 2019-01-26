@@ -42,8 +42,9 @@ def save_network_stats(resultsPath, modelName, history, fileName):
     historyValAcc = history.history['val_acc']
     historyValAcc = str(historyValAcc[-1])  # Get last value from validated accuracy
 
-    with open(resultsPath + '/' + fileName + ".csv", "a") as history_log:
-        history_log.write(modelName + "," + historyLoss + "," + historyAcc + "," + historyValLoss + "," + historyValAcc)
+    with open(resultsPath + '/' + fileName + ".txt", "a") as history_log:
+        history_log.write(
+            modelName + "," + historyLoss + "," + historyAcc + "," + historyValLoss + "," + historyValAcc + "\n")
     history_log.close()
 
     print("Keras Log Saved")
@@ -102,8 +103,8 @@ categoryOne = 'cat'
 categoryTwo = 'dog'
 testDatasetSize = 0.25  # Using 75% of the data for training and the remaining 25% for testing
 randomSeed = 42  # For repeatability
-imageHeight = 84
-imageWidth = 84
+imageHeight = 64
+imageWidth = 64
 imageDepth = 3
 
 # Initialize the data and labels arrays
@@ -119,7 +120,7 @@ for datasetCategory in os.listdir(datasetPath):
 
     # Go through category 1 and then category 2 of the dataset
     for sample in os.listdir(datasetCategoryPath):
-        print(sample)
+        # print(sample)
         if file_is_image(datasetCategoryPath + "/" + sample):
             image = cv2.imread(datasetCategoryPath + "/" + sample)
             image = cv2.resize(image, (
