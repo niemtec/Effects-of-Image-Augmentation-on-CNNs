@@ -42,7 +42,7 @@ def save_network_stats(resultsPath, modelName, history, fileName):
     historyValAcc = history.history['val_acc']
     historyValAcc = str(historyValAcc[-1])  # Get last value from validated accuracy
 
-    with open(resultsPath + '/' + fileName + ".csv", "a") as history_log:
+    with open(resultsPath + '/' + fileName + ".txt", "a") as history_log:
         history_log.write(modelName + "," + historyLoss + "," + historyAcc + "," + historyValLoss + "," + historyValAcc)
     history_log.close()
 
@@ -85,15 +85,15 @@ def build_lenet_model(width, height, depth, classes):
 
 # Control Variables
 home = os.environ['HOME']
-modelName = 'classifier-v4-animal-dataset-overfitting-reduction-size-34-lr-1e-7-3rdLayer-500'
-resultsFileName = "overfitting-reduction-results"
+modelName = 'classifier-v4-animal-dataset-learning-rate-1e-3'
+resultsFileName = "learning-rate-results"
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs'
-resultsPath = home + '/home/Downloads/Project-Turing/binary-classifier-v4/Results/RescaleResults'
+resultsPath = home + '/home/Downloads/Project-Turing/binary-classifier-v4/Results/Learning-Rate'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
-noEpochs = 15
-initialLearningRate = 1e-7
+noEpochs = 50
+initialLearningRate = 1e-3
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
 
@@ -102,8 +102,8 @@ categoryOne = 'cat'
 categoryTwo = 'dog'
 testDatasetSize = 0.25  # Using 75% of the data for training and the remaining 25% for testing
 randomSeed = 42  # For repeatability
-imageHeight = 34
-imageWidth = 34
+imageHeight = 64
+imageWidth = 64
 imageDepth = 3
 
 # Initialize the data and labels arrays
