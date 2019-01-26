@@ -37,6 +37,7 @@ def stamp():
     time = "[" + str(datetime.datetime.now().time()) + "]   "
     return time
 
+
 # Save final model performance
 def save_network_stats(resultsPath, modelName, history, fileName):
     # Extract data from history dictionary
@@ -55,6 +56,7 @@ def save_network_stats(resultsPath, modelName, history, fileName):
     history_log.close()
 
     print(stamp() + "Keras Log Saved")
+
 
 # Build the network structure
 def build_lenet_model(width, height, depth, classes):
@@ -131,7 +133,7 @@ for datasetCategory in os.listdir(datasetPath):
         if file_is_image(datasetCategoryPath + "/" + sample):
             image = cv2.imread(datasetCategoryPath + "/" + sample)
             image = cv2.resize(image, (
-            imageHeight, imageWidth))  # Network only accepts 28 x 28 so resize the image accordingly
+                imageHeight, imageWidth))  # Network only accepts 28 x 28 so resize the image accordingly
             image = img_to_array(image)
             # Save image to the data list
             sortedData.append(image)
