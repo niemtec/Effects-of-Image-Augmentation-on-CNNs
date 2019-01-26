@@ -86,10 +86,10 @@ def build_lenet_model(width, height, depth, classes):
 
 # Control Variables
 home = os.environ['HOME']
-modelName = 'classifier-v4-animal-dataset-rescale-84-84'
-resultsFileName = "rescale-84-84"
+modelName = 'classifier-v4-animal-dataset-'
+resultsFileName = "results"
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs'
-resultsPath = home + '/home/Downloads/Project-Turing/binary-classifier-v4/Results/RescaleResults'
+resultsPath = home + '/home/Downloads/Project-Turing/binary-classifier-v4/Results/'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
