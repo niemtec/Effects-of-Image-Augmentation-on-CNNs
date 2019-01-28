@@ -72,7 +72,7 @@ def build_lenet_model(width, height, depth, classes):
 
     # Third layer | flattening out into fully-connected layers
     model.add(Flatten())
-    model.add(Dense(500))  # 500 nodes
+    model.add(Dense(50))  # 500 nodes
     model.add(Activation("relu"))
 
     # Softmax classifier
@@ -85,8 +85,8 @@ def build_lenet_model(width, height, depth, classes):
 
 # Control Variables
 home = os.environ['HOME']
-modelName = 'classifier-v4-animal-dataset-learning-rate-1e-6-epochs-200'
-resultsFileName = "learning-rate-1e-6-epochs-200"
+modelName = 'classifier-v4-animal-dataset-learning-rate-1e-6-density-50-epochs-200'
+resultsFileName = "learning-rate-1e-6-density-50-epochs-200"
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs'
 resultsPath = home + '/home/Downloads/Project-Turing/binary-classifier-v4/Results/Learning-Rate'
 plotName = modelName
