@@ -85,15 +85,15 @@ def build_lenet_model(width, height, depth, classes):
 
 # Control Variables
 home = os.environ['HOME']
-modelName = 'classifier-v4-animal-dataset-learning-rate-1e-5-density-50-epochs-100'
-resultsFileName = "learning-rate-1e-5-density-50-epochs-100"
+modelName = 'classifier-v4-animal-dataset-learning-rate-1e-6-density-50-epochs-200'
+resultsFileName = "learning-rate-1e-6-density-50-epochs-200"
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs'
 resultsPath = home + '/home/Downloads/Project-Turing/binary-classifier-v4/Results/Learning-Rate'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
-noEpochs = 100
-initialLearningRate = 1e-5
+noEpochs = 200
+initialLearningRate = 1e-6
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
 
