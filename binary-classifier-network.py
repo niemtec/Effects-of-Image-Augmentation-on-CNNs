@@ -59,7 +59,7 @@ def save_network_stats(resultsPath, modelName, history, fileName):
 
 
 # Build the network structure
-def build_lenet_model(width, height, depth, classes):
+def build_network_model(width, height, depth, classes):
     # Initialise the model
     model = Sequential()
     inputShape = (height, width, depth)
@@ -175,7 +175,7 @@ aug = ImageDataGenerator(
 
 # Initialize the model
 print(stamp() + "Compiling Network Model")
-model = build_lenet_model(width = imageWidth, height = imageHeight, depth = imageDepth, classes = numberOfClasses)
+model = build_network_model(width = imageWidth, height = imageHeight, depth = imageDepth, classes = numberOfClasses)
 opt = Adam(lr = initialLearningRate, decay = decayRate)
 model.compile(loss = "binary_crossentropy", optimizer = opt, metrics = ["accuracy"])
 

@@ -1,6 +1,6 @@
 # Created by .ignore support plugin (hsz.mobi)
 
-binary-classifier-v4/Results/*
+experiments-archive/binary-classifier-v4/Results/*
 datasets/*
 ISIC-images/*
 TeamCityResults/*
