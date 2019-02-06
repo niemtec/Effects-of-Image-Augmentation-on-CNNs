@@ -82,7 +82,7 @@ def build_lenet_model(width, height, depth, classes):
 
     # Third layer | flattening out into fully-connected layers
     model.add(Flatten())
-    model.add(Dense(500))  # 500 nodes
+    model.add(Dense(50))  # 500 nodes
     model.add(Activation("relu"))
 
     # Softmax classifier
@@ -103,7 +103,7 @@ plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
 noEpochs = 50
-initialLearningRate = 1e-3
+initialLearningRate = 1e-4
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
 
