@@ -1,3 +1,5 @@
+import datetime
+
 import matplotlib
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam
@@ -30,6 +32,12 @@ def file_is_image(path_to_file):
         return True
 
 
+# Prints current timestamp, to be used in print statements
+def stamp():
+    time = "[" + str(datetime.datetime.now().time()) + "]   "
+    return time
+
+
 # Save final model performance
 def save_network_stats(resultsPath, modelName, history, fileName):
     # Extract data from history dictionary
@@ -43,10 +51,12 @@ def save_network_stats(resultsPath, modelName, history, fileName):
     historyValAcc = str(historyValAcc[-1])  # Get last value from validated accuracy
 
     with open(resultsPath + '/' + fileName + ".txt", "a") as history_log:
-        history_log.write(modelName + "," + historyLoss + "," + historyAcc + "," + historyValLoss + "," + historyValAcc)
+        history_log.write(
+            modelName + "," + historyLoss + "," + historyAcc + "," + historyValLoss + "," + historyValAcc + "\n")
     history_log.close()
 
-    print("Keras Log Saved")
+    print(stamp() + "Keras Log Saved")
+
 
 # Build the network structure
 def build_lenet_model(width, height, depth, classes):
@@ -85,10 +95,10 @@ def build_lenet_model(width, height, depth, classes):
 
 # Control Variables
 home = os.environ['HOME']
-modelName = 'classifier-v4-animal-dataset-learning-rate-1e-4-density-50-epochs-50'
-resultsFileName = "learning-rate-1e-4-density-50-epochs-50"
+modelName = 'classifier-v4-animal-dataset-'
+resultsFileName = "results"
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs'
-resultsPath = home + '/home/Downloads/Project-Turing/binary-classifier-v4/Results/Learning-Rate'
+resultsPath = home + '/home/Downloads/Project-Turing/binary-classifier-v4/Results/'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
@@ -113,17 +123,17 @@ data = []
 labels = []
 
 # Go through dataset directory
-print("Classifying the Dataset")
+print(stamp() + "Classifying the Dataset")
 for datasetCategory in os.listdir(datasetPath):
     datasetCategoryPath = datasetPath + "/" + datasetCategory
 
     # Go through category 1 and then category 2 of the dataset
     for sample in os.listdir(datasetCategoryPath):
-        print(sample)
+        # print(stamp() + sample)
         if file_is_image(datasetCategoryPath + "/" + sample):
             image = cv2.imread(datasetCategoryPath + "/" + sample)
             image = cv2.resize(image, (
-            imageHeight, imageWidth))  # Network only accepts 28 x 28 so resize the image accordingly
+                imageHeight, imageWidth))  # Network only accepts 28 x 28 so resize the image accordingly
             image = img_to_array(image)
             # Save image to the data list
             sortedData.append(image)
@@ -164,18 +174,18 @@ aug = ImageDataGenerator(
 )
 
 # Initialize the model
-print("Compiling Network Model")
+print(stamp() + "Compiling Network Model")
 model = build_lenet_model(width = imageWidth, height = imageHeight, depth = imageDepth, classes = numberOfClasses)
 opt = Adam(lr = initialLearningRate, decay = decayRate)
 model.compile(loss = "binary_crossentropy", optimizer = opt, metrics = ["accuracy"])
 
 # Train the network
-print("Training Network Model")
+print(stamp() + "Training Network Model")
 history = model.fit_generator(aug.flow(trainX, trainY, batch_size = batchSize), validation_data = (testX, testY),
                               steps_per_epoch = len(trainX) // batchSize, epochs = noEpochs, verbose = 1)
 
 # Save the model to disk
-print("Saving Network Model")
+print(stamp() + "Saving Network Model")
 model_json = model.to_json()
 with open(resultsPath + '/' + modelName + ".json", "w") as json_file:
     json_file.write(model_json)
