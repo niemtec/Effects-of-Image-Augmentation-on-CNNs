@@ -100,14 +100,14 @@ def build_network_model(width, height, depth, classes):
 
 # Control Variables
 home = os.environ['HOME']
-modelName = 'classifier-v4-animal-dataset-'
-resultsFileName = "results"
-datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs'
-resultsPath = home + '/home/Downloads/Project-Turing/binary-classifier-v4/Results/'
+modelName = 'cancer-dataset-lr-1e-4-den-50-epochs-100'
+resultsFileName = "cancer-dataset-learning-rate-results"
+datasetPath = home + '/home/Downloads/Project-Turing/datasets/isic'
+resultsPath = home + '/home/Downloads/Project-Turing/results/'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
-noEpochs = 50
+noEpochs = 100
 initialLearningRate = 1e-4
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
