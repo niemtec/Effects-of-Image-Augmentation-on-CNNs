@@ -5,8 +5,6 @@ certifi==2018.10.15
 chardet==3.0.4
 cycler==0.10.0
 decorator==4.3.0
-Django==2.1.2
-facebook-sdk==3.0.0
 gast==0.2.0
 grpcio==1.15.0
 h5py==2.8.0
@@ -31,7 +29,6 @@ pymediainfo==2.3.0
 pyparsing==2.2.2
 python-dateutil==2.7.3
 pytz==2018.5
-PyYAML==3.13
 requests==2.20.0
 scikit-learn==0.20.1
 scipy==1.1.0
