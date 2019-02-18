@@ -100,15 +100,16 @@ def build_network_model(width, height, depth, classes):
 
 # Control Variables
 home = os.environ['HOME']
-modelName = 'cancer-dataset-lr-1e-4-den-50-epochs-100'
-resultsFileName = "cancer-dataset-learning-rate-results"
-datasetPath = home + '/home/Downloads/Project-Turing/datasets/isic'
+modelName = 'x'
+resultsFileName = 'x'
+datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cats-dogs-noise-001/'
 resultsPath = home + '/home/Downloads/Project-Turing/results/'
+datasetName = 'control'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
 noEpochs = 100
-initialLearningRate = 1e-4
+initialLearningRate = 1e-4  # TODO: Update to the best one
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
 
@@ -122,49 +123,142 @@ imageWidth = 64
 imageDepth = 3
 
 # Initialize the data and labels arrays
-sortedData = []
-sortedLabels = []
+# sortedData = []
+trainingDataSorted = []
+trainingLabelsSorted = []
+trainingData = []
+validationDataSorted = []
+validationLabelsSorted = []
+validationData = []
+#sortedLabels = []
 data = []
 labels = []
 
-# Go through dataset directory
-print(stamp() + "Classifying the Dataset")
-for datasetCategory in os.listdir(datasetPath):
-    datasetCategoryPath = datasetPath + "/" + datasetCategory
+###############################################################################
+###############################################################################
+###############################################################################
+print(stamp() + "Classifying Training Dataset")
+for trainingDatasetCategory in os.listdir(datasetPath + '/' + datasetName + '/train'):
+    trainingCategoryPath = datasetPath + '/' + datasetName + '/train' + trainingDatasetCategory
 
     # Go through category 1 and then category 2 of the dataset
-    for sample in os.listdir(datasetCategoryPath):
-        # print(stamp() + sample)
-        if file_is_image(datasetCategoryPath + "/" + sample):
-            image = cv2.imread(datasetCategoryPath + "/" + sample)
-            image = cv2.resize(image, (
-                imageHeight, imageWidth))  # Network only accepts 28 x 28 so resize the image accordingly
-            image = img_to_array(image)
+    for sample in os.listdir(trainingCategoryPath):
+        print(sample)
+        if file_is_image(trainingCategoryPath + '/' + sample):
+            trainingImage = cv2.imread(trainingCategoryPath + '/' + sample)
+            # Resizing disabled, all images are already resized
+            trainingImage = img_to_array(trainingImage)
             # Save image to the data list
-            sortedData.append(image)
+            trainingDataSorted.append(trainingImage)
 
             # Decide on binary label
-            if datasetCategory == categoryOne:
+            if trainingDatasetCategory == categoryOne:
                 label = 1
             else:
                 label = 0
-            # Save label for the current image
-            sortedLabels.append(label)
 
-combined = list(zip(sortedData, sortedLabels))
-random.shuffle(combined)
-data[:], labels[:] = zip(*combined)
+            # Save label for current image
+            trainingLabelsSorted.append(label)
+
+trainingCombined = list(zip(trainingDataSorted, trainingLabelsSorted))
+random.shuffle(trainingCombined)
+data[:], labels[:] = zip(*trainingCombined)
 
 # Scale the raw pixel intensities to the range [0, 1]
 data = np.array(data, dtype = "float") / 255.0
 labels = np.array(labels)
 
-# Partition the data into training and testing splits
-(trainX, testX, trainY, testY) = train_test_split(data, labels, test_size = testDatasetSize, random_state = randomSeed)
-
-# Convert the labels from integers to vectors
+# Assign training data and labels to training array
+(trainX, trainY) = train_test_split(data, labels, random_state = randomSeed)
 trainY = to_categorical(trainY, num_classes = numberOfClasses)
+
+# Clear data and label arrays
+data = []
+labels = []
+
+print(stamp() + "Classifying Validation Dataset")
+for validationDatasetCategory in os.listdir(datasetPath + '/' + datasetName + '/validation'):
+    validationCategoryPath = datasetPath + '/' + datasetName + '/validation' + validationDatasetCategory
+
+    # Go through category 1 and then category 2 of the dataset
+    for sample in os.listdir(validationCategoryPath):
+        print(sample)
+        if file_is_image(validationCategoryPath + '//' + sample):
+            validationImage = cv2.imread(validationCategoryPath + '//' + sample)
+            # Resizing disabled, all images are already resized
+            validationImage = img_to_array(validationData)
+            # Save image to the data list
+            validationDataSorted.append(validationImage)
+
+            # Decide on binary label
+            if validationDatasetCategory == categoryOne:
+                label = 1
+            else:
+                label = 0
+
+            # Save label for current image
+            validationLabelsSorted.append(label)
+
+validationCombined = list(zip(validationDataSorted, validationLabelsSorted))
+random.shuffle(validationCombined)
+data[:], labels[:] = zip(*validationCombined)
+
+# Scale the raw pixel intensities to the range [0, 1]
+data = np.array(data, dtype = "float") / 255.0
+labels = np.array(labels)
+
+(testX, testY) = train_test_split(data, labels, random_state = randomSeed)
 testY = to_categorical(testY, num_classes = numberOfClasses)
+
+# Clear data and label arrays
+data = []
+labels = []
+
+print(stamp() + "Dataset Classification Complete")
+
+# # Go through dataset directory
+# print(stamp() + "Classifying the Dataset")
+# for datasetCategory in os.listdir(datasetPath):
+#     datasetCategoryPath = datasetPath + "/" + datasetCategory
+#
+#     # Go through category 1 and then category 2 of the dataset
+#     for sample in os.listdir(datasetCategoryPath):
+#         # print(stamp() + sample)
+#         if file_is_image(datasetCategoryPath + "/" + sample):
+#             image = cv2.imread(datasetCategoryPath + "/" + sample)
+#             image = cv2.resize(image, (
+#                 imageHeight, imageWidth))  # Network only accepts 28 x 28 so resize the image accordingly
+#             image = img_to_array(image)
+#             # Save image to the data list
+#             sortedData.append(image)
+#
+#             # Decide on binary label
+#             if datasetCategory == categoryOne:
+#                 label = 1
+#             else:
+#                 label = 0
+#             # Save label for the current image
+#             sortedLabels.append(label)
+#
+# combined = list(zip(sortedData, sortedLabels))
+# random.shuffle(combined)
+# data[:], labels[:] = zip(*combined)
+#
+# # Scale the raw pixel intensities to the range [0, 1]
+# data = np.array(data, dtype = "float") / 255.0
+# labels = np.array(labels)
+#
+# # Partition the data into training and testing splits
+# (trainX, testX, trainY, testY) = train_test_split(data, labels, test_size = testDatasetSize, random_state = randomSeed)
+#
+# # Convert the labels from integers to vectors
+# trainY = to_categorical(trainY, num_classes = numberOfClasses)
+# testY = to_categorical(testY, num_classes = numberOfClasses)
+
+
+###############################################################################
+###############################################################################
+###############################################################################
 
 # Construct the image generator for data augmentation
 aug = ImageDataGenerator(
