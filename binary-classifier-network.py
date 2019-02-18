@@ -22,10 +22,32 @@ import os
 # BINARY CLASSIFIER NETWORK BASED ON THE LENET MODEL BUILT FOR IMAGE CLASSIFICATION TASKS
 # PART OF 'PROJECT TURING' - JAKUB ADRIAN NIEMIEC (@niemtec)
 # THIS MODEL IS USED AS A TOOL FOR INVESTIGATING THE PHENOMENA OF OVERFITTING IN CONVOLUTIONAL NEURAL NETWORKS
-
-
 # Set the matplotlib backend so figures can be saved in the background
 matplotlib.use("Agg")
+
+# Control Variables
+home = os.environ['HOME']
+modelName = 'x'
+resultsFileName = 'x'
+datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cats-dogs-noise-001/'
+resultsPath = home + '/home/Downloads/Project-Turing/results/'
+datasetName = 'control'
+plotName = modelName
+graphSize = (15, 10)  # Size of result plots
+
+noEpochs = 100
+initialLearningRate = 1e-4  # TODO: Update to the best one
+batchSize = 32
+decayRate = initialLearningRate / noEpochs
+
+numberOfClasses = 2
+categoryOne = 'cat'
+categoryTwo = 'dog'
+testDatasetSize = 0.25  # Using 75% of the data for training and the remaining 25% for testing
+randomSeed = 42  # For repeatability
+imageHeight = 64
+imageWidth = 64
+imageDepth = 3
 
 
 # Determine whether given file is an image or not
@@ -98,29 +120,86 @@ def build_network_model(width, height, depth, classes):
     return model
 
 
-# Control Variables
-home = os.environ['HOME']
-modelName = 'x'
-resultsFileName = 'x'
-datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cats-dogs-noise-001/'
-resultsPath = home + '/home/Downloads/Project-Turing/results/'
-datasetName = 'control'
-plotName = modelName
-graphSize = (15, 10)  # Size of result plots
+def classify_validation_dataset(data, labels):
+    print(stamp() + "Classifying Validation Dataset")
+    for validationDatasetCategory in os.listdir(datasetPath + '/' + datasetName + '/validation'):
+        validationCategoryPath = datasetPath + '/' + datasetName + '/validation' + validationDatasetCategory
 
-noEpochs = 100
-initialLearningRate = 1e-4  # TODO: Update to the best one
-batchSize = 32
-decayRate = initialLearningRate / noEpochs
+        # Go through category 1 and then category 2 of the dataset
+        for sample in os.listdir(validationCategoryPath):
+            print(sample)
+            if file_is_image(validationCategoryPath + '//' + sample):
+                validationImage = cv2.imread(validationCategoryPath + '//' + sample)
+                # Resizing disabled, all images are already resized
+                validationImage = img_to_array(validationData)
+                # Save image to the data list
+                validationDataSorted.append(validationImage)
 
-numberOfClasses = 2
-categoryOne = 'cat'
-categoryTwo = 'dog'
-testDatasetSize = 0.25  # Using 75% of the data for training and the remaining 25% for testing
-randomSeed = 42  # For repeatability
-imageHeight = 64
-imageWidth = 64
-imageDepth = 3
+                # Decide on binary label
+                if validationDatasetCategory == categoryOne:
+                    label = 1
+                else:
+                    label = 0
+
+                # Save label for current image
+                validationLabelsSorted.append(label)
+
+    validationCombined = list(zip(validationDataSorted, validationLabelsSorted))
+    random.shuffle(validationCombined)
+    data[:], labels[:] = zip(*validationCombined)
+
+    # Scale the raw pixel intensities to the range [0, 1]
+    data = np.array(data, dtype = "float") / 255.0
+    labels = np.array(labels)
+
+    (testX, testY) = train_test_split(data, labels, random_state = randomSeed)
+    testY = to_categorical(testY, num_classes = numberOfClasses)
+
+    # Clear data and label arrays
+    data = []
+    labels = []
+
+
+def classify_training_dataset(data, labels):
+    print(stamp() + "Classifying Training Dataset")
+    for trainingDatasetCategory in os.listdir(datasetPath + '/' + datasetName + '/train'):
+        trainingCategoryPath = datasetPath + '/' + datasetName + '/train' + trainingDatasetCategory
+
+        # Go through category 1 and then category 2 of the dataset
+        for sample in os.listdir(trainingCategoryPath):
+            print(sample)
+            if file_is_image(trainingCategoryPath + '/' + sample):
+                trainingImage = cv2.imread(trainingCategoryPath + '/' + sample)
+                # Resizing disabled, all images are already resized
+                trainingImage = img_to_array(trainingImage)
+                # Save image to the data list
+                trainingDataSorted.append(trainingImage)
+
+                # Decide on binary label
+                if trainingDatasetCategory == categoryOne:
+                    label = 1
+                else:
+                    label = 0
+
+                # Save label for current image
+                trainingLabelsSorted.append(label)
+
+    trainingCombined = list(zip(trainingDataSorted, trainingLabelsSorted))
+    random.shuffle(trainingCombined)
+    data[:], labels[:] = zip(*trainingCombined)
+
+    # Scale the raw pixel intensities to the range [0, 1]
+    data = np.array(data, dtype = "float") / 255.0
+    labels = np.array(labels)
+
+    # Assign training data and labels to training array
+    (trainX, trainY) = train_test_split(data, labels, random_state = randomSeed)
+    trainY = to_categorical(trainY, num_classes = numberOfClasses)
+
+    # Clear data and label arrays
+    data = []
+    labels = []
+
 
 # Initialize the data and labels arrays
 # sortedData = []
@@ -130,90 +209,12 @@ trainingData = []
 validationDataSorted = []
 validationLabelsSorted = []
 validationData = []
-#sortedLabels = []
+# sortedLabels = []
 data = []
 labels = []
 
-###############################################################################
-###############################################################################
-###############################################################################
-print(stamp() + "Classifying Training Dataset")
-for trainingDatasetCategory in os.listdir(datasetPath + '/' + datasetName + '/train'):
-    trainingCategoryPath = datasetPath + '/' + datasetName + '/train' + trainingDatasetCategory
-
-    # Go through category 1 and then category 2 of the dataset
-    for sample in os.listdir(trainingCategoryPath):
-        print(sample)
-        if file_is_image(trainingCategoryPath + '/' + sample):
-            trainingImage = cv2.imread(trainingCategoryPath + '/' + sample)
-            # Resizing disabled, all images are already resized
-            trainingImage = img_to_array(trainingImage)
-            # Save image to the data list
-            trainingDataSorted.append(trainingImage)
-
-            # Decide on binary label
-            if trainingDatasetCategory == categoryOne:
-                label = 1
-            else:
-                label = 0
-
-            # Save label for current image
-            trainingLabelsSorted.append(label)
-
-trainingCombined = list(zip(trainingDataSorted, trainingLabelsSorted))
-random.shuffle(trainingCombined)
-data[:], labels[:] = zip(*trainingCombined)
-
-# Scale the raw pixel intensities to the range [0, 1]
-data = np.array(data, dtype = "float") / 255.0
-labels = np.array(labels)
-
-# Assign training data and labels to training array
-(trainX, trainY) = train_test_split(data, labels, random_state = randomSeed)
-trainY = to_categorical(trainY, num_classes = numberOfClasses)
-
-# Clear data and label arrays
-data = []
-labels = []
-
-print(stamp() + "Classifying Validation Dataset")
-for validationDatasetCategory in os.listdir(datasetPath + '/' + datasetName + '/validation'):
-    validationCategoryPath = datasetPath + '/' + datasetName + '/validation' + validationDatasetCategory
-
-    # Go through category 1 and then category 2 of the dataset
-    for sample in os.listdir(validationCategoryPath):
-        print(sample)
-        if file_is_image(validationCategoryPath + '//' + sample):
-            validationImage = cv2.imread(validationCategoryPath + '//' + sample)
-            # Resizing disabled, all images are already resized
-            validationImage = img_to_array(validationData)
-            # Save image to the data list
-            validationDataSorted.append(validationImage)
-
-            # Decide on binary label
-            if validationDatasetCategory == categoryOne:
-                label = 1
-            else:
-                label = 0
-
-            # Save label for current image
-            validationLabelsSorted.append(label)
-
-validationCombined = list(zip(validationDataSorted, validationLabelsSorted))
-random.shuffle(validationCombined)
-data[:], labels[:] = zip(*validationCombined)
-
-# Scale the raw pixel intensities to the range [0, 1]
-data = np.array(data, dtype = "float") / 255.0
-labels = np.array(labels)
-
-(testX, testY) = train_test_split(data, labels, random_state = randomSeed)
-testY = to_categorical(testY, num_classes = numberOfClasses)
-
-# Clear data and label arrays
-data = []
-labels = []
-
+classify_training_dataset(data, labels)
+classify_validation_dataset(data, labels)
 print(stamp() + "Dataset Classification Complete")
 
 # # Go through dataset directory
