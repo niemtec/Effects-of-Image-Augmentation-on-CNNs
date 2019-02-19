@@ -43,7 +43,7 @@ decayRate = initialLearningRate / noEpochs
 numberOfClasses = 2
 categoryOne = 'cat'
 categoryTwo = 'dog'
-testDatasetSize = 0.25  # Using 75% of the data for training and the remaining 25% for testing
+validationDatasetSize = 0.25  # Using 75% of the data for training and the remaining 25% for testing
 randomSeed = 42  # For repeatability
 imageHeight = 64
 imageWidth = 64
@@ -182,7 +182,7 @@ combinedDatasetLabels = trainingDatasetLabels + validationDatasetLabels
 
 # Partition the data into training and testing splits
 (trainX, textX, trainY, testY) = train_test_split(combinedDatasetImages, combinedDatasetLabels,
-                                                  test_size = testDatasetSize, random_state = randomSeed)
+                                                  test_size = validationDatasetSize, random_state = randomSeed)
 
 # Convert the labels from integers to vectors
 trainY = to_categorical(trainY, numberOfClasses)
