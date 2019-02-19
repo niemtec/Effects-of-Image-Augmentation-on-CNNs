@@ -31,11 +31,11 @@ modelName = 'x'
 resultsFileName = 'x'
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cats-dogs-noise-001/'
 resultsPath = home + '/home/Downloads/Project-Turing/results/'
-datasetName = 'control'
+datasetName = 'all-corrupted'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
-noEpochs = 100
+noEpochs = 5
 initialLearningRate = 1e-4  # TODO: Update to the best one
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
@@ -52,225 +52,152 @@ imageDepth = 3
 
 # Determine whether given file is an image or not
 def file_is_image(path_to_file):
-    filename, extension = os.path.splitext(path_to_file)
-    if extension != '.jpg':
-        return False
-    else:
-        return True
+   filename, extension = os.path.splitext(path_to_file)
+   if extension != '.jpg':
+      return False
+   else:
+      return True
 
 
 # Prints current timestamp, to be used in print statements
 def stamp():
-    time = "[" + str(datetime.datetime.now().time()) + "]   "
-    return time
+   time = "[" + str(datetime.datetime.now().time()) + "]   "
+   return time
 
 
 # Save final model performance
 def save_network_stats(resultsPath, modelName, history, fileName):
-    # Extract data from history dictionary
-    historyLoss = history.history['loss']
-    historyLoss = str(historyLoss[-1])  # Get last value from loss
-    historyAcc = history.history['acc']
-    historyAcc = str(historyAcc[-1])  # Get last value from accuracy
-    historyValLoss = history.history['val_loss']
-    historyValLoss = str(historyValLoss[-1])  # Get last value from validated loss
-    historyValAcc = history.history['val_acc']
-    historyValAcc = str(historyValAcc[-1])  # Get last value from validated accuracy
+   # Extract data from history dictionary
+   historyLoss = history.history['loss']
+   historyLoss = str(historyLoss[-1])  # Get last value from loss
+   historyAcc = history.history['acc']
+   historyAcc = str(historyAcc[-1])  # Get last value from accuracy
+   historyValLoss = history.history['val_loss']
+   historyValLoss = str(historyValLoss[-1])  # Get last value from validated loss
+   historyValAcc = history.history['val_acc']
+   historyValAcc = str(historyValAcc[-1])  # Get last value from validated accuracy
 
-    with open(resultsPath + '/' + fileName + ".txt", "a") as history_log:
-        history_log.write(
-            modelName + "," + historyLoss + "," + historyAcc + "," + historyValLoss + "," + historyValAcc + "\n")
-    history_log.close()
+   with open(resultsPath + '/' + fileName + ".txt", "a") as history_log:
+      history_log.write(
+         modelName + "," + historyLoss + "," + historyAcc + "," + historyValLoss + "," + historyValAcc + "\n")
+   history_log.close()
 
-    print(stamp() + "Keras Log Saved")
+   print(stamp() + "Keras Log Saved")
 
 
 # Build the network structure
 def build_network_model(width, height, depth, classes):
-    # Initialise the model
-    model = Sequential()
-    inputShape = (height, width, depth)
+   # Initialise the model
+   model = Sequential()
+   inputShape = (height, width, depth)
 
-    # If 'channel first' is being used, update the input shape
-    if K.image_data_format() == 'channel_first':
-        inputShape = (depth, height, width)
+   # If 'channel first' is being used, update the input shape
+   if K.image_data_format() == 'channel_first':
+      inputShape = (depth, height, width)
 
-    # Model Structure
-    # First layer | CONV > RELU > POOL
-    model.add(
-        Conv2D(20, (5, 5), padding = "same", input_shape = inputShape))  # Learning 20 (5 x 5) convolution filters
-    model.add(Activation("relu"))
-    model.add(MaxPooling2D(pool_size = (2, 2), strides = (2, 2)))
+   # Model Structure
+   # First layer | CONV > RELU > POOL
+   model.add(
+      Conv2D(20, (5, 5), padding = "same", input_shape = inputShape))  # Learning 20 (5 x 5) convolution filters
+   model.add(Activation("relu"))
+   model.add(MaxPooling2D(pool_size = (2, 2), strides = (2, 2)))
 
-    # Second layer | CONV > RELU > POOL
-    model.add(Conv2D(50, (5, 5), padding = "same"))
-    model.add(Activation("relu"))
-    model.add(MaxPooling2D(pool_size = (2, 2), strides = (2, 2)))
+   # Second layer | CONV > RELU > POOL
+   model.add(Conv2D(50, (5, 5), padding = "same"))
+   model.add(Activation("relu"))
+   model.add(MaxPooling2D(pool_size = (2, 2), strides = (2, 2)))
 
-    # Third layer | flattening out into fully-connected layers
-    model.add(Flatten())
-    model.add(Dense(50))  # 500 nodes
-    model.add(Activation("relu"))
+   # Third layer | flattening out into fully-connected layers
+   model.add(Flatten())
+   model.add(Dense(50))  # 500 nodes
+   model.add(Activation("relu"))
 
-    # Softmax classifier
-    model.add(Dense(classes))  # number of nodes = number of classes
-    model.add(Activation("softmax"))  # yields probability for each class
+   # Softmax classifier
+   model.add(Dense(classes))  # number of nodes = number of classes
+   model.add(Activation("softmax"))  # yields probability for each class
 
-    # Return the model
-    return model
-
-
-def classify_validation_dataset(data, labels):
-    print(stamp() + "Classifying Validation Dataset")
-    for validationDatasetCategory in os.listdir(datasetPath + '/' + datasetName + '/validation'):
-        validationCategoryPath = datasetPath + '/' + datasetName + '/validation' + validationDatasetCategory
-
-        # Go through category 1 and then category 2 of the dataset
-        for sample in os.listdir(validationCategoryPath):
-            print(sample)
-            if file_is_image(validationCategoryPath + '//' + sample):
-                validationImage = cv2.imread(validationCategoryPath + '//' + sample)
-                # Resizing disabled, all images are already resized
-                validationImage = img_to_array(validationData)
-                # Save image to the data list
-                validationDataSorted.append(validationImage)
-
-                # Decide on binary label
-                if validationDatasetCategory == categoryOne:
-                    label = 1
-                else:
-                    label = 0
-
-                # Save label for current image
-                validationLabelsSorted.append(label)
-
-    validationCombined = list(zip(validationDataSorted, validationLabelsSorted))
-    random.shuffle(validationCombined)
-    data[:], labels[:] = zip(*validationCombined)
-
-    # Scale the raw pixel intensities to the range [0, 1]
-    data = np.array(data, dtype = "float") / 255.0
-    labels = np.array(labels)
-
-    (testX, testY) = train_test_split(data, labels, random_state = randomSeed)
-    testY = to_categorical(testY, num_classes = numberOfClasses)
-
-    # Clear data and label arrays
-    data = []
-    labels = []
+   # Return the model
+   return model
 
 
-def classify_training_dataset(data, labels):
-    print(stamp() + "Classifying Training Dataset")
-    for trainingDatasetCategory in os.listdir(datasetPath + '/' + datasetName + '/train'):
-        trainingCategoryPath = datasetPath + '/' + datasetName + '/train' + trainingDatasetCategory
+def load_dataset_subfolder(datasetSubfolderName):
+   print(stamp() + "Classifying Dataset Subfolder for: " + datasetSubfolderName)
 
-        # Go through category 1 and then category 2 of the dataset
-        for sample in os.listdir(trainingCategoryPath):
-            print(sample)
-            if file_is_image(trainingCategoryPath + '/' + sample):
-                trainingImage = cv2.imread(trainingCategoryPath + '/' + sample)
-                # Resizing disabled, all images are already resized
-                trainingImage = img_to_array(trainingImage)
-                # Save image to the data list
-                trainingDataSorted.append(trainingImage)
+   imageArray = []
+   labelArray = []
 
-                # Decide on binary label
-                if trainingDatasetCategory == categoryOne:
-                    label = 1
-                else:
-                    label = 0
+   for datasetCategory in os.listdir(datasetPath + '/' + datasetName + '/' + datasetSubfolderName):
+      datasetCategoryPath = datasetPath + '/' + datasetName + '/' + datasetSubfolderName + '/' + datasetCategory
 
-                # Save label for current image
-                trainingLabelsSorted.append(label)
+      for imageSample in os.listdir(datasetCategoryPath);
+      print(imageSample)  # Debugging only
+      if file_is_image(datasetCategoryPath + '/' + imageSample):
+         # Load the image
+         image = cv2.imread(datasetCategoryPath + '/' + imageSample)
+         # Convert image to array
+         image = img_to_array(image)
+         # Save image to list
+         imageArray.append(image)
 
-    trainingCombined = list(zip(trainingDataSorted, trainingLabelsSorted))
-    random.shuffle(trainingCombined)
-    data[:], labels[:] = zip(*trainingCombined)
+         # Decide on binary label
 
-    # Scale the raw pixel intensities to the range [0, 1]
-    data = np.array(data, dtype = "float") / 255.0
-    labels = np.array(labels)
+         if datasetCategory == categoryOne:
+            label = 1
+         else:
+            label = 0
 
-    # Assign training data and labels to training array
-    (trainX, trainY) = train_test_split(data, labels, random_state = randomSeed)
-    trainY = to_categorical(trainY, num_classes = numberOfClasses)
+         labelArray.append(label)
 
-    # Clear data and label arrays
-    data = []
-    labels = []
+   return imageArray, labelArray
 
 
 # Initialize the data and labels arrays
-# sortedData = []
-trainingDataSorted = []
-trainingLabelsSorted = []
-trainingData = []
-validationDataSorted = []
-validationLabelsSorted = []
-validationData = []
-# sortedLabels = []
-data = []
-labels = []
+trainingDatasetImages = []
+trainingDatasetLabels = []
+validationDatasetImages = []
+validationDatasetLabels = []
 
-classify_training_dataset(data, labels)
-classify_validation_dataset(data, labels)
-print(stamp() + "Dataset Classification Complete")
+(trainingDatasetImages, trainingDatasetLabels) = load_dataset_subfolder('training')
+(validationDatasetImages, validationDatasetLabels) = load_dataset_subfolder('validation')
 
-# # Go through dataset directory
-# print(stamp() + "Classifying the Dataset")
-# for datasetCategory in os.listdir(datasetPath):
-#     datasetCategoryPath = datasetPath + "/" + datasetCategory
-#
-#     # Go through category 1 and then category 2 of the dataset
-#     for sample in os.listdir(datasetCategoryPath):
-#         # print(stamp() + sample)
-#         if file_is_image(datasetCategoryPath + "/" + sample):
-#             image = cv2.imread(datasetCategoryPath + "/" + sample)
-#             image = cv2.resize(image, (
-#                 imageHeight, imageWidth))  # Network only accepts 28 x 28 so resize the image accordingly
-#             image = img_to_array(image)
-#             # Save image to the data list
-#             sortedData.append(image)
-#
-#             # Decide on binary label
-#             if datasetCategory == categoryOne:
-#                 label = 1
-#             else:
-#                 label = 0
-#             # Save label for the current image
-#             sortedLabels.append(label)
-#
-# combined = list(zip(sortedData, sortedLabels))
-# random.shuffle(combined)
-# data[:], labels[:] = zip(*combined)
-#
-# # Scale the raw pixel intensities to the range [0, 1]
-# data = np.array(data, dtype = "float") / 255.0
-# labels = np.array(labels)
-#
-# # Partition the data into training and testing splits
-# (trainX, testX, trainY, testY) = train_test_split(data, labels, test_size = testDatasetSize, random_state = randomSeed)
-#
-# # Convert the labels from integers to vectors
-# trainY = to_categorical(trainY, num_classes = numberOfClasses)
-# testY = to_categorical(testY, num_classes = numberOfClasses)
+trainingCombined = list(zip(trainingDatasetImages, trainingDatasetLabels))
+random.shuffle(trainingCombined)
+trainingDatasetImages[:], trainingDatasetLabels[:] = zip(*trainingCombined)
 
+# Scale raw pixel intensities to range [0, 1]
+trainingDatasetImages = np.array(trainingDatasetImages, dtype = 'float') / 255.0
+trainingDatasetLabels = np.array(trainingDatasetLabels)
 
-###############################################################################
-###############################################################################
-###############################################################################
+validationCombined = list(zip(validationDatasetImages, validationDatasetLabels))
+random.shuffle(validationCombined)
+validationDatasetImages[:], validationDatasetLabels[:] = zip(*validationCombined)
+
+# Scale raw pixel intensities to range [0, 1]
+validationDatasetImages = np.array(validationDatasetImages, dtype = 'float') / 255.0
+validationDatasetLabels = np.array(validationDatasetLabels)
+
+# Join validation and training datasets together (75% - 25% split)
+combinedDatasetImages = trainingDatasetImages + validationDatasetImages
+combinedDatasetLabels = trainingDatasetLabels + validationDatasetLabels
+
+# Partition the data into training and testing splits
+(trainX, textX, trainY, testY) = train_test_split(combinedDatasetImages, combinedDatasetLabels,
+                                                  test_size = testDatasetSize, random_state = randomSeed)
+
+# Convert the labels from integers to vectors
+trainY = to_categorical(trainY, numberOfClasses)
+testY = to_categorical(testY, numberOfClasses)
 
 # Construct the image generator for data augmentation
 aug = ImageDataGenerator(
-    # rotation_range = 25
-    # vertical_flip = True
-    # horizontal_flip= True
-    # zoom_range = 1.0
-    # width_shift_range = 0.1
-    # height_shift_range = 0.1,
-    # shear_range = 0.2,
-    # fill_mode = "nearest"
+   # rotation_range = 25
+   # vertical_flip = True
+   # horizontal_flip= True
+   # zoom_range = 1.0
+   # width_shift_range = 0.1
+   # height_shift_range = 0.1,
+   # shear_range = 0.2,
+   # fill_mode = "nearest"
 )
 
 # Initialize the model
@@ -288,7 +215,7 @@ history = model.fit_generator(aug.flow(trainX, trainY, batch_size = batchSize), 
 print(stamp() + "Saving Network Model")
 model_json = model.to_json()
 with open(resultsPath + '/' + modelName + ".json", "w") as json_file:
-    json_file.write(model_json)
+   json_file.write(model_json)
 
 # Save the final scores
 save_network_stats(resultsPath, modelName, history, resultsFileName)
