@@ -27,16 +27,16 @@ matplotlib.use("Agg")
 
 # Control Variables
 home = os.environ['HOME']
-modelName = 'x'
-resultsFileName = 'x'
+modelName = 'y'
+resultsFileName = 'yx'
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cats-dogs-noise-001/'
 resultsPath = home + '/home/Downloads/Project-Turing/results/'
-datasetName = 'all-corrupted'
+datasetName = 'control'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
-noEpochs = 5
-initialLearningRate = 1e-4  # TODO: Update to the best one
+noEpochs = 50
+initialLearningRate = 1e-5  # TODO: Update to the best one
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
 
@@ -126,28 +126,27 @@ def load_dataset_subfolder(datasetSubfolderName):
    imageArray = []
    labelArray = []
 
-   for datasetCategory in os.listdir(datasetPath + '/' + datasetName + '/' + datasetSubfolderName):
-      datasetCategoryPath = datasetPath + '/' + datasetName + '/' + datasetSubfolderName + '/' + datasetCategory
+   for datasetCategory in os.listdir(datasetPath + datasetName + '/' + datasetSubfolderName):
+      datasetCategoryPath = datasetPath + datasetName + '/' + datasetSubfolderName + '/' + datasetCategory
 
-      for imageSample in os.listdir(datasetCategoryPath);
-      print(imageSample)  # Debugging only
-      if file_is_image(datasetCategoryPath + '/' + imageSample):
-         # Load the image
-         image = cv2.imread(datasetCategoryPath + '/' + imageSample)
-         # Convert image to array
-         image = img_to_array(image)
-         # Save image to list
-         imageArray.append(image)
+      for imageSample in os.listdir(datasetCategoryPath):
+         print(imageSample)  # Debugging only
+         if file_is_image(datasetCategoryPath + '/' + imageSample):
+            # Load the image
+            image = cv2.imread(datasetCategoryPath + '/' + imageSample)
+            # Convert image to array
+            image = img_to_array(image)
+            # Save image to list
+            imageArray.append(image)
 
-         # Decide on binary label
+            # Decide on binary label
 
-         if datasetCategory == categoryOne:
-            label = 1
-         else:
-            label = 0
+            if datasetCategory == categoryOne:
+               label = 1
+            else:
+               label = 0
 
-         labelArray.append(label)
-
+            labelArray.append(label)
    return imageArray, labelArray
 
 
@@ -157,31 +156,39 @@ trainingDatasetLabels = []
 validationDatasetImages = []
 validationDatasetLabels = []
 
-(trainingDatasetImages, trainingDatasetLabels) = load_dataset_subfolder('training')
+(trainingDatasetImages, trainingDatasetLabels) = load_dataset_subfolder('train')
 (validationDatasetImages, validationDatasetLabels) = load_dataset_subfolder('validation')
 
 trainingCombined = list(zip(trainingDatasetImages, trainingDatasetLabels))
 random.shuffle(trainingCombined)
 trainingDatasetImages[:], trainingDatasetLabels[:] = zip(*trainingCombined)
 
-# Scale raw pixel intensities to range [0, 1]
-trainingDatasetImages = np.array(trainingDatasetImages, dtype = 'float') / 255.0
-trainingDatasetLabels = np.array(trainingDatasetLabels)
+# # Scale raw pixel intensities to range [0, 1]
+# trainingDatasetImages = np.array(trainingDatasetImages, dtype = 'float') / 255.0
+# trainingDatasetLabels = np.array(trainingDatasetLabels)
 
 validationCombined = list(zip(validationDatasetImages, validationDatasetLabels))
 random.shuffle(validationCombined)
 validationDatasetImages[:], validationDatasetLabels[:] = zip(*validationCombined)
 
-# Scale raw pixel intensities to range [0, 1]
-validationDatasetImages = np.array(validationDatasetImages, dtype = 'float') / 255.0
-validationDatasetLabels = np.array(validationDatasetLabels)
+# # Scale raw pixel intensities to range [0, 1]
+# validationDatasetImages = np.array(validationDatasetImages, dtype = 'float') / 255.0
+# validationDatasetLabels = np.array(validationDatasetLabels)
 
 # Join validation and training datasets together (75% - 25% split)
 combinedDatasetImages = trainingDatasetImages + validationDatasetImages
 combinedDatasetLabels = trainingDatasetLabels + validationDatasetLabels
+print(combinedDatasetLabels)
+combinedDatasetImages = np.array(combinedDatasetImages, dtype = 'float') / 255.0
+combinedDatasetLabels = np.array(combinedDatasetLabels)
+
+print(stamp() + 'Training Set Size: ' + str(len(trainingDatasetLabels)))
+print(stamp() + 'Validation Set Size: ' + str(len(validationDatasetLabels)))
+print(stamp() + 'Total Dataset Size: ' + str(len(combinedDatasetLabels)))
+
 
 # Partition the data into training and testing splits
-(trainX, textX, trainY, testY) = train_test_split(combinedDatasetImages, combinedDatasetLabels,
+(trainX, testX, trainY, testY) = train_test_split(combinedDatasetImages, combinedDatasetLabels,
                                                   test_size = validationDatasetSize, random_state = randomSeed)
 
 # Convert the labels from integers to vectors
