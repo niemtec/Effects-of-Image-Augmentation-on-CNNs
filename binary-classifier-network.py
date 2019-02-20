@@ -26,11 +26,11 @@ matplotlib.use("Agg")
 
 # Control Variables
 home = os.environ['HOME']
-modelName = 'noise-001-training-corrupted'
+modelName = 'noise-001-validation-corrupted'
 resultsFileName = 'noise-001-results'
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cats-dogs-noise-001/'
 resultsPath = home + '/home/Downloads/Project-Turing/results/noise-experiments'
-datasetName = 'training-corrupted'
+datasetName = 'validation-corrupted'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
