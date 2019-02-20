@@ -173,6 +173,11 @@ combinedDatasetLabels = np.array(combinedDatasetLabels)
 print(stamp() + 'Training Set Size: ' + str(len(trainingDatasetLabels)))
 print(stamp() + 'Validation Set Size: ' + str(len(validationDatasetLabels)))
 print(stamp() + 'Total Dataset Size: ' + str(len(combinedDatasetLabels)))
+
+# Safety stop for incorect dataset sizes
+if((trainingDatasetLabels > 18750) or (validationDatasetLabels > 6250)):
+    print(stamp() + 'Incorrect Dataset Size')
+    sys.exit()
 # Partition the data into training and testing splits
 (trainX, testX, trainY, testY) = train_test_split(combinedDatasetImages, combinedDatasetLabels,
                                                   test_size = validationDatasetSize, random_state = randomSeed)
