@@ -1,5 +1,4 @@
 import datetime
-
 import matplotlib
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam
@@ -35,7 +34,7 @@ datasetName = 'control'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
-noEpochs = 50
+noEpochs = 5
 initialLearningRate = 1e-5  # TODO: Update to the best one
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
@@ -52,102 +51,100 @@ imageDepth = 3
 
 # Determine whether given file is an image or not
 def file_is_image(path_to_file):
-   filename, extension = os.path.splitext(path_to_file)
-   if extension != '.jpg':
-      return False
-   else:
-      return True
+    filename, extension = os.path.splitext(path_to_file)
+    if extension != '.jpg':
+        return False
+    else:
+        return True
 
 
 # Prints current timestamp, to be used in print statements
 def stamp():
-   time = "[" + str(datetime.datetime.now().time()) + "]   "
-   return time
+    time = "[" + str(datetime.datetime.now().time()) + "]   "
+    return time
 
 
 # Save final model performance
 def save_network_stats(resultsPath, modelName, history, fileName):
-   # Extract data from history dictionary
-   historyLoss = history.history['loss']
-   historyLoss = str(historyLoss[-1])  # Get last value from loss
-   historyAcc = history.history['acc']
-   historyAcc = str(historyAcc[-1])  # Get last value from accuracy
-   historyValLoss = history.history['val_loss']
-   historyValLoss = str(historyValLoss[-1])  # Get last value from validated loss
-   historyValAcc = history.history['val_acc']
-   historyValAcc = str(historyValAcc[-1])  # Get last value from validated accuracy
+    # Extract data from history dictionary
+    historyLoss = history.history['loss']
+    historyLoss = str(historyLoss[-1])  # Get last value from loss
+    historyAcc = history.history['acc']
+    historyAcc = str(historyAcc[-1])  # Get last value from accuracy
+    historyValLoss = history.history['val_loss']
+    historyValLoss = str(historyValLoss[-1])  # Get last value from validated loss
+    historyValAcc = history.history['val_acc']
+    historyValAcc = str(historyValAcc[-1])  # Get last value from validated accuracy
 
-   with open(resultsPath + '/' + fileName + ".txt", "a") as history_log:
-      history_log.write(
-         modelName + "," + historyLoss + "," + historyAcc + "," + historyValLoss + "," + historyValAcc + "\n")
-   history_log.close()
+    with open(resultsPath + '/' + fileName + ".txt", "a") as history_log:
+        history_log.write(
+            modelName + "," + historyLoss + "," + historyAcc + "," + historyValLoss + "," + historyValAcc + "\n")
+    history_log.close()
 
-   print(stamp() + "Keras Log Saved")
+    print(stamp() + "Keras Log Saved")
 
 
 # Build the network structure
 def build_network_model(width, height, depth, classes):
-   # Initialise the model
-   model = Sequential()
-   inputShape = (height, width, depth)
+    # Initialise the model
+    model = Sequential()
+    inputShape = (height, width, depth)
 
-   # If 'channel first' is being used, update the input shape
-   if K.image_data_format() == 'channel_first':
-      inputShape = (depth, height, width)
+    # If 'channel first' is being used, update the input shape
+    if K.image_data_format() == 'channel_first':
+        inputShape = (depth, height, width)
 
-   # Model Structure
-   # First layer | CONV > RELU > POOL
-   model.add(
-      Conv2D(20, (5, 5), padding = "same", input_shape = inputShape))  # Learning 20 (5 x 5) convolution filters
-   model.add(Activation("relu"))
-   model.add(MaxPooling2D(pool_size = (2, 2), strides = (2, 2)))
+    # Model Structure
+    # First layer | CONV > RELU > POOL
+    model.add(
+        Conv2D(20, (5, 5), padding = "same", input_shape = inputShape))  # Learning 20 (5 x 5) convolution filters
+    model.add(Activation("relu"))
+    model.add(MaxPooling2D(pool_size = (2, 2), strides = (2, 2)))
 
-   # Second layer | CONV > RELU > POOL
-   model.add(Conv2D(50, (5, 5), padding = "same"))
-   model.add(Activation("relu"))
-   model.add(MaxPooling2D(pool_size = (2, 2), strides = (2, 2)))
+    # Second layer | CONV > RELU > POOL
+    model.add(Conv2D(50, (5, 5), padding = "same"))
+    model.add(Activation("relu"))
+    model.add(MaxPooling2D(pool_size = (2, 2), strides = (2, 2)))
 
-   # Third layer | flattening out into fully-connected layers
-   model.add(Flatten())
-   model.add(Dense(50))  # 500 nodes
-   model.add(Activation("relu"))
+    # Third layer | flattening out into fully-connected layers
+    model.add(Flatten())
+    model.add(Dense(50))  # 500 nodes
+    model.add(Activation("relu"))
 
-   # Softmax classifier
-   model.add(Dense(classes))  # number of nodes = number of classes
-   model.add(Activation("softmax"))  # yields probability for each class
+    # Softmax classifier
+    model.add(Dense(classes))  # number of nodes = number of classes
+    model.add(Activation("softmax"))  # yields probability for each class
 
-   # Return the model
-   return model
+    # Return the model
+    return model
 
 
 def load_dataset_subfolder(datasetSubfolderName):
-   print(stamp() + "Classifying Dataset Subfolder for: " + datasetSubfolderName)
+    print(stamp() + "Classifying Dataset Subfolder for: " + datasetSubfolderName)
 
-   imageArray = []
-   labelArray = []
+    imageArray = []
+    labelArray = []
 
-   for datasetCategory in os.listdir(datasetPath + datasetName + '/' + datasetSubfolderName):
-      datasetCategoryPath = datasetPath + datasetName + '/' + datasetSubfolderName + '/' + datasetCategory
+    for datasetCategory in os.listdir(datasetPath + datasetName + '/' + datasetSubfolderName):
+        datasetCategoryPath = datasetPath + datasetName + '/' + datasetSubfolderName + '/' + datasetCategory
 
-      for imageSample in os.listdir(datasetCategoryPath):
-         print(imageSample)  # Debugging only
-         if file_is_image(datasetCategoryPath + '/' + imageSample):
-            # Load the image
-            image = cv2.imread(datasetCategoryPath + '/' + imageSample)
-            # Convert image to array
-            image = img_to_array(image)
-            # Save image to list
-            imageArray.append(image)
+        for imageSample in os.listdir(datasetCategoryPath):
+            if file_is_image(datasetCategoryPath + '/' + imageSample):
+                # Load the image
+                image = cv2.imread(datasetCategoryPath + '/' + imageSample)
+                # Convert image to array
+                image = img_to_array(image)
+                # Save image to list
+                imageArray.append(image)
 
-            # Decide on binary label
+                # Decide on binary label
+                if datasetCategory == categoryOne:
+                    label = 1
+                else:
+                    label = 0
 
-            if datasetCategory == categoryOne:
-               label = 1
-            else:
-               label = 0
-
-            labelArray.append(label)
-   return imageArray, labelArray
+                labelArray.append(label)
+    return imageArray, labelArray
 
 
 # Initialize the data and labels arrays
@@ -163,30 +160,19 @@ trainingCombined = list(zip(trainingDatasetImages, trainingDatasetLabels))
 random.shuffle(trainingCombined)
 trainingDatasetImages[:], trainingDatasetLabels[:] = zip(*trainingCombined)
 
-# # Scale raw pixel intensities to range [0, 1]
-# trainingDatasetImages = np.array(trainingDatasetImages, dtype = 'float') / 255.0
-# trainingDatasetLabels = np.array(trainingDatasetLabels)
-
 validationCombined = list(zip(validationDatasetImages, validationDatasetLabels))
 random.shuffle(validationCombined)
 validationDatasetImages[:], validationDatasetLabels[:] = zip(*validationCombined)
 
-# # Scale raw pixel intensities to range [0, 1]
-# validationDatasetImages = np.array(validationDatasetImages, dtype = 'float') / 255.0
-# validationDatasetLabels = np.array(validationDatasetLabels)
-
 # Join validation and training datasets together (75% - 25% split)
 combinedDatasetImages = trainingDatasetImages + validationDatasetImages
 combinedDatasetLabels = trainingDatasetLabels + validationDatasetLabels
-print(combinedDatasetLabels)
 combinedDatasetImages = np.array(combinedDatasetImages, dtype = 'float') / 255.0
 combinedDatasetLabels = np.array(combinedDatasetLabels)
 
 print(stamp() + 'Training Set Size: ' + str(len(trainingDatasetLabels)))
 print(stamp() + 'Validation Set Size: ' + str(len(validationDatasetLabels)))
 print(stamp() + 'Total Dataset Size: ' + str(len(combinedDatasetLabels)))
-
-
 # Partition the data into training and testing splits
 (trainX, testX, trainY, testY) = train_test_split(combinedDatasetImages, combinedDatasetLabels,
                                                   test_size = validationDatasetSize, random_state = randomSeed)
@@ -197,14 +183,14 @@ testY = to_categorical(testY, numberOfClasses)
 
 # Construct the image generator for data augmentation
 aug = ImageDataGenerator(
-   # rotation_range = 25
-   # vertical_flip = True
-   # horizontal_flip= True
-   # zoom_range = 1.0
-   # width_shift_range = 0.1
-   # height_shift_range = 0.1,
-   # shear_range = 0.2,
-   # fill_mode = "nearest"
+    # rotation_range = 25
+    # vertical_flip = True
+    # horizontal_flip= True
+    # zoom_range = 1.0
+    # width_shift_range = 0.1
+    # height_shift_range = 0.1,
+    # shear_range = 0.2,
+    # fill_mode = "nearest"
 )
 
 # Initialize the model
@@ -222,7 +208,7 @@ history = model.fit_generator(aug.flow(trainX, trainY, batch_size = batchSize), 
 print(stamp() + "Saving Network Model")
 model_json = model.to_json()
 with open(resultsPath + '/' + modelName + ".json", "w") as json_file:
-   json_file.write(model_json)
+    json_file.write(model_json)
 
 # Save the final scores
 save_network_stats(resultsPath, modelName, history, resultsFileName)
