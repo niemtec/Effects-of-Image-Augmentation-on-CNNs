@@ -26,16 +26,16 @@ matplotlib.use("Agg")
 
 # Control Variables
 home = os.environ['HOME']
-modelName = 'y'
-resultsFileName = 'yx'
+modelName = 'noise-001-control'
+resultsFileName = 'noise-001-results'
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cats-dogs-noise-001/'
-resultsPath = home + '/home/Downloads/Project-Turing/results/'
+resultsPath = home + '/home/Downloads/Project-Turing/results/noise-experiments'
 datasetName = 'control'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
-noEpochs = 5
-initialLearningRate = 1e-5  # TODO: Update to the best one
+noEpochs = 100
+initialLearningRate = 1e-5
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
 
