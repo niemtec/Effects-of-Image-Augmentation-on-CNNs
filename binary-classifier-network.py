@@ -1,5 +1,4 @@
 import datetime
-
 import matplotlib
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam
@@ -22,10 +21,32 @@ import os
 # BINARY CLASSIFIER NETWORK BASED ON THE LENET MODEL BUILT FOR IMAGE CLASSIFICATION TASKS
 # PART OF 'PROJECT TURING' - JAKUB ADRIAN NIEMIEC (@niemtec)
 # THIS MODEL IS USED AS A TOOL FOR INVESTIGATING THE PHENOMENA OF OVERFITTING IN CONVOLUTIONAL NEURAL NETWORKS
-
-
 # Set the matplotlib backend so figures can be saved in the background
 matplotlib.use("Agg")
+
+# Control Variables
+home = os.environ['HOME']
+modelName = 'y'
+resultsFileName = 'yx'
+datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cats-dogs-noise-001/'
+resultsPath = home + '/home/Downloads/Project-Turing/results/'
+datasetName = 'control'
+plotName = modelName
+graphSize = (15, 10)  # Size of result plots
+
+noEpochs = 5
+initialLearningRate = 1e-5  # TODO: Update to the best one
+batchSize = 32
+decayRate = initialLearningRate / noEpochs
+
+numberOfClasses = 2
+categoryOne = 'cat'
+categoryTwo = 'dog'
+validationDatasetSize = 0.25  # Using 75% of the data for training and the remaining 25% for testing
+randomSeed = 42  # For repeatability
+imageHeight = 64
+imageWidth = 64
+imageDepth = 3
 
 
 # Determine whether given file is an image or not
@@ -98,73 +119,67 @@ def build_network_model(width, height, depth, classes):
     return model
 
 
-# Control Variables
-home = os.environ['HOME']
-modelName = 'cancer-dataset-lr-1e-4-den-50-epochs-100'
-resultsFileName = "cancer-dataset-learning-rate-results"
-datasetPath = home + '/home/Downloads/Project-Turing/datasets/isic'
-resultsPath = home + '/home/Downloads/Project-Turing/results/'
-plotName = modelName
-graphSize = (15, 10)  # Size of result plots
+def load_dataset_subfolder(datasetSubfolderName):
+    print(stamp() + "Classifying Dataset Subfolder for: " + datasetSubfolderName)
 
-noEpochs = 100
-initialLearningRate = 1e-4
-batchSize = 32
-decayRate = initialLearningRate / noEpochs
+    imageArray = []
+    labelArray = []
 
-numberOfClasses = 2
-categoryOne = 'cat'
-categoryTwo = 'dog'
-testDatasetSize = 0.25  # Using 75% of the data for training and the remaining 25% for testing
-randomSeed = 42  # For repeatability
-imageHeight = 64
-imageWidth = 64
-imageDepth = 3
+    for datasetCategory in os.listdir(datasetPath + datasetName + '/' + datasetSubfolderName):
+        datasetCategoryPath = datasetPath + datasetName + '/' + datasetSubfolderName + '/' + datasetCategory
+
+        for imageSample in os.listdir(datasetCategoryPath):
+            if file_is_image(datasetCategoryPath + '/' + imageSample):
+                # Load the image
+                image = cv2.imread(datasetCategoryPath + '/' + imageSample)
+                # Convert image to array
+                image = img_to_array(image)
+                # Save image to list
+                imageArray.append(image)
+
+                # Decide on binary label
+                if datasetCategory == categoryOne:
+                    label = 1
+                else:
+                    label = 0
+
+                labelArray.append(label)
+    return imageArray, labelArray
+
 
 # Initialize the data and labels arrays
-sortedData = []
-sortedLabels = []
-data = []
-labels = []
+trainingDatasetImages = []
+trainingDatasetLabels = []
+validationDatasetImages = []
+validationDatasetLabels = []
 
-# Go through dataset directory
-print(stamp() + "Classifying the Dataset")
-for datasetCategory in os.listdir(datasetPath):
-    datasetCategoryPath = datasetPath + "/" + datasetCategory
+(trainingDatasetImages, trainingDatasetLabels) = load_dataset_subfolder('train')
+(validationDatasetImages, validationDatasetLabels) = load_dataset_subfolder('validation')
 
-    # Go through category 1 and then category 2 of the dataset
-    for sample in os.listdir(datasetCategoryPath):
-        # print(stamp() + sample)
-        if file_is_image(datasetCategoryPath + "/" + sample):
-            image = cv2.imread(datasetCategoryPath + "/" + sample)
-            image = cv2.resize(image, (
-                imageHeight, imageWidth))  # Network only accepts 28 x 28 so resize the image accordingly
-            image = img_to_array(image)
-            # Save image to the data list
-            sortedData.append(image)
+trainingCombined = list(zip(trainingDatasetImages, trainingDatasetLabels))
+random.shuffle(trainingCombined)
+trainingDatasetImages[:], trainingDatasetLabels[:] = zip(*trainingCombined)
 
-            # Decide on binary label
-            if datasetCategory == categoryOne:
-                label = 1
-            else:
-                label = 0
-            # Save label for the current image
-            sortedLabels.append(label)
+validationCombined = list(zip(validationDatasetImages, validationDatasetLabels))
+random.shuffle(validationCombined)
+validationDatasetImages[:], validationDatasetLabels[:] = zip(*validationCombined)
 
-combined = list(zip(sortedData, sortedLabels))
-random.shuffle(combined)
-data[:], labels[:] = zip(*combined)
+# Join validation and training datasets together (75% - 25% split)
+combinedDatasetImages = trainingDatasetImages + validationDatasetImages
+combinedDatasetLabels = trainingDatasetLabels + validationDatasetLabels
+combinedDatasetImages = np.array(combinedDatasetImages, dtype = 'float') / 255.0
+combinedDatasetLabels = np.array(combinedDatasetLabels)
 
-# Scale the raw pixel intensities to the range [0, 1]
-data = np.array(data, dtype = "float") / 255.0
-labels = np.array(labels)
-
+print(stamp() + 'Training Set Size: ' + str(len(trainingDatasetLabels)))
+print(stamp() + 'Validation Set Size: ' + str(len(validationDatasetLabels)))
+print(stamp() + 'Total Dataset Size: ' + str(len(combinedDatasetLabels)))
 # Partition the data into training and testing splits
-(trainX, testX, trainY, testY) = train_test_split(data, labels, test_size = testDatasetSize, random_state = randomSeed)
+(trainX, testX, trainY, testY) = train_test_split(combinedDatasetImages, combinedDatasetLabels,
+                                                  test_size = validationDatasetSize, random_state = randomSeed)
 
 # Convert the labels from integers to vectors
-trainY = to_categorical(trainY, num_classes = numberOfClasses)
-testY = to_categorical(testY, num_classes = numberOfClasses)
+trainY = to_categorical(trainY, numberOfClasses)
+testY = to_categorical(testY, numberOfClasses)
 
 # Construct the image generator for data augmentation
 aug = ImageDataGenerator(
