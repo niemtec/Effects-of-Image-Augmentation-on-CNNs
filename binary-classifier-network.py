@@ -175,7 +175,7 @@ print(stamp() + 'Validation Set Size: ' + str(len(validationDatasetLabels)))
 print(stamp() + 'Total Dataset Size: ' + str(len(combinedDatasetLabels)))
 
 # Safety stop for incorect dataset sizes
-if((trainingDatasetLabels > 18750) or (validationDatasetLabels > 6250)):
+if ((len(trainingDatasetLabels) > 18750) or (len(validationDatasetLabels) > 6250)):
     print(stamp() + 'Incorrect Dataset Size')
     sys.exit()
 # Partition the data into training and testing splits
