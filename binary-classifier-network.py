@@ -30,7 +30,7 @@ modelName = 'noise-001-all-corrupted'
 resultsFileName = 'noise-001-results'
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cats-dogs-noise-001/'
 resultsPath = home + '/home/Downloads/Project-Turing/results/noise-experiments'
-datasetName = 'control'
+datasetName = 'control' 
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 
