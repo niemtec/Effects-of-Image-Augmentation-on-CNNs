@@ -33,7 +33,6 @@ resultsPath = home + '/home/Downloads/Project-Turing/results/noise-experiments'
 datasetName = 'control'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
-
 noEpochs = 100
 initialLearningRate = 1e-5
 batchSize = 32
