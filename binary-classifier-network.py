@@ -28,14 +28,14 @@ matplotlib.use("Agg")
 
 # Control Variables
 home = os.environ['HOME']
-datasetName = 'validation-corrupted'
-resultsFileName = 'noise-002-results'
-modelName = 'noise-002-' + datasetName
-datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cats-dogs-noise-002/'
+datasetName = 'control'
+resultsFileName = 'noise-001-results'
+modelName = 'noise-001-' + datasetName
+datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cats-dogs-noise-001/'
 resultsPath = home + '/home/Downloads/Project-Turing/results/noise-experiments/' + resultsFileName + '/'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
-noEpochs = 3
+noEpochs = 100
 initialLearningRate = 1e-5
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
@@ -78,7 +78,8 @@ def save_network_stats(resultsPath, modelName, history, fileName):
 
     with open(resultsPath + '/' + fileName + ".txt", "a") as history_log:
         history_log.write(
-            modelName + "," + historyLoss + "," + historyAcc + "," + historyValLoss + "," + historyValAcc + "\n")
+            modelName + "," + historyLoss + "," + historyAcc + "," + historyValLoss + "," + historyValAcc + "," + str(
+                noEpochs) + "," + str(initialLearningRate) + "\n")
     history_log.close()
 
     print(stamp() + "Keras Log Saved")
