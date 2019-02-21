@@ -37,7 +37,6 @@ noEpochs = 100
 initialLearningRate = 1e-5
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
-
 numberOfClasses = 2
 categoryOne = 'cat'
 categoryTwo = 'dog'
