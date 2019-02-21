@@ -24,6 +24,7 @@ import os
 # Set the matplotlib backend so figures can be saved in the background
 matplotlib.use("Agg")
 
+
 # Control Variables
 home = os.environ['HOME']
 modelName = 'noise-001-all-corrupted'
