@@ -24,14 +24,13 @@ import os
 # Set the matplotlib backend so figures can be saved in the background
 matplotlib.use("Agg")
 
-
 # Control Variables
 home = os.environ['HOME']
-modelName = 'noise-001-all-corrupted'
-resultsFileName = 'noise-001-results'
-datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cats-dogs-noise-001/'
-resultsPath = home + '/home/Downloads/Project-Turing/results/noise-experiments'
-datasetName = 'control'
+datasetName = 'all-corrupted'
+resultsFileName = 'noise-005-results'
+modelName = 'noise-005-' + datasetName
+datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cats-dogs-noise-005/'
+resultsPath = home + '/home/Downloads/Project-Turing/results/noise-experiments/' + resultsFileName + '/'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 noEpochs = 100
