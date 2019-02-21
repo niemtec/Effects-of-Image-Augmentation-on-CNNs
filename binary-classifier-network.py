@@ -1,4 +1,6 @@
 import datetime
+import sys
+
 import matplotlib
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam
@@ -33,7 +35,7 @@ datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-d
 resultsPath = home + '/home/Downloads/Project-Turing/results/noise-experiments/' + resultsFileName + '/'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
-noEpochs = 100
+noEpochs = 5
 initialLearningRate = 1e-5
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
@@ -221,7 +223,7 @@ plt.figure(figsize = graphSize, dpi = 75)
 plt.grid(True, which = 'both')
 plt.plot(history.history['acc'])
 plt.plot(history.history['val_acc'])
-plt.title('model accuracy')
+plt.title('Model Accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc = 'upper left')
@@ -234,7 +236,7 @@ plt.figure(figsize = graphSize, dpi = 75)
 plt.grid(True, which = 'both')
 plt.plot(history.history['loss'])
 plt.plot(history.history['val_loss'])
-plt.title('model loss')
+plt.title('Model Loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc = 'upper left')
