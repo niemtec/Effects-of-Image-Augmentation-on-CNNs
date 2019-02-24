@@ -28,11 +28,11 @@ matplotlib.use("Agg")
 
 # Control Variables
 home = os.environ['HOME']
-datasetName = 'validation-corrupted'
-resultsFileName = 'noise-001-results'
-modelName = 'noise-001-' + datasetName
-datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cats-dogs-noise-001/'
-resultsPath = home + '/home/Downloads/Project-Turing/results/noise-experiments/' + resultsFileName + '/'
+datasetName = 'cats-dogs-noise-000'
+resultsFileName = 'rotation-0'
+modelName = 'rotation-0-' + datasetName
+datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs-resized/cats-dogs-noise-000/'
+resultsPath = home + '/home/Downloads/Project-Turing/results/rotation-experiments/' + resultsFileName + '/'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 noEpochs = 100
