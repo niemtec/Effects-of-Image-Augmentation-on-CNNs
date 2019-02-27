@@ -1,6 +1,5 @@
 import datetime
 import sys
-
 import matplotlib
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam
@@ -28,9 +27,9 @@ matplotlib.use("Agg")
 
 # Control Variables
 home = os.environ['HOME']
-datasetName = 'cats-dogs-noise-000'
-resultsFileName = 'rotation-0'
-modelName = 'rotation-0-' + datasetName
+datasetName = 'control'
+resultsFileName = 'cats-dogs-rotation-10'
+modelName = '' + datasetName
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs-resized/cats-dogs-noise-000/'
 resultsPath = home + '/home/Downloads/Project-Turing/results/rotation-experiments/' + resultsFileName + '/'
 plotName = modelName
@@ -120,72 +119,79 @@ def build_network_model(width, height, depth, classes):
     return model
 
 
-def load_dataset_subfolder(datasetSubfolderName):
-    print(stamp() + "Classifying Dataset Subfolder for: " + datasetSubfolderName)
-
-    imageArray = []
-    labelArray = []
-
-    for datasetCategory in os.listdir(datasetPath + datasetName + '/' + datasetSubfolderName):
-        datasetCategoryPath = datasetPath + datasetName + '/' + datasetSubfolderName + '/' + datasetCategory
-
-        for imageSample in os.listdir(datasetCategoryPath):
-            if file_is_image(datasetCategoryPath + '/' + imageSample):
-                # Load the image
-                image = cv2.imread(datasetCategoryPath + '/' + imageSample)
-                # Convert image to array
-                image = img_to_array(image)
-                # Save image to list
-                imageArray.append(image)
-
-                # Decide on binary label
-                if datasetCategory == categoryOne:
-                    label = 1
-                else:
-                    label = 0
-
-                labelArray.append(label)
-    return imageArray, labelArray
+# def load_dataset_subfolder(datasetSubfolderName):
+#     print(stamp() + "Classifying Dataset Subfolder for: " + datasetSubfolderName)
+#
+#     imageArray = []
+#     labelArray = []
+#
+#     for datasetCategory in os.listdir(datasetPath + datasetName + '/' + datasetSubfolderName):
+#         datasetCategoryPath = datasetPath + datasetName + '/' + datasetSubfolderName + '/' + datasetCategory
+#
+#         for imageSample in os.listdir(datasetCategoryPath):
+#             if file_is_image(datasetCategoryPath + '/' + imageSample):
+#                 # Load the image
+#                 image = cv2.imread(datasetCategoryPath + '/' + imageSample)
+#                 # Convert image to array
+#                 image = img_to_array(image)
+#                 # Save image to list
+#                 imageArray.append(image)
+#
+#                 # Decide on binary label
+#                 if datasetCategory == categoryOne:
+#                     label = 1
+#                 else:
+#                     label = 0
+#
+#                 labelArray.append(label)
+#     return imageArray, labelArray
 
 
 # Initialize the data and labels arrays
-trainingDatasetImages = []
-trainingDatasetLabels = []
-validationDatasetImages = []
-validationDatasetLabels = []
+sortedData = []
+sortedLabels = []
+data = []
+labels = []
 
-(trainingDatasetImages, trainingDatasetLabels) = load_dataset_subfolder('train')
-(validationDatasetImages, validationDatasetLabels) = load_dataset_subfolder('validation')
+# Go through dataset directory
+print(stamp() + "Classifying the Dataset")
+for datasetCategory in os.listdir(datasetPath):
+    datasetCategoryPath = datasetPath + "/" + datasetCategory
 
-trainingCombined = list(zip(trainingDatasetImages, trainingDatasetLabels))
-random.shuffle(trainingCombined)
-trainingDatasetImages[:], trainingDatasetLabels[:] = zip(*trainingCombined)
+    # Go through category 1 and then category 2 of the dataset
+    for sample in os.listdir(datasetCategoryPath):
+        # print(stamp() + sample)
+        if file_is_image(datasetCategoryPath + "/" + sample):
+            image = cv2.imread(datasetCategoryPath + "/" + sample)
+            image = cv2.resize(image, (
+                imageHeight, imageWidth))  # Network only accepts 28 x 28 so resize the image accordingly
+            image = img_to_array(image)
+            # Save image to the data list
+            sortedData.append(image)
 
-validationCombined = list(zip(validationDatasetImages, validationDatasetLabels))
-random.shuffle(validationCombined)
-validationDatasetImages[:], validationDatasetLabels[:] = zip(*validationCombined)
+            # Decide on binary label
+            if datasetCategory == categoryOne:
+                label = 1
+            else:
+                label = 0
+            # Save label for the current image
+            sortedLabels.append(label)
 
-# Join validation and training datasets together (75% - 25% split)
-combinedDatasetImages = trainingDatasetImages + validationDatasetImages
-combinedDatasetLabels = trainingDatasetLabels + validationDatasetLabels
-combinedDatasetImages = np.array(combinedDatasetImages, dtype = 'float') / 255.0
-combinedDatasetLabels = np.array(combinedDatasetLabels)
+combined = list(zip(sortedData, sortedLabels))
+random.shuffle(combined)
+data[:], labels[:] = zip(*combined)
 
-print(stamp() + 'Training Set Size: ' + str(len(trainingDatasetLabels)))
-print(stamp() + 'Validation Set Size: ' + str(len(validationDatasetLabels)))
-print(stamp() + 'Total Dataset Size: ' + str(len(combinedDatasetLabels)))
+# Scale the raw pixel intensities to the range [0, 1]
+data = np.array(data, dtype = "float") / 255.0
+labels = np.array(labels)
 
-# Safety stop for incorect dataset sizes
-if ((len(trainingDatasetLabels) > 18750) or (len(validationDatasetLabels) > 6250)):
-    print(stamp() + 'Incorrect Dataset Size')
-    sys.exit()
 # Partition the data into training and testing splits
-(trainX, testX, trainY, testY) = train_test_split(combinedDatasetImages, combinedDatasetLabels,
-                                                  test_size = validationDatasetSize, random_state = randomSeed)
+(trainX, testX, trainY, testY) = train_test_split(data, labels, test_size = validationDatasetSize,
+                                                  random_state = randomSeed)
 
 # Convert the labels from integers to vectors
-trainY = to_categorical(trainY, numberOfClasses)
-testY = to_categorical(testY, numberOfClasses)
+trainY = to_categorical(trainY, num_classes = numberOfClasses)
+testY = to_categorical(testY, num_classes = numberOfClasses)
 
 # Construct the image generator for data augmentation
 aug = ImageDataGenerator(
