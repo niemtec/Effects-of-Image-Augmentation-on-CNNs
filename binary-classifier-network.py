@@ -27,7 +27,7 @@ matplotlib.use("Agg")
 
 # Control Variables
 home = os.environ['HOME']
-datasetName = 'all-corrupted'
+datasetName = 'training-corrupted'
 resultsFileName = 'cancer-noise-005-results'
 modelName = 'cancer-noise-005-' + datasetName
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cancer-noise-005/'
