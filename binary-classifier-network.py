@@ -28,9 +28,9 @@ matplotlib.use("Agg")
 # Control Variables
 home = os.environ['HOME']
 datasetName = 'control'
-resultsFileName = 'cats-dogs-rotation-validation'
-rotationRange = 180
-modelName = 'validation-rotation-180'
+resultsFileName = 'cats-dogs-rotation-all'
+rotationRange = 0
+modelName = 'all-rotation-0'
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs-resized/cats-dogs-noise-000/'
 resultsPath = home + '/home/Downloads/Project-Turing/results/rotation-experiments/' + resultsFileName + '/'
 plotName = modelName
@@ -196,14 +196,14 @@ testY = to_categorical(testY, num_classes = numberOfClasses)
 
 # Construct the image generator for data augmentation
 aug = ImageDataGenerator(
-    # rotation_range = rotationRange,
+    rotation_range = rotationRange,
     # vertical_flip = True
     # horizontal_flip= True
     # zoom_range = 1.0
     # width_shift_range = 0.1
     # height_shift_range = 0.1,
     # shear_range = 0.2,
-    # fill_mode = "nearest"
+    fill_mode = "nearest"
 )
 
 augValidation = ImageDataGenerator(
