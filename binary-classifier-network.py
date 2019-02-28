@@ -28,9 +28,9 @@ matplotlib.use("Agg")
 # Control Variables
 home = os.environ['HOME']
 datasetName = 'control'
-resultsFileName = 'cancer-rotation-training'
-rotationRange = 180
-modelName = 'training-rotation-180'
+resultsFileName = 'cancer-rotation-validation'
+rotationRange = 0
+modelName = 'validation-rotation-0'
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/isic-resized/'
 resultsPath = home + '/home/Downloads/Project-Turing/results/rotation-experiments/' + resultsFileName + '/'
 plotName = modelName
@@ -196,17 +196,6 @@ testY = to_categorical(testY, num_classes = numberOfClasses)
 
 # Construct the image generator for data augmentation
 aug = ImageDataGenerator(
-    rotation_range = rotationRange,
-    # vertical_flip = True
-    # horizontal_flip= True
-    # zoom_range = 1.0
-    # width_shift_range = 0.1
-    # height_shift_range = 0.1,
-    # shear_range = 0.2,
-    fill_mode = "nearest"
-)
-
-augValidation = ImageDataGenerator(
     # rotation_range = rotationRange,
     # vertical_flip = True
     # horizontal_flip= True
@@ -215,6 +204,17 @@ augValidation = ImageDataGenerator(
     # height_shift_range = 0.1,
     # shear_range = 0.2,
     #fill_mode = "nearest"
+)
+
+augValidation = ImageDataGenerator(
+    rotation_range = rotationRange,
+    # vertical_flip = True
+    # horizontal_flip= True
+    # zoom_range = 1.0
+    # width_shift_range = 0.1
+    # height_shift_range = 0.1,
+    # shear_range = 0.2,
+    fill_mode = "nearest"
 )
 
 # Initialize the model
