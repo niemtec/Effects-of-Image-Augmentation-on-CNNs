@@ -29,8 +29,8 @@ matplotlib.use("Agg")
 home = os.environ['HOME']
 datasetName = 'control'
 resultsFileName = 'cancer-rotation-validation'
-rotationRange = 50
-modelName = 'validation-rotation-50'
+rotationRange = 60
+modelName = 'validation-rotation-60'
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/isic-resized/'
 resultsPath = home + '/home/Downloads/Project-Turing/results/rotation-experiments/' + resultsFileName + '/'
 plotName = modelName
