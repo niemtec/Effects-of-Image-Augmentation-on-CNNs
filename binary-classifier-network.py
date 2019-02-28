@@ -28,10 +28,10 @@ matplotlib.use("Agg")
 # Control Variables
 home = os.environ['HOME']
 datasetName = 'control'
-resultsFileName = 'cats-dogs-rotation-all'
-rotationRange = 180
-modelName = 'all-rotation-180'
-datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs-resized/cats-dogs-noise-000/'
+resultsFileName = 'cancer-rotation-all'
+rotationRange = 0
+modelName = 'all-rotation-0'
+datasetPath = home + '/home/Downloads/Project-Turing/datasets/isic-resized/'
 resultsPath = home + '/home/Downloads/Project-Turing/results/rotation-experiments/' + resultsFileName + '/'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
