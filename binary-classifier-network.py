@@ -28,8 +28,8 @@ matplotlib.use("Agg")
 # Control Variables
 home = os.environ['HOME']
 datasetName = 'control'
-resultsFileName = 'cats-dogs-rotation-30'
-rotationRange = 30
+resultsFileName = 'cats-dogs-rotation-40'
+rotationRange = 40
 modelName = '' + datasetName
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs-resized/cats-dogs-noise-000/'
 resultsPath = home + '/home/Downloads/Project-Turing/results/rotation-experiments/' + resultsFileName + '/'
