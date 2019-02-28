@@ -28,9 +28,9 @@ matplotlib.use("Agg")
 # Control Variables
 home = os.environ['HOME']
 datasetName = 'control'
-resultsFileName = 'cats-dogs-rotation-training'
-rotationRange = 180
-modelName = 'training-rotation-180'
+resultsFileName = 'cats-dogs-rotation-validation'
+rotationRange = 0
+modelName = 'validation-rotation-0'
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs-resized/cats-dogs-noise-000/'
 resultsPath = home + '/home/Downloads/Project-Turing/results/rotation-experiments/' + resultsFileName + '/'
 plotName = modelName
@@ -196,6 +196,17 @@ testY = to_categorical(testY, num_classes = numberOfClasses)
 
 # Construct the image generator for data augmentation
 aug = ImageDataGenerator(
+    # rotation_range = rotationRange,
+    # vertical_flip = True
+    # horizontal_flip= True
+    # zoom_range = 1.0
+    # width_shift_range = 0.1
+    # height_shift_range = 0.1,
+    # shear_range = 0.2,
+    # fill_mode = "nearest"
+)
+
+augValidation = ImageDataGenerator(
     rotation_range = rotationRange,
     # vertical_flip = True
     # horizontal_flip= True
@@ -214,8 +225,11 @@ model.compile(loss = "binary_crossentropy", optimizer = opt, metrics = ["accurac
 
 # Train the network
 print(stamp() + "Training Network Model")
-history = model.fit_generator(aug.flow(trainX, trainY, batch_size = batchSize), validation_data = (testX, testY),
-                              steps_per_epoch = len(trainX) // batchSize, epochs = noEpochs, verbose = 1)
+history = model.fit_generator(
+    aug.flow(trainX, trainY, batch_size = batchSize),
+    validation_data = augValidation.flow(testX, testY),
+    steps_per_epoch = len(trainX) // batchSize,
+    epochs = noEpochs, verbose = 1)
 
 # Save the model to disk
 print(stamp() + "Saving Network Model")
