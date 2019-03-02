@@ -27,11 +27,11 @@ matplotlib.use("Agg")
 
 # Control Variables
 home = os.environ['HOME']
-datasetName = 'validation-corrupted'
+experimentVariantDatasetName = 'control'
 resultsFileName = 'cancer-noise-005-results'
-modelName = 'cancer-noise-005-' + datasetName
-datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cancer-noise-005/'
-resultsPath = home + '/home/Downloads/Project-Turing/results/noise-experiments/' + resultsFileName + '/'
+modelName = 'cancer-noise-005-' + experimentVariantDatasetName
+datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cancer-noise-005'
+resultsPath = home + '/home/Downloads/Project-Turing/results/noise-experiments/'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 noEpochs = 100
@@ -125,8 +125,9 @@ def load_dataset_subfolder(datasetSubfolderName):
     imageArray = []
     labelArray = []
 
-    for datasetCategory in os.listdir(datasetPath + datasetName + '/' + datasetSubfolderName):
-        datasetCategoryPath = datasetPath + datasetName + '/' + datasetSubfolderName + '/' + datasetCategory
+    datasetSubfolderPath = datasetPath + '/' + experimentVariantDatasetName + '/' + datasetSubfolderName + '/'
+    for datasetCategory in os.listdir(datasetSubfolderPath):
+        datasetCategoryPath = datasetSubfolderName + datasetCategory
 
         for imageSample in os.listdir(datasetCategoryPath):
             if file_is_image(datasetCategoryPath + '/' + imageSample):
@@ -175,9 +176,9 @@ print(stamp() + 'Validation Set Size: ' + str(len(validationDatasetLabels)))
 print(stamp() + 'Total Dataset Size: ' + str(len(combinedDatasetLabels)))
 
 # Safety stop for incorect dataset sizes
-if ((len(trainingDatasetLabels) > 18750) or (len(validationDatasetLabels) > 6250)):
-    print(stamp() + 'Incorrect Dataset Size')
-    sys.exit()
+# if ((len(trainingDatasetLabels) > trainingSize) or (len(validationDatasetLabels) > validationSize)):
+#     print(stamp() + 'Incorrect Dataset Size')
+#     sys.exit()
 # Partition the data into training and testing splits
 (trainX, testX, trainY, testY) = train_test_split(combinedDatasetImages, combinedDatasetLabels,
                                                   test_size = validationDatasetSize, random_state = randomSeed)
