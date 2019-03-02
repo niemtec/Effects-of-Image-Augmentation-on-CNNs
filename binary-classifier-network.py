@@ -32,7 +32,7 @@ resultsFileName = 'cancer-rotation-validation'
 rotationRange = 180
 modelName = 'validation-rotation-180'
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/isic-resized/'
-resultsPath = home + '/home/Downloads/Project-Turing/results/rotation-experiments/' + resultsFileName + '/'
+resultsPath = home + '/home/Downloads/Project-Turing/results/rotation-experiments/'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 noEpochs = 100
@@ -227,7 +227,7 @@ model.compile(loss = "binary_crossentropy", optimizer = opt, metrics = ["accurac
 print(stamp() + "Training Network Model")
 history = model.fit_generator(
     aug.flow(trainX, trainY, batch_size = batchSize),
-    validation_data = augValidation.flow(testX, testY),
+    validation_data = augValidation.flow(testX, testY, batch_size = batchSize),
     steps_per_epoch = len(trainX) // batchSize,
     epochs = noEpochs, verbose = 1)
 
