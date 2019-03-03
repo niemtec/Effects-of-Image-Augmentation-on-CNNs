@@ -127,7 +127,7 @@ def load_dataset_subfolder(datasetSubfolderName):
 
     datasetSubfolderPath = datasetPath + '/' + experimentVariantDatasetName + '/' + datasetSubfolderName + '/'
     for datasetCategory in os.listdir(datasetSubfolderPath):
-        datasetCategoryPath = '/' + datasetCategory
+        datasetCategoryPath = datasetSubfolderPath + '/' + datasetCategory
 
         for imageSample in os.listdir(datasetCategoryPath):
             if file_is_image(datasetCategoryPath + '/' + imageSample):
