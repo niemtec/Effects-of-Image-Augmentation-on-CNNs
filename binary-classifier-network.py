@@ -27,9 +27,9 @@ matplotlib.use("Agg")
 
 # Control Variables
 home = os.environ['HOME']
-datasetName = 'all-corrupted'
+datasetName = 'training-corrupted'
 resultsFileName = 'animal-rotation'
-rotationRange = 180  # 0, 45, 90, 135, 180
+rotationRange = 0  # 0, 45, 90, 135, 180
 modelName = datasetName + "-" + str(rotationRange)
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs-resized/cats-dogs-noise-000/'
 resultsPath = home + '/home/Downloads/Project-Turing/results/rotation-experiments/'
@@ -207,14 +207,14 @@ aug = ImageDataGenerator(
 )
 
 augValidation = ImageDataGenerator(
-    rotation_range = rotationRange,
+    # rotation_range = rotationRange,
     # vertical_flip = True
     # horizontal_flip= True
     # zoom_range = 1.0
     # width_shift_range = 0.1
     # height_shift_range = 0.1,
     # shear_range = 0.2,
-    fill_mode = "nearest"
+    # fill_mode = "nearest"
 )
 
 # Initialize the model
