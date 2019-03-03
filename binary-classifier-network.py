@@ -29,7 +29,7 @@ matplotlib.use("Agg")
 home = os.environ['HOME']
 datasetName = 'training-corrupted'
 resultsFileName = 'animal-rotation'
-rotationRange = 45  # 0, 45, 90, 135, 180
+rotationRange = 90  # 0, 45, 90, 135, 180
 modelName = datasetName + "-" + str(rotationRange)
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs-resized/cats-dogs-noise-000/'
 resultsPath = home + '/home/Downloads/Project-Turing/results/rotation-experiments/'
