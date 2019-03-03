@@ -30,7 +30,7 @@ home = os.environ['HOME']
 datasetName = 'control'
 resultsFileName = 'cancer-rotation-all-corrupted'
 rotationRange = 0  # 0, 45, 90, 135, 180
-modelName = 'validation-rotation-' + str(rotationRange)
+modelName = resultsFileName + "-" + str(rotationRange)
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/isic-resized/'
 resultsPath = home + '/home/Downloads/Project-Turing/results/rotation-experiments/'
 plotName = modelName
@@ -232,14 +232,14 @@ history = model.fit_generator(
     validation_steps = len(testX) // batchSize,
     epochs = noEpochs, verbose = 1)
 
+# Save the final scores
+save_network_stats(resultsPath, modelName, history, resultsFileName)
+
 # Save the model to disk
 print(stamp() + "Saving Network Model")
 model_json = model.to_json()
 with open(resultsPath + '/' + modelName + ".json", "w") as json_file:
     json_file.write(model_json)
-
-# Save the final scores
-save_network_stats(resultsPath, modelName, history, resultsFileName)
 
 # Summarize history for accuracy
 plt.figure(figsize = graphSize, dpi = 75)
