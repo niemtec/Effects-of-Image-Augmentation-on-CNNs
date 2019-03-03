@@ -27,11 +27,11 @@ matplotlib.use("Agg")
 
 # Control Variables
 home = os.environ['HOME']
-datasetName = 'control'
-resultsFileName = 'cancer-rotation-training-corrupted'
-rotationRange = 180  # 0, 45, 90, 135, 180
-modelName = resultsFileName + "-" + str(rotationRange)
-datasetPath = home + '/home/Downloads/Project-Turing/datasets/isic-resized/'
+datasetName = 'all-corrupted'
+resultsFileName = 'animal-rotation'
+rotationRange = 0  # 0, 45, 90, 135, 180
+modelName = datasetName + "-" + str(rotationRange)
+datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs-resized/cats-dogs-noise-000/'
 resultsPath = home + '/home/Downloads/Project-Turing/results/rotation-experiments/'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
@@ -207,14 +207,14 @@ aug = ImageDataGenerator(
 )
 
 augValidation = ImageDataGenerator(
-    # rotation_range = rotationRange,
+    rotation_range = rotationRange,
     # vertical_flip = True
     # horizontal_flip= True
     # zoom_range = 1.0
     # width_shift_range = 0.1
     # height_shift_range = 0.1,
     # shear_range = 0.2,
-    # fill_mode = "nearest"
+    fill_mode = "nearest"
 )
 
 # Initialize the model
