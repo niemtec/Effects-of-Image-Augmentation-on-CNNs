@@ -229,6 +229,7 @@ history = model.fit_generator(
     aug.flow(trainX, trainY, batch_size = batchSize),
     validation_data = augValidation.flow(testX, testY, batch_size = batchSize),
     steps_per_epoch = len(trainX) // batchSize,
+    validation_steps = len(testX) // batchSize,
     epochs = noEpochs, verbose = 1)
 
 # Save the model to disk
