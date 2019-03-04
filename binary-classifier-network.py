@@ -28,9 +28,9 @@ matplotlib.use("Agg")
 # Control Variables
 home = os.environ['HOME']
 experimentVariantDatasetName = 'control'
-resultsFileName = 'animals-noise-015-results'
-modelName = 'animals-noise-015-' + experimentVariantDatasetName
-datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cats-dogs-noise-015'
+resultsFileName = 'cancer-noise-005-results'
+modelName = 'cancer-noise-005-' + experimentVariantDatasetName
+datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cancer-noise-005'
 resultsPath = home + '/home/Downloads/Project-Turing/results/noise-experiments/'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots

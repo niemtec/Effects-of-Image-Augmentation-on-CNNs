@@ -57,9 +57,9 @@ def get_image_size(image):
 # Control Variables
 # imageHeight = 56
 # imageWidth = 56
-augmentationFactor = 0.15  # Decimal percentage
-datasetDirectory = "datasets/isic-resized/malignant"
-newImagePath = "datasets/image-corruption-dataset/cancer-noise-015/raw-corrupted-images/malignant"
+augmentationFactor = 0.10  # Decimal percentage
+datasetDirectory = "datasets/cats-dogs-resized/cats-dogs-noise-000/cat"
+newImagePath = "datasets/cats-dogs-resized/cats-dogs-noise-015/cat"
 
 
 # Go through the files in a dataset sub-directory
