@@ -27,7 +27,7 @@ matplotlib.use("Agg")
 
 # Control Variables
 home = os.environ['HOME']
-experimentVariantDatasetName = 'control'
+experimentVariantDatasetName = 'all-corrupted'
 resultsFileName = 'animal-noise-005-results'
 modelName = 'animal-noise-005-' + experimentVariantDatasetName
 categoryOne = 'dog'
