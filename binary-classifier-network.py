@@ -28,12 +28,12 @@ matplotlib.use("Agg")
 # Control Variables
 home = os.environ['HOME']
 experimentVariantDatasetName = 'control'
-resultsFileName = 'cancer-noise-015-results'
-modelName = 'cancer-noise-015-' + experimentVariantDatasetName
-categoryOne = 'benign'
-categoryTwo = 'malignant'
-datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cancer-noise-015'
-resultsPath = home + '/home/Downloads/Project-Turing/results/cancer-noise-experiments/'
+resultsFileName = 'animal-noise-005-results'
+modelName = 'animal-noise-005-' + experimentVariantDatasetName
+categoryOne = 'dog'
+categoryTwo = 'cat'
+datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cats-dogs-noise-005/'
+resultsPath = home + '/home/Downloads/Project-Turing/results/animal-noise-experiments/'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 noEpochs = 100
