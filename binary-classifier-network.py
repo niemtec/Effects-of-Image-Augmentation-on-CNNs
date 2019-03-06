@@ -27,7 +27,7 @@ matplotlib.use("Agg")
 
 # Control Variables
 home = os.environ['HOME']
-experimentVariantDatasetName = 'train-corrupted'
+experimentVariantDatasetName = 'training-corrupted'
 resultsFileName = 'cancer-noise-015-results'
 modelName = 'cancer-noise-015-' + experimentVariantDatasetName
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cancer-noise-015'
@@ -39,8 +39,8 @@ initialLearningRate = 1e-5
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
 numberOfClasses = 2
-categoryOne = 'cat'
-categoryTwo = 'dog'
+categoryOne = 'benign'
+categoryTwo = 'malignant'
 validationDatasetSize = 0.25  # Using 75% of the data for training and the remaining 25% for testing
 randomSeed = 42  # For repeatability
 imageHeight = 64
