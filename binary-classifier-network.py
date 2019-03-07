@@ -27,7 +27,7 @@ matplotlib.use("Agg")
 
 # Control Variables
 home = os.environ['HOME']
-datasetName = 'validation-corrupted'
+datasetName = 'all-corrupted'
 resultsFileName = 'cancer-rotation'
 rotationRange = 180  # 0, 45, 90, 135, 180
 categoryOne = 'malignant'
@@ -197,14 +197,14 @@ testY = to_categorical(testY, num_classes = numberOfClasses)
 
 # Construct the image generator for data augmentation
 aug = ImageDataGenerator(
-    # rotation_range = rotationRange,
+    rotation_range = rotationRange,
     # vertical_flip = True
     # horizontal_flip= True
     # zoom_range = 1.0
     # width_shift_range = 0.1
     # height_shift_range = 0.1,
     # shear_range = 0.2,
-    # fill_mode = "nearest"
+    fill_mode = "nearest"
 )
 
 augValidation = ImageDataGenerator(
