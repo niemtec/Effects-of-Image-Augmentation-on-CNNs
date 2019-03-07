@@ -27,12 +27,14 @@ matplotlib.use("Agg")
 
 # Control Variables
 home = os.environ['HOME']
-datasetName = 'validation-corrupted'
-resultsFileName = 'animal-rotation'
-rotationRange = 180  # 0, 45, 90, 135, 180
+datasetName = 'control'
+resultsFileName = 'cancer-rotation'
+rotationRange = 0  # 0, 45, 90, 135, 180
+categoryOne = 'malignant'
+categoryTwo = 'benign'
 modelName = datasetName + "-" + str(rotationRange)
-datasetPath = home + '/home/Downloads/Project-Turing/datasets/cats-dogs-resized/cats-dogs-noise-000/'
-resultsPath = home + '/home/Downloads/Project-Turing/results/rotation-experiments/'
+datasetPath = home + '/home/Downloads/Project-Turing/datasets/isic-resized/'
+resultsPath = home + '/home/Downloads/Project-Turing/results/cancer-rotation-experiments/'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 noEpochs = 100
@@ -40,8 +42,7 @@ initialLearningRate = 1e-5
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
 numberOfClasses = 2
-categoryOne = 'cat'
-categoryTwo = 'dog'
+
 validationDatasetSize = 0.25  # Using 75% of the data for training and the remaining 25% for testing
 randomSeed = 42  # For repeatability
 imageHeight = 64
@@ -207,14 +208,14 @@ aug = ImageDataGenerator(
 )
 
 augValidation = ImageDataGenerator(
-    rotation_range = rotationRange,
+    # rotation_range = rotationRange,
     # vertical_flip = True
     # horizontal_flip= True
     # zoom_range = 1.0
     # width_shift_range = 0.1
     # height_shift_range = 0.1,
     # shear_range = 0.2,
-    fill_mode = "nearest"
+    # fill_mode = "nearest"
 )
 
 # Initialize the model
