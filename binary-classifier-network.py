@@ -29,7 +29,7 @@ matplotlib.use("Agg")
 home = os.environ['HOME']
 datasetName = 'training-corrupted'
 resultsFileName = 'cancer-rotation'
-rotationRange = 45  # 0, 45, 90, 135, 180
+rotationRange = 0  # 0, 45, 90, 135, 180
 categoryOne = 'malignant'
 categoryTwo = 'benign'
 modelName = datasetName + "-" + str(rotationRange)
