@@ -29,10 +29,10 @@ matplotlib.use("Agg")
 home = os.environ['HOME']
 experimentVariantDatasetName = 'all-corrupted'
 resultsFileName = 'cancer-heatmap-all-corrupted'
-modelName = 'cancer-noise-010-' + experimentVariantDatasetName
+modelName = 'cancer-noise-015-' + experimentVariantDatasetName
 categoryOne = 'benign'
 categoryTwo = 'malignant'
-datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cancer-noise-010/'
+datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cancer-noise-015/'
 resultsPath = home + '/home/Downloads/Project-Turing/results/cancer-noise-experiments/heatmaps/'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
