@@ -225,7 +225,7 @@ from sklearn.metrics import confusion_matrix
 predY = model.predict(testX)
 predY = (predY > 0.5)
 
-matrix = confusion_matrix(testY, predY, labels = [categoryOne, categoryTwo])
+matrix = confusion_matrix(testY, predY)
 
 with open(resultsPath + "/" + modelName + "-confusion_matrix.txt", "a") as confusionMatrix:
     confusionMatrix.write(matrix)
