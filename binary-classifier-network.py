@@ -27,8 +27,8 @@ matplotlib.use("Agg")
 
 # Control Variables
 home = os.environ['HOME']
-experimentVariantDatasetName = 'control'
-resultsFileName = 'cancer-heatmap-control'
+experimentVariantDatasetName = 'all-corrupted'
+resultsFileName = 'cancer-heatmap-all-corrupted'
 modelName = 'cancer-noise-005-' + experimentVariantDatasetName
 categoryOne = 'benign'
 categoryTwo = 'malignant'
@@ -218,23 +218,6 @@ with open(resultsPath + '/' + modelName + ".json", "w") as json_file:
 
 print(stamp() + "Saving Network Weights")
 model.save_weights(resultsPath + '/' + modelName + ".h5", "w")
-
-# Prediction and confusion matrix
-from sklearn.metrics import confusion_matrix
-
-predY = model.predict(testX)
-predY = (predY > 0.5)
-
-# matrix = confusion_matrix(testY, predY)
-
-matrix = metrics.confusion_matrix(testY.argmax(axis = 1), predY.argmax(axis = 1))
-
-with open(resultsPath + "/" + modelName + "-confusion_matrix.txt", "a") as confusionMatrix:
-    confusionMatrix.write(matrix)
-confusionMatrix.close()
-
-
-# Save the final scores
 save_network_stats(resultsPath, modelName, history, resultsFileName)
 
 # Summarize history for accuracy
