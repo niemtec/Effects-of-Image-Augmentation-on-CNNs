@@ -27,13 +27,13 @@ matplotlib.use("Agg")
 
 # Control Variables
 home = os.environ['HOME']
-experimentVariantDatasetName = 'validation-corrupted'
-resultsFileName = 'animal-noise-005-results'
-modelName = 'animal-noise-005-' + experimentVariantDatasetName
-categoryOne = 'dog'
-categoryTwo = 'cat'
-datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cats-dogs-noise-005/'
-resultsPath = home + '/home/Downloads/Project-Turing/results/animal-noise-experiments/'
+experimentVariantDatasetName = 'control'
+resultsFileName = 'cancer-heatmap-control'
+modelName = 'cancer-noise-005-' + experimentVariantDatasetName
+categoryOne = 'benign'
+categoryTwo = 'malignant'
+datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cancer-noise-005/'
+resultsPath = home + '/home/Downloads/Project-Turing/results/cancer-noise-experiments/heatmaps/'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 noEpochs = 100
@@ -215,6 +215,9 @@ print(stamp() + "Saving Network Model")
 model_json = model.to_json()
 with open(resultsPath + '/' + modelName + ".json", "w") as json_file:
     json_file.write(model_json)
+
+print(stamp() + "Saving Network Weights")
+model.save_weights(resultsPath + '/' + modelName + ".h5", "w")
 
 # Save the final scores
 save_network_stats(resultsPath, modelName, history, resultsFileName)
