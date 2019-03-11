@@ -12,7 +12,7 @@ from keras.layers.convolutional import MaxPooling2D
 from keras.layers.core import Activation
 from keras.layers.core import Flatten
 from keras.layers.core import Dense
-from keras import backend as K
+from keras import backend as K, metrics
 import matplotlib.pyplot as plt
 import numpy as np
 import random
@@ -225,7 +225,9 @@ from sklearn.metrics import confusion_matrix
 predY = model.predict(testX)
 predY = (predY > 0.5)
 
-matrix = confusion_matrix(testY, predY)
+# matrix = confusion_matrix(testY, predY)
+
+matrix = metrics.confusion_matrix(testY.argmax(axis = 1), predY.argmax(axis = 1))
 
 with open(resultsPath + "/" + modelName + "-confusion_matrix.txt", "a") as confusionMatrix:
     confusionMatrix.write(matrix)
