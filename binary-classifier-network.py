@@ -17,7 +17,9 @@ from sklearn import metrics
 import seaborn as sn
 import pandas as pd
 import matplotlib.pyplot as plt
-import miou_metric
+
+from miou_metric import MeanIoU
+from . import miou_metric
 import numpy as np
 import random
 import cv2
@@ -203,6 +205,7 @@ aug = ImageDataGenerator(
     # fill_mode = "nearest"
 )
 
+miou_metric = MeanIoU(2)
 
 # Initialize the model
 print(stamp() + "Compiling Network Model")
