@@ -17,6 +17,7 @@ from sklearn import metrics
 import seaborn as sn
 import pandas as pd
 import matplotlib.pyplot as plt
+import miou_metric
 import numpy as np
 import random
 import cv2
@@ -201,13 +202,6 @@ aug = ImageDataGenerator(
     # shear_range = 0.2,
     # fill_mode = "nearest"
 )
-yTrue = []
-yPred = []
-
-
-def confusion_matrix_saver(y_true, y_pred):
-    yTrue.append(y_true)
-    yPred.append(y_pred)
 
 
 # Initialize the model
@@ -215,7 +209,7 @@ print(stamp() + "Compiling Network Model")
 model = build_network_model(width = imageWidth, height = imageHeight, depth = imageDepth, classes = numberOfClasses)
 opt = Adam(lr = initialLearningRate, decay = decayRate)
 model.compile(loss = "binary_crossentropy", optimizer = opt,
-              metrics = ["accuracy", "mse", "mape", confusion_matrix_saver])
+              metrics = ["accuracy", "mse", "mape", miou_metric.mean_iou])
 
 # Train the network
 print(stamp() + "Training Network Model")
@@ -224,12 +218,12 @@ history = model.fit_generator(aug.flow(trainX, trainY, batch_size = batchSize), 
 
 predictY = model.predict(testY)
 
-confusionMatrix = (yTrue, yPred)
-dataframeConfusionMatrix = pd.DataFrame(confusionMatrix, range(2), range(2))
-sn.set(font_scale = 1.4)
-svn = sn.heatmap(dataframeConfusionMatrix, annot = True, annot_kws = {"size": 16})
-heatmap = svn.get_figure()
-heatmap.savefig(resultsPath + '/' + modelName + '-heatmap.png', dpi = 500)
+# confusionMatrix = (yTrue, yPred)
+# dataframeConfusionMatrix = pd.DataFrame(confusionMatrix, range(2), range(2))
+# sn.set(font_scale = 1.4)
+# svn = sn.heatmap(dataframeConfusionMatrix, annot = True, annot_kws = {"size": 16})
+# heatmap = svn.get_figure()
+# heatmap.savefig(resultsPath + '/' + modelName + '-heatmap.png', dpi = 500)
 
 # Save the model to disk
 print(stamp() + "Saving Network Model")
