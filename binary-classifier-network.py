@@ -19,7 +19,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from miou_metric import MeanIoU
-from . import miou_metric
 import numpy as np
 import random
 import cv2
