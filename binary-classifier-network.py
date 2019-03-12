@@ -13,6 +13,9 @@ from keras.layers.core import Activation
 from keras.layers.core import Flatten
 from keras.layers.core import Dense
 from keras import backend as K, metrics
+from sklearn import metrics
+import seaborn as sn
+import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import random
@@ -209,6 +212,15 @@ model.compile(loss = "binary_crossentropy", optimizer = opt, metrics = ["accurac
 print(stamp() + "Training Network Model")
 history = model.fit_generator(aug.flow(trainX, trainY, batch_size = batchSize), validation_data = (testX, testY),
                               steps_per_epoch = len(trainX) // batchSize, epochs = noEpochs, verbose = 1)
+
+predictY = model.predict(testY)
+
+confusionMatrix = metrics.confusion_matrix(testY, predictY)
+dataframeConfusionMatrix = pd.DataFrame(confusionMatrix, range(2), range(2))
+sn.set(font_scale = 1.4)
+svn = sn.heatmap(dataframeConfusionMatrix, annot = True, annot_kws = {"size": 16})
+heatmap = svn.get_figure()
+heatmap.savefig(resultsPath + '/' + modelName + '-heatmap.png', dpi = 500)
 
 # Save the model to disk
 print(stamp() + "Saving Network Model")

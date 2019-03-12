@@ -5,10 +5,10 @@ import keras.backend as K
 import numpy as np
 import cv2
 
-imagePath = 'malignant/15.jpg'
-modelName = 'trained-networks/cancer-noise-015-all-corrupted.json'
-weightsName = 'trained-networks/cancer-noise-015-all-corrupted.h5'
-heatmapDirectory = 'benign/'
+imagePath = 'malignant - rotation/45.jpeg'
+modelName = 'trained-networks/all-corrupted-45.json'
+weightsName = 'trained-networks/all-corrupted-45.h5'
+heatmapDirectory = 'malignant - rotation/'
 
 jsonFile = open(modelName, 'r')
 loadedModelJSON = jsonFile.read()
