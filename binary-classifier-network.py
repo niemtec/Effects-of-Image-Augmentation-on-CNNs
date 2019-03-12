@@ -215,7 +215,7 @@ print(stamp() + "Compiling Network Model")
 model = build_network_model(width = imageWidth, height = imageHeight, depth = imageDepth, classes = numberOfClasses)
 opt = Adam(lr = initialLearningRate, decay = decayRate)
 model.compile(loss = "binary_crossentropy", optimizer = opt,
-              metrics = ["accuracy", "mse", "mape", "confusion_matrix_saver"])
+              metrics = ["accuracy", "mse", "mape", confusion_matrix_saver])
 
 # Train the network
 print(stamp() + "Training Network Model")
