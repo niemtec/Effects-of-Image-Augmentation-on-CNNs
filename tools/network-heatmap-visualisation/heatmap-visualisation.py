@@ -1,57 +1,49 @@
-from keras.models import Sequential
-from keras.layers import Dense
 from keras.models import model_from_json
-import numpy
-import os
-from keras.applications.vgg16 import VGG16, preprocess_input, decode_predictions
+from keras.applications.vgg16 import preprocess_input
 from keras.preprocessing import image
 import keras.backend as K
 import numpy as np
 import cv2
-import sys
 
-# Load the model from disk
-# load json and create model
-json_file = open('model.json', 'r')
-loaded_model_json = json_file.read()
-json_file.close()
-loaded_model = model_from_json(loaded_model_json)
-# load weights into new model
-loaded_model.load_weights("weights.h5")
-print("Loaded model from disk")
+imagePath = 'malignant/15.jpg'
+modelName = 'trained-networks/cancer-noise-015-all-corrupted.json'
+weightsName = 'trained-networks/cancer-noise-015-all-corrupted.h5'
+heatmapDirectory = 'benign/'
 
-model = loaded_model
-img_path = 'sample-noise.jpg'
-img = image.load_img(img_path, target_size = (64, 64))
+jsonFile = open(modelName, 'r')
+loadedModelJSON = jsonFile.read()
+jsonFile.close()
+loadedModel = model_from_json(loadedModelJSON)
+loadedModel.load_weights(weightsName)
+
+model = loadedModel
+img = image.load_img(imagePath, target_size = (64, 64))
 x = image.img_to_array(img)
 x = np.expand_dims(x, axis = 0)
 x = preprocess_input(x)
 
 preds = model.predict(x)
-class_idx = np.argmax(preds[0])
-class_output = model.output[:, class_idx]
-last_conv_layer = model.get_layer("conv2d_2")
+classIDX = np.argmax(preds[0])
+classOutput = model.output[:, classIDX]
+lastLayer = model.get_layer("max_pooling2d_2")
 
-grads = K.gradients(class_output, last_conv_layer.output)[0]
-pooled_grads = K.mean(grads, axis = (0, 1, 2))
-iterate = K.function([model.input], [pooled_grads, last_conv_layer.output[0]])
-pooled_grads_value, conv_layer_output_value = iterate([x])
-for i in range(50):
-    conv_layer_output_value[:, :, i] *= pooled_grads_value[i]
+grads = K.gradients(classOutput, lastLayer.output)[0]
+pooledGrads = K.mean(grads, axis = (0, 1, 2))
+iterate = K.function([model.input], [pooledGrads, lastLayer.output[0]])
+pooledGradsValue, convolutionalLayerOutputValue = iterate([x])
+for i in range(49):
+    convolutionalLayerOutputValue[:, :, i] *= pooledGradsValue[i]
 
-heatmap = np.mean(conv_layer_output_value, axis = -1)
+heatmap = np.mean(convolutionalLayerOutputValue, axis = -1)
 heatmap = np.maximum(heatmap, 0)
 heatmap /= np.max(heatmap)
 
-print("Showing Image")
-
-img = cv2.imread(img_path)
+img = cv2.imread(imagePath)
 heatmap = cv2.resize(heatmap, (img.shape[1], img.shape[0]))
 heatmap = np.uint8(255 * heatmap)
 heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
-superimposed_img = cv2.addWeighted(img, 0.6, heatmap, 0.4, 0)
-cv2.imshow("Original", img)
-cv2.imshow("GradCam", superimposed_img)
-# cv2.imwrite("original.jpg", img)
-cv2.imwrite("heatmap.jpg", superimposed_img)
-cv2.waitKey(0)
+superimposedImage = cv2.addWeighted(img, 0.6, heatmap, 0.4, 0)
+# cv2.imshow("Original", img)
+# cv2.imshow("GradCam", superimposedImage)
+
+cv2.imwrite(imagePath + "-heatmap.jpg", superimposedImage)
