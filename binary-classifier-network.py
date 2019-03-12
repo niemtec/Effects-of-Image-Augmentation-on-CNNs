@@ -201,12 +201,21 @@ aug = ImageDataGenerator(
     # shear_range = 0.2,
     # fill_mode = "nearest"
 )
+yTrue = []
+yPred = []
+
+
+def confusion_matrix_saver(y_true, y_pred):
+    yTrue.append(y_true)
+    yPred.append(y_pred)
+
 
 # Initialize the model
 print(stamp() + "Compiling Network Model")
 model = build_network_model(width = imageWidth, height = imageHeight, depth = imageDepth, classes = numberOfClasses)
 opt = Adam(lr = initialLearningRate, decay = decayRate)
-model.compile(loss = "binary_crossentropy", optimizer = opt, metrics = ["accuracy"])
+model.compile(loss = "binary_crossentropy", optimizer = opt,
+              metrics = ["accuracy", "mse", "mape", "confusion_matrix_saver"])
 
 # Train the network
 print(stamp() + "Training Network Model")
@@ -215,7 +224,7 @@ history = model.fit_generator(aug.flow(trainX, trainY, batch_size = batchSize), 
 
 predictY = model.predict(testY)
 
-confusionMatrix = metrics.confusion_matrix(testY, predictY)
+confusionMatrix = (yTrue, yPred)
 dataframeConfusionMatrix = pd.DataFrame(confusionMatrix, range(2), range(2))
 sn.set(font_scale = 1.4)
 svn = sn.heatmap(dataframeConfusionMatrix, annot = True, annot_kws = {"size": 16})
@@ -256,4 +265,16 @@ plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc = 'upper left')
 plt.suptitle(modelName)
 plt.savefig(resultsPath + '/' + modelName + "-loss.png")
+plt.close()
+
+plt.figure(figsize = graphSize, dpi = 75)
+plt.grid(True, which = 'both')
+plt.plot(history.history['mse'])
+plt.plot(history.history['mape'])
+plt.title('MSE & MAPE')
+plt.ylabel('score')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc = 'upper left')
+plt.suptitle(modelName)
+plt.savefig(resultsPath + '/' + modelName + "-mse-mape.png")
 plt.close()
