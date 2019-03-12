@@ -28,13 +28,13 @@ matplotlib.use("Agg")
 # Control Variables
 home = os.environ['HOME']
 datasetName = 'all-corrupted'
-resultsFileName = 'cancer-rotation'
+resultsFileName = 'cancer-rotation-heatmap'
 rotationRange = 0  # 0, 45, 90, 135, 180
 categoryOne = 'malignant'
 categoryTwo = 'benign'
 modelName = datasetName + "-" + str(rotationRange)
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/isic-resized/'
-resultsPath = home + '/home/Downloads/Project-Turing/results/cancer-rotation-experiments/'
+resultsPath = home + '/home/Downloads/Project-Turing/results/cancer-rotation-experiments/heatmap'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 noEpochs = 100
@@ -241,6 +241,10 @@ print(stamp() + "Saving Network Model")
 model_json = model.to_json()
 with open(resultsPath + '/' + modelName + ".json", "w") as json_file:
     json_file.write(model_json)
+
+print(stamp() + "Saving Network Weights")
+model.save_weights(resultsPath + '/' + modelName + ".h5", "w")
+save_network_stats(resultsPath, modelName, history, resultsFileName)
 
 # Summarize history for accuracy
 plt.figure(figsize = graphSize, dpi = 75)

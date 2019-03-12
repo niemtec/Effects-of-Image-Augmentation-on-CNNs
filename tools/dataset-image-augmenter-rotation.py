@@ -5,14 +5,14 @@ datagen = ImageDataGenerator(
     fill_mode = 'nearest'
 )
 
-img = load_img('datasets/cats-dogs-resized/cats-dogs-noise-000/cat/cat.277.jpg')
+img = load_img('tools/network-heatmap-visualisation/malignant - rotation/0.jpg')
 x = img_to_array(img)
 x = x.reshape((1,) + x.shape)
 
 i = 0
 for batch in datagen.flow(x, batch_size = 1,
-                          save_to_dir = 'datasets/image-corruption-dataset/cats-dogs-rotation-samples/',
-                          save_prefix = 'cat-30',
+                          save_to_dir = 'tools/network-heatmap-visualisation/malignant - rotation/',
+                          save_prefix = 'benign',
                           save_format = 'jpeg'):
     i += 1
     if i > 100:
