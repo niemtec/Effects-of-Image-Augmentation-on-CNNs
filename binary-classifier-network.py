@@ -81,7 +81,7 @@ def save_network_stats(resultsPath, modelName, history, fileName):
     historyValAcc = str(historyValAcc[-1])  # Get last value from validated accuracy
     # historyMSE = history.history['mse']
     historyMSE = 0  # str(historyMSE[-1])
-    historyMAPE =  # history.history['mape']
+    historyMAPE = 0  # history.history['mape']
     historyMAPE = 0  # str(historyMAPE[-1])
 
     with open(resultsPath + '/' + fileName + ".txt", "a") as history_log:
