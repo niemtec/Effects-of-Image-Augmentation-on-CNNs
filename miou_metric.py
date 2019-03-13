@@ -21,7 +21,7 @@ class MeanIoU(object):
         target = np.argmax(y_true, axis = -1).ravel()
         predicted = np.argmax(y_pred, axis = -1).ravel()
 
-        cmatrix = metrics.confusion_matrix(K.eval(y_true), K.eval(y_pred))
+        # cmatrix = metrics.confusion_matrix(tar)
 
         x = predicted + self.num_classes * target
         bincount_2d = np.bincount(x.astype(np.int32), minlength = self.num_classes ** 2)
@@ -35,6 +35,7 @@ class MeanIoU(object):
 
         # return K.variable(true_positive), K.variable(false_positive), K.variable(true_positive)
 
+        cmatrix = [true_positive, false_positive, false_negative]
         return K.variable(cmatrix)
 
 
