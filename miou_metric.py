@@ -27,6 +27,12 @@ class MeanIoU(object):
 
         return K.variable(cmatrix)
 
+    def true(self, y_true):
+        return tf.py_func(self.true_vals, [y_true], tf.float32)
+
+    def true_vals(self, y_true):
+        return K.variable(np.argmax(y_true, axis = -1).ravel())
+
 
     def np_mean_iou(self, y_true, y_pred):
         # Compute the confusion matrix to get the number of true positives,
