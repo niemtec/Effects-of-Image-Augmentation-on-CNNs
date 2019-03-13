@@ -14,6 +14,9 @@ class MeanIoU(object):
         # its outputs.
         return tf.py_func(self.np_mean_iou, [y_true, y_pred], tf.float32)
 
+    def confusion_calc(self, y_true, y_pred):
+        return tf.py_func(self.confusion, [y_true, y_pred], tf.float32)
+
     def confusion(self, y_true, y_pred):
         target = np.argmax(y_true, axis = -1).ravel()
         predicted = np.argmax(y_pred, axis = -1).ravel()
@@ -28,8 +31,6 @@ class MeanIoU(object):
         # Convert predictions and target from categorical to integer format
         target = np.argmax(y_true, axis = -1).ravel()
         predicted = np.argmax(y_pred, axis = -1).ravel()
-
-
 
         # Trick from torchnet for bincounting 2 arrays together
         # https://github.com/pytorch/tnt/blob/master/torchnet/meter/confusionmeter.py
