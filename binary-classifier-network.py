@@ -238,8 +238,8 @@ predictions = model.predict_classes(testX, batchSize, 1)
 # prediction = model.predict_classes(testY)
 for i in range(len(testY)):
     print("X=%s, Predicted=%s" % (testY[i], predictions[i]))
-
-print(metrics.confusion_matrix(testY, predictions))
+print(validationDatasetLabels)
+print(metrics.confusion_matrix(validationDatasetLabels, predictions))
 
 
 # predictY = model.predict(testY)
