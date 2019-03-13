@@ -70,7 +70,7 @@ def stamp():
 
 
 # Save final model performance
-def save_network_stats(resultsPath, modelName, history, fileName):
+def save_network_stats(resultsPath, modelName, history, fileName, sensitivity, specificity, precision):
     # Extract data from history dictionary
     historyLoss = history.history['loss']
     historyLoss = str(historyLoss[-1])  # Get last value from loss
@@ -88,7 +88,8 @@ def save_network_stats(resultsPath, modelName, history, fileName):
     with open(resultsPath + '/' + fileName + ".txt", "a") as history_log:
         history_log.write(
             modelName + "," + historyLoss + "," + historyAcc + "," + historyValLoss + "," + historyValAcc + "," + str(
-                noEpochs) + "," + str(initialLearningRate) + "," + str(historyMSE) + "," + str(historyMAPE) + "\n")
+                noEpochs) + "," + str(initialLearningRate) + "," + str(historyMSE) + "," + str(
+                historyMAPE) + "," + sensitivity + "," + specificity + "," + precision + "\n")
     history_log.close()
 
     print(stamp() + "Keras Log Saved")
@@ -160,6 +161,60 @@ def load_dataset_subfolder(datasetSubfolderName):
 
                 labelArray.append(label)
     return imageArray, labelArray
+
+
+def calculate_statistics(tn, fp, fn, tp):
+    sensitivity = tp / (tp + fn)
+    specificity = tn / (fp + tn)
+    precision = tp / (tp + fp)
+
+    return sensitivity, specificity, precision
+
+
+def save_confusion_matrix(validationDatasetLabels, predictions):
+    labels = ['benign', 'malignant']
+    cm = confusion_matrix(validationDatasetLabels, predictions)
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    cax = ax.matshow(cm)
+    plt.title('Confusion Matrix for ' + modelName)
+    fig.colorbar(cax)
+    ax.set_xticklabels([''] + labels)
+    ax.set_yticklabels([''] + labels)
+    plt.xlabel('Predicted')
+    plt.ylabel('True')
+    plt.savefig(resultsPath + '/' + modelName + '-confusion-matrix.png')
+    plt.close()
+
+
+# Summarize history for accuracy
+def save_accuracy_graph(history):
+    plt.figure(figsize = graphSize, dpi = 75)
+    plt.grid(True, which = 'both')
+    plt.plot(history.history['acc'])
+    plt.plot(history.history['val_acc'])
+    plt.title('Model Accuracy')
+    plt.ylabel('accuracy')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc = 'upper left')
+    plt.suptitle(modelName)
+    plt.savefig(resultsPath + '/' + modelName + "-accuracy.png")
+    plt.close()
+
+
+# Summarize history for loss
+def save_loss_graph(history):
+    plt.figure(figsize = graphSize, dpi = 75)
+    plt.grid(True, which = 'both')
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.title('Model Loss')
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc = 'upper left')
+    plt.suptitle(modelName)
+    plt.savefig(resultsPath + '/' + modelName + "-loss.png")
+    plt.close()
 
 
 # Initialize the data and labels arrays
@@ -234,24 +289,15 @@ history = model.fit_generator(
     epochs = noEpochs,
     verbose = 1)
 
-predictions = model.predict_classes(testX, batchSize, 1)
-
-# prediction = model.predict_classes(testY)
-# for i in range(len(testY)):
-# print("X=%s, Predicted=%s" % (testY[i], predictions[i]))
-# print(validationDatasetLabels)
+predictions = model.predict_classes(testX, batchSize, 0)
 tn, fp, fn, tp = confusion_matrix(validationDatasetLabels, predictions).ravel()
 print(tn, fp, fn, tp)
 
-
-# predictY = model.predict(testY)
-
-# confusionMatrix = (yTrue, yPred)
-# dataframeConfusionMatrix = pd.DataFrame(confusionMatrix, range(2), range(2))
-# sn.set(font_scale = 1.4)
-# svn = sn.heatmap(dataframeConfusionMatrix, annot = True, annot_kws = {"size": 16})
-# heatmap = svn.get_figure()
-# heatmap.savefig(resultsPath + '/' + modelName + '-heatmap.png', dpi = 500)
+sensitivity, specificity, precision = calculate_statistics(tn, fp, fn, tp)
+save_network_stats(resultsPath, modelName, history, resultsFileName, sensitivity, specificity, precision)
+save_confusion_matrix(validationDatasetLabels, predictions)
+save_accuracy_graph(history)
+save_loss_graph(history)
 
 # Save the model to disk
 print(stamp() + "Saving Network Model")
@@ -261,32 +307,4 @@ with open(resultsPath + '/' + modelName + ".json", "w") as json_file:
 
 print(stamp() + "Saving Network Weights")
 model.save_weights(resultsPath + '/' + modelName + ".h5", "w")
-
-save_network_stats(resultsPath, modelName, history, resultsFileName)
-
-# Summarize history for accuracy
-plt.figure(figsize = graphSize, dpi = 75)
-plt.grid(True, which = 'both')
-plt.plot(history.history['acc'])
-plt.plot(history.history['val_acc'])
-plt.title('Model Accuracy')
-plt.ylabel('accuracy')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc = 'upper left')
-plt.suptitle(modelName)
-plt.savefig(resultsPath + '/' + modelName + "-accuracy.png")
-plt.close()
-
-# Summarize history for loss
-plt.figure(figsize = graphSize, dpi = 75)
-plt.grid(True, which = 'both')
-plt.plot(history.history['loss'])
-plt.plot(history.history['val_loss'])
-plt.title('Model Loss')
-plt.ylabel('loss')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc = 'upper left')
-plt.suptitle(modelName)
-plt.savefig(resultsPath + '/' + modelName + "-loss.png")
-plt.close()
 
