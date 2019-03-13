@@ -27,10 +27,10 @@ class MeanIoU(object):
 
         return K.variable(cmatrix)
 
-    def true(self, y_true):
-        return tf.py_func(self.true_vals, [y_true], tf.float32)
+    def true(self, y_true, y_pred):
+        return tf.py_func(self.true_vals, [y_true, y_pred], tf.float32)
 
-    def true_vals(self, y_true):
+    def true_vals(self, y_true, y_pred):
         return K.variable(np.argmax(y_true, axis = -1).ravel())
 
 
