@@ -233,12 +233,9 @@ history = model.fit_generator(
     epochs = noEpochs,
     verbose = 1)
 
-predictions = model.predict(aug.flow(trainX, trainY, batch_size = batchSize),
-                            validation_data = (testX, testY),
-                            steps_per_epoch = len(trainX) // batchSize,
-                            epochs = noEpochs,
-                            verbose = 1)
-print(predictions)
+prediction = model.predict_classes(testY)
+for i in range(len(testY)):
+    print("X=%s, Predicted=%s" % (testY[i], prediction[i]))
 
 # predictY = model.predict(testY)
 
