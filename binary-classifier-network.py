@@ -172,19 +172,26 @@ def calculate_statistics(tn, fp, fn, tp):
 
 
 def save_confusion_matrix(validationDatasetLabels, predictions):
-    labels = ['benign', 'malignant']
     cm = confusion_matrix(validationDatasetLabels, predictions)
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    cax = ax.matshow(cm)
-    plt.title('Confusion Matrix for ' + modelName)
-    fig.colorbar(cax)
-    ax.set_xticklabels([''] + labels)
-    ax.set_yticklabels([''] + labels)
-    plt.xlabel('Predicted')
-    plt.ylabel('True')
-    plt.savefig(resultsPath + '/' + modelName + '-confusion-matrix.png')
-    plt.close()
+    import seaborn as sns
+    plt.figure(figuresize = (2, 2))
+    heatmap = sns.heatmap(cm.corr(), annot = True, linewidths = 0.2)
+
+    heatmap.savefig(resultsPath + '/' + modelName + '-confusion-matrix.png')
+
+    # labels = ['benign', 'malignant']
+    # cm = confusion_matrix(validationDatasetLabels, predictions)
+    # fig = plt.figure()
+    # ax = fig.add_subplot(111)
+    # cax = ax.matshow(cm)
+    # plt.title('Confusion Matrix for ' + modelName)
+    # fig.colorbar(cax)
+    # ax.set_xticklabels([''] + labels)
+    # ax.set_yticklabels([''] + labels)
+    # plt.xlabel('Predicted')
+    # plt.ylabel('True')
+    # plt.savefig(resultsPath + '/' + modelName + '-confusion-matrix.png')
+    # plt.close()
 
 
 # Summarize history for accuracy
