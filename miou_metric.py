@@ -23,15 +23,10 @@ class MeanIoU(object):
 
         print(target)
         print(predicted)
-        cmatrix = metrics.confusion_matrix(target, predicted)
+        # cmatrix = metrics.confusion_matrix(target, predicted)
 
-        return K.variable(cmatrix)
+        return K.variable(target)
 
-    def true(self, y_true, y_pred):
-        return tf.py_func(self.true_vals, [y_true, y_pred], tf.float32)
-
-    def true_vals(self, y_true, y_pred):
-        return K.variable(np.argmax(y_true, axis = -1).ravel())
 
 
     def np_mean_iou(self, y_true, y_pred):
