@@ -41,7 +41,7 @@ datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-d
 resultsPath = home + '/home/Downloads/Project-Turing/results/cancer-noise-experiments/heatmaps/'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
-noEpochs = 5
+noEpochs = 100
 initialLearningRate = 1e-5
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
@@ -236,9 +236,9 @@ history = model.fit_generator(
 predictions = model.predict_classes(testX, batchSize, 1)
 
 # prediction = model.predict_classes(testY)
-for i in range(len(testY)):
-    print("X=%s, Predicted=%s" % (testY[i], predictions[i]))
-print(validationDatasetLabels)
+# for i in range(len(testY)):
+# print("X=%s, Predicted=%s" % (testY[i], predictions[i]))
+# print(validationDatasetLabels)
 print(metrics.confusion_matrix(validationDatasetLabels, predictions))
 
 
