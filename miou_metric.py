@@ -22,7 +22,7 @@ class MeanIoU(object):
         predicted = np.argmax(y_pred, axis = -1).ravel()
         cmatrix = metrics.confusion_matrix(target, predicted)
 
-        return np.mean(cmatrix).astype(np.float32)
+        return cmatrix.astype(np.float32)
 
 
     def np_mean_iou(self, y_true, y_pred):
