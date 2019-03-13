@@ -174,7 +174,7 @@ def calculate_statistics(tn, fp, fn, tp):
 def save_confusion_matrix(validationDatasetLabels, predictions):
     cm = confusion_matrix(validationDatasetLabels, predictions)
     import seaborn as sns
-    plt.figure(figuresize = (2, 2))
+    # plt.figure(figuresize = (2, 2))
     heatmap = sns.heatmap(cm.corr(), annot = True, linewidths = 0.2)
 
     heatmap.savefig(resultsPath + '/' + modelName + '-confusion-matrix.png')
