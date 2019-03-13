@@ -181,7 +181,7 @@ def save_confusion_matrix(tp, tn, fp, fn):
 
     cm = [[tp, tn], [fp, fn]]
     cm = np.array(cm)
-    heatmap = sns.heatmap(cm, annot = True, fmt = g, linewidths = 0.2)
+    heatmap = sns.heatmap(cm, annot = True, fmt = 'g', linewidths = 0.2)
     fig = heatmap.get_figure()
     fig.savefig(resultsPath + '/' + modelName + '-confusion-matrix.png')
 
