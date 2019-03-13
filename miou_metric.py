@@ -22,9 +22,6 @@ class MeanIoU(object):
         predicted = np.argmax(y_pred, axis = -1).ravel()
 
         cmatrix = metrics.confusion_matrix(target, predicted)
-        print("================================")
-        print(cmatrix)
-        print("================================")
 
         # Trick from torchnet for bincounting 2 arrays together
         # https://github.com/pytorch/tnt/blob/master/torchnet/meter/confusionmeter.py
@@ -43,4 +40,4 @@ class MeanIoU(object):
             iou = true_positive / (true_positive + false_positive + false_negative)
         iou[np.isnan(iou)] = 0
 
-        return np.mean(iou).astype(np.float32)
+        return np.mean(iou).astype(np.float32), cmatrix
