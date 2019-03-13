@@ -21,9 +21,8 @@ class MeanIoU(object):
         target = np.argmax(y_true, axis = -1).ravel()
         predicted = np.argmax(y_pred, axis = -1).ravel()
 
-        target = K.eval(y_true)
-        predicted = K.eval(y_pred)
-
+        target = y_true.eval()
+        predicted = y_pred.eval()
         cmatrix = metrics.confusion_matrix(target, predicted)
 
         return K.variable(cmatrix)
