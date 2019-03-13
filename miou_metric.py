@@ -14,6 +14,14 @@ class MeanIoU(object):
         # its outputs.
         return tf.py_func(self.np_mean_iou, [y_true, y_pred], tf.float32)
 
+    def confusion(self, y_true, y_pred):
+        target = np.argmax(y_true, axis = -1).ravel()
+        predicted = np.argmax(y_pred, axis = -1).ravel()
+        cmatrix = metrics.confusion_matrix(target, predicted)
+
+        return cmatrix
+
+
     def np_mean_iou(self, y_true, y_pred):
         # Compute the confusion matrix to get the number of true positives,
         # false positives, and false negatives
@@ -21,7 +29,7 @@ class MeanIoU(object):
         target = np.argmax(y_true, axis = -1).ravel()
         predicted = np.argmax(y_pred, axis = -1).ravel()
 
-        cmatrix = metrics.confusion_matrix(target, predicted)
+
 
         # Trick from torchnet for bincounting 2 arrays together
         # https://github.com/pytorch/tnt/blob/master/torchnet/meter/confusionmeter.py
@@ -40,4 +48,4 @@ class MeanIoU(object):
             iou = true_positive / (true_positive + false_positive + false_negative)
         iou[np.isnan(iou)] = 0
 
-        return np.mean(iou).astype(np.float32), cmatrix
+        return np.mean(iou).astype(np.float32)

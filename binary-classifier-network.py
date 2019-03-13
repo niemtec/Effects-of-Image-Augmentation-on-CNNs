@@ -220,7 +220,7 @@ model = build_network_model(width = imageWidth, height = imageHeight, depth = im
 opt = Adam(lr = initialLearningRate, decay = decayRate)
 model.compile(loss = "binary_crossentropy", optimizer = opt,
               metrics = ["accuracy", "mean_squared_error", "mean_absolute_error", "mean_absolute_percentage_error",
-                         miou_metric.mean_iou])
+                         miou_metric.mean_iou, miou_metric.confusion])
 
 # Train the network
 print(stamp() + "Training Network Model")
