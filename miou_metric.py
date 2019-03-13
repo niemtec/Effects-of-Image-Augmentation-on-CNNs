@@ -20,9 +20,21 @@ class MeanIoU(object):
     def confusion(self, y_true, y_pred):
         target = np.argmax(y_true, axis = -1).ravel()
         predicted = np.argmax(y_pred, axis = -1).ravel()
-        cmatrix = metrics.confusion_matrix(target, predicted)
+        # cmatrix = metrics.confusion_matrix(target, predicted)
 
-        return K.variable(cmatrix)
+        x = predicted + self.num_classes * target
+        bincount_2d = np.bincount(x.astype(np.int32), minlength = self.num_classes ** 2)
+        assert bincount_2d.size == self.num_classes ** 2
+        conf = bincount_2d.reshape((self.num_classes, self.num_classes))
+
+        # Compute the IoU and mean IoU from the confusion matrix
+        true_positive = np.diag(conf)
+        false_positive = np.sum(conf, 0) - true_positive
+        false_negative = np.sum(conf, 1) - true_positive
+
+        return K.variable(true_positive), K.variable(false_positive), K.variable(true_positive)
+
+        # return K.variable(cmatrix)
 
 
     def np_mean_iou(self, y_true, y_pred):
