@@ -1,5 +1,6 @@
 import tensorflow as tf
 import numpy as np
+from sklearn import metrics
 
 
 class MeanIoU(object):
@@ -19,6 +20,11 @@ class MeanIoU(object):
         # Convert predictions and target from categorical to integer format
         target = np.argmax(y_true, axis = -1).ravel()
         predicted = np.argmax(y_pred, axis = -1).ravel()
+
+        cmatrix = metrics.confusion_matrix(target, predicted)
+        print("================================")
+        print(cmatrix)
+        print("================================")
 
         # Trick from torchnet for bincounting 2 arrays together
         # https://github.com/pytorch/tnt/blob/master/torchnet/meter/confusionmeter.py
