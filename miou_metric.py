@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 from sklearn import metrics
-
+from keras import backend as K
 
 class MeanIoU(object):
     def __init__(self, num_classes):
@@ -22,7 +22,7 @@ class MeanIoU(object):
         predicted = np.argmax(y_pred, axis = -1).ravel()
         cmatrix = metrics.confusion_matrix(target, predicted)
 
-        return cmatrix.astype(np.float32)
+        return K.variable(cmatrix)
 
 
     def np_mean_iou(self, y_true, y_pred):
