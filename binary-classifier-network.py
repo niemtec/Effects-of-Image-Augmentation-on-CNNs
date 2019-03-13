@@ -88,6 +88,13 @@ def save_network_stats(resultsPath, modelName, history, fileName):
 
     print(stamp() + "Keras Log Saved")
 
+    with open(resultsPath + '/' + fileName + '-history.txt', 'a') as history_file:
+        for key, val in history.items():
+            history_file.write([key, val] + '/n')
+    history_file.close()
+
+    print(stamp() + "History File Saved")
+
 
 # Build the network structure
 def build_network_model(width, height, depth, classes):
@@ -235,6 +242,7 @@ with open(resultsPath + '/' + modelName + ".json", "w") as json_file:
 
 print(stamp() + "Saving Network Weights")
 model.save_weights(resultsPath + '/' + modelName + ".h5", "w")
+
 save_network_stats(resultsPath, modelName, history, resultsFileName)
 
 # Summarize history for accuracy
@@ -263,14 +271,3 @@ plt.suptitle(modelName)
 plt.savefig(resultsPath + '/' + modelName + "-loss.png")
 plt.close()
 
-plt.figure(figsize = graphSize, dpi = 75)
-plt.grid(True, which = 'both')
-plt.plot(history.history['mse'])
-plt.plot(history.history['mape'])
-plt.title('MSE & MAPE')
-plt.ylabel('score')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc = 'upper left')
-plt.suptitle(modelName)
-plt.savefig(resultsPath + '/' + modelName + "-mse-mape.png")
-plt.close()
