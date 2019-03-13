@@ -41,7 +41,7 @@ datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-d
 resultsPath = home + '/home/Downloads/Project-Turing/results/cancer-noise-experiments/heatmaps/'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
-noEpochs = 100
+noEpochs = 5
 initialLearningRate = 1e-5
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
@@ -93,7 +93,7 @@ def save_network_stats(resultsPath, modelName, history, fileName):
     print(stamp() + "Keras Log Saved")
 
     with open(resultsPath + '/' + fileName + '-history.txt', 'a') as history_file:
-        for key, val in history.history:
+        for key, val in history.history[-1]:
             history_file.write([key, val] + '/n')
     history_file.close()
 
@@ -222,7 +222,8 @@ print(stamp() + "Compiling Network Model")
 model = build_network_model(width = imageWidth, height = imageHeight, depth = imageDepth, classes = numberOfClasses)
 opt = Adam(lr = initialLearningRate, decay = decayRate)
 model.compile(loss = "binary_crossentropy", optimizer = opt,
-              metrics = ["accuracy", "mse", "mape", miou_metric.mean_iou])
+              metrics = ["accuracy", "mean_squared_error", "mean_absolute_error", "mean_absolute_percentage_error",
+                         miou_metric.mean_iou])
 
 # Train the network
 print(stamp() + "Training Network Model")
