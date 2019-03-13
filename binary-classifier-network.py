@@ -171,10 +171,10 @@ def calculate_statistics(tn, fp, fn, tp):
     return sensitivity, specificity, precision
 
 
-def save_confusion_matrix(validationDatasetLabels, predictions):
+def save_confusion_matrix(tp, tn, fp, fn):
     cm = confusion_matrix(validationDatasetLabels, predictions)
     import seaborn as sns
-    # plt.figure(figuresize = (2, 2))
+    cm = [[tp, tn], [fp, fn]]
     heatmap = sns.heatmap(cm, annot = True, linewidths = 0.2)
     fig = heatmap.get_figure()
     fig.savefig(resultsPath + '/' + modelName + '-confusion-matrix.png')
@@ -302,7 +302,7 @@ print(tn, fp, fn, tp)
 
 sensitivity, specificity, precision = calculate_statistics(tn, fp, fn, tp)
 save_network_stats(resultsPath, modelName, history, resultsFileName, sensitivity, specificity, precision)
-save_confusion_matrix(validationDatasetLabels, predictions)
+save_confusion_matrix(tn, fp, fn, tp)
 save_accuracy_graph(history)
 save_loss_graph(history)
 
