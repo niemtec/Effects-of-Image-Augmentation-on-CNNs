@@ -89,7 +89,7 @@ def save_network_stats(resultsPath, modelName, history, fileName, sensitivity, s
         history_log.write(
             modelName + "," + historyLoss + "," + historyAcc + "," + historyValLoss + "," + historyValAcc + "," + str(
                 noEpochs) + "," + str(initialLearningRate) + "," + str(historyMSE) + "," + str(
-                historyMAPE) + "," + sensitivity + "," + specificity + "," + precision + "\n")
+                historyMAPE) + "," + str(sensitivity) + "," + str(specificity) + "," + str(precision) + "\n")
     history_log.close()
 
     print(stamp() + "Keras Log Saved")
