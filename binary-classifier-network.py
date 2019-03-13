@@ -233,11 +233,14 @@ history = model.fit_generator(
     epochs = noEpochs,
     verbose = 1)
 
-prediction = model.predict_classes(testX, batchSize, 1)
+predictions = model.predict_classes(testX, batchSize, 1)
 
 # prediction = model.predict_classes(testY)
 for i in range(len(testY)):
-    print("X=%s, Predicted=%s" % (testY[i], prediction[i]))
+    print("X=%s, Predicted=%s" % (testY[i], predictions[i]))
+
+print(metrics.confusion_matrix(testY, predictions))
+
 
 # predictY = model.predict(testY)
 
