@@ -3,6 +3,7 @@ import sys
 import matplotlib
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam
+from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 from keras.preprocessing.image import img_to_array
 from keras.utils import to_categorical
@@ -41,7 +42,7 @@ datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-d
 resultsPath = home + '/home/Downloads/Project-Turing/results/cancer-noise-experiments/heatmaps/'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
-noEpochs = 100
+noEpochs = 5
 initialLearningRate = 1e-5
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
@@ -239,7 +240,8 @@ predictions = model.predict_classes(testX, batchSize, 1)
 # for i in range(len(testY)):
 # print("X=%s, Predicted=%s" % (testY[i], predictions[i]))
 # print(validationDatasetLabels)
-print(metrics.confusion_matrix(validationDatasetLabels, predictions))
+tn, fp, fn, tp = confusion_matrix(validationDatasetLabels, predictions).ravel()
+print(tn, fp, fn, tp)
 
 
 # predictY = model.predict(testY)
