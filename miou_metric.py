@@ -23,9 +23,9 @@ class MeanIoU(object):
 
         print(target)
         print(predicted)
-        # cmatrix = metrics.confusion_matrix(target, predicted)
+        cmatrix = metrics.confusion_matrix(target, predicted)
 
-        # return K.variable(cmatrix)
+        return K.variable(cmatrix)
 
 
     def np_mean_iou(self, y_true, y_pred):
