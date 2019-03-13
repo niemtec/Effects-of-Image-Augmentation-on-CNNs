@@ -218,14 +218,24 @@ miou_metric = MeanIoU(2)
 print(stamp() + "Compiling Network Model")
 model = build_network_model(width = imageWidth, height = imageHeight, depth = imageDepth, classes = numberOfClasses)
 opt = Adam(lr = initialLearningRate, decay = decayRate)
-model.compile(loss = "binary_crossentropy", optimizer = opt,
-              metrics = ["accuracy", "mean_squared_error", "mean_absolute_error", "mean_absolute_percentage_error",
-                         miou_metric.mean_iou, miou_metric.confusion])
-
+model.compile(loss = "binary_crossentropy",
+              optimizer = opt,
+              metrics = ["accuracy",
+                         "mean_squared_error",
+                         "mean_absolute_error",
+                         "mean_absolute_percentage_error",
+                         miou_metric.mean_iou])
 # Train the network
 print(stamp() + "Training Network Model")
-history = model.fit_generator(aug.flow(trainX, trainY, batch_size = batchSize), validation_data = (testX, testY),
-                              steps_per_epoch = len(trainX) // batchSize, epochs = noEpochs, verbose = 1)
+history = model.fit_generator(
+    aug.flow(trainX, trainY, batch_size = batchSize),
+    validation_data = (testX, testY),
+    steps_per_epoch = len(trainX) // batchSize,
+    epochs = noEpochs,
+    verbose = 1)
+
+predictions = model.predict(trainY, batchSize, verbose = 1, steps = len(trainX) // batchSize)
+print(predictions)
 
 # predictY = model.predict(testY)
 

@@ -14,18 +14,18 @@ class MeanIoU(object):
         # its outputs.
         return tf.py_func(self.np_mean_iou, [y_true, y_pred], tf.float32)
 
-    def confusion_calc(self, y_true, y_pred):
-        return tf.py_func(self.confusion, [y_true, y_pred], tf.float32)
-
-    def confusion(self, y_true, y_pred):
-        target = np.argmax(y_true, axis = -1).ravel()
-        predicted = np.argmax(y_pred, axis = -1).ravel()
-
-        print(target)
-        print(predicted)
-        # cmatrix = metrics.confusion_matrix(target, predicted)
-
-        return K.variable(target)
+    # def confusion_calc(self, y_true, y_pred):
+    #     return tf.py_func(self.confusion, [y_true, y_pred], tf.float32)
+    #
+    # def confusion(self, y_true, y_pred):
+    #     target = np.argmax(y_true, axis = -1).ravel()
+    #     predicted = np.argmax(y_pred, axis = -1).ravel()
+    #
+    #     print(target)
+    #     print(predicted)
+    #     # cmatrix = metrics.confusion_matrix(target, predicted)
+    #
+    #     return K.variable(target)
 
 
 
