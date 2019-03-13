@@ -233,7 +233,9 @@ history = model.fit_generator(
     epochs = noEpochs,
     verbose = 1)
 
-prediction = model.predict_classes(testY)
+prediction = model.predict_classes(testX, batchSize, 1)
+
+# prediction = model.predict_classes(testY)
 for i in range(len(testY)):
     print("X=%s, Predicted=%s" % (testY[i], prediction[i]))
 
