@@ -93,7 +93,7 @@ def save_network_stats(resultsPath, modelName, history, fileName):
     print(stamp() + "Keras Log Saved")
 
     with open(resultsPath + '/' + fileName + '-history.txt', 'a') as history_file:
-        for key, val in history.items():
+        for key, val in history.history:
             history_file.write([key, val] + '/n')
     history_file.close()
 
