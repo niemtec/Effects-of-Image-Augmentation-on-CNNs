@@ -92,10 +92,7 @@ def save_network_stats(resultsPath, modelName, history, fileName):
 
     print(stamp() + "Keras Log Saved")
 
-    with open(resultsPath + '/' + fileName + '-history.txt', 'a') as history_file:
-        history_file.write(history.history[-1])
-
-    history_file.close()
+    print(history.history.keys())
 
     print(stamp() + "History File Saved")
 
@@ -223,7 +220,7 @@ model = build_network_model(width = imageWidth, height = imageHeight, depth = im
 opt = Adam(lr = initialLearningRate, decay = decayRate)
 model.compile(loss = "binary_crossentropy", optimizer = opt,
               metrics = ["accuracy", "mean_squared_error", "mean_absolute_error", "mean_absolute_percentage_error",
-                         miou_metric.mean_iou])
+                         miou_metric.mean_iou, metrics.confusion_matrix])
 
 # Train the network
 print(stamp() + "Training Network Model")
