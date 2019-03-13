@@ -223,7 +223,6 @@ model.compile(loss = "binary_crossentropy",
               metrics = ["accuracy",
                          "mean_squared_error",
                          "mean_absolute_error",
-                         "mean_absolute_percentage_error",
                          miou_metric.mean_iou])
 # Train the network
 print(stamp() + "Training Network Model")
@@ -234,7 +233,11 @@ history = model.fit_generator(
     epochs = noEpochs,
     verbose = 1)
 
-predictions = model.predict(trainY, batchSize, verbose = 1, steps = len(trainX) // batchSize)
+predictions = model.predict(aug.flow(trainX, trainY, batch_size = batchSize),
+                            validation_data = (testX, testY),
+                            steps_per_epoch = len(trainX) // batchSize,
+                            epochs = noEpochs,
+                            verbose = 1)
 print(predictions)
 
 # predictY = model.predict(testY)
