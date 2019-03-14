@@ -33,7 +33,7 @@ matplotlib.use("Agg")
 
 # Control Variables
 home = os.environ['HOME']
-experimentVariantDatasetName = 'control'
+experimentVariantDatasetName = 'all-corrupted'
 resultsFileName = 'cancer-heatmap-control'
 modelName = 'cancer-noise-015-' + experimentVariantDatasetName
 categoryOne = 'benign'
@@ -42,7 +42,7 @@ datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-d
 resultsPath = home + '/home/Downloads/Project-Turing/results/cancer-noise-experiments/heatmaps/'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
-noEpochs = 5
+noEpochs = 100
 initialLearningRate = 1e-5
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
