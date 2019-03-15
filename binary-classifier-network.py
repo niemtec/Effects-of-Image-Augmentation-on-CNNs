@@ -33,9 +33,9 @@ matplotlib.use("Agg")
 
 # Control Variables
 home = os.environ['HOME']
-experimentVariantDatasetName = 'all-corrupted'
+experimentVariantDatasetName = 'control'
 resultsFileName = 'cancer-heatmap-control'
-modelName = 'cancer-noise-005-' + experimentVariantDatasetName
+modelName = 'cancer-noise-000-' + experimentVariantDatasetName
 categoryOne = 'benign'
 categoryTwo = 'malignant'
 datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cancer-noise-005/'
