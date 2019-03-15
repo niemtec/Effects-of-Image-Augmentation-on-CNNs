@@ -342,4 +342,3 @@ with open(resultsPath + '/' + modelName + ".json", "w") as json_file:
 
 print(stamp() + "Saving Network Weights")
 model.save_weights(resultsPath + '/' + modelName + ".h5", "w")
-save_network_stats(resultsPath, modelName, history, resultsFileName)
