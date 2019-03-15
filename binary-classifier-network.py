@@ -73,7 +73,7 @@ def stamp():
 
 
 # Save final model performance
-def save_network_stats(resultsPath, modelName, history, fileName):
+def save_network_stats(resultsPath, modelName, history, fileName, sensitivity, specificity, precision):
     # Extract data from history dictionary
     historyLoss = history.history['loss']
     historyLoss = str(historyLoss[-1])  # Get last value from loss
@@ -83,14 +83,23 @@ def save_network_stats(resultsPath, modelName, history, fileName):
     historyValLoss = str(historyValLoss[-1])  # Get last value from validated loss
     historyValAcc = history.history['val_acc']
     historyValAcc = str(historyValAcc[-1])  # Get last value from validated accuracy
+    # historyMSE = history.history['mse']
+    historyMSE = 0  # str(historyMSE[-1])
+    historyMAPE = 0  # history.history['mape']
+    historyMAPE = 0  # str(historyMAPE[-1])
 
     with open(resultsPath + '/' + fileName + ".txt", "a") as history_log:
         history_log.write(
             modelName + "," + historyLoss + "," + historyAcc + "," + historyValLoss + "," + historyValAcc + "," + str(
-                noEpochs) + "," + str(initialLearningRate) + "\n")
+                noEpochs) + "," + str(initialLearningRate) + "," + str(historyMSE) + "," + str(
+                historyMAPE) + "," + str(sensitivity) + "," + str(specificity) + "," + str(precision) + "\n")
     history_log.close()
 
     print(stamp() + "Keras Log Saved")
+
+    print(history.history.keys())
+
+    print(stamp() + "History File Saved")
 
 
 # Build the network structure
