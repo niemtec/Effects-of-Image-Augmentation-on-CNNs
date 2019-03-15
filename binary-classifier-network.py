@@ -261,7 +261,7 @@ labels = np.array(labels)
 
 validationDatasetLabels = []
 testSet = 0.25 * len(labels)
-validationDatasetLabels = labels[-270:]
+validationDatasetLabels = labels[-540:]
 
 # Partition the data into training and testing splits
 (trainX, testX, trainY, testY) = train_test_split(data, labels, test_size = validationDatasetSize,
