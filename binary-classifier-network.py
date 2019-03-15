@@ -259,6 +259,10 @@ data[:], labels[:] = zip(*combined)
 data = np.array(data, dtype = "float") / 255.0
 labels = np.array(labels)
 
+validationDatasetLabels = []
+testSet = 0.25 * len(labels)
+validationDatasetLabels = labels[-testSet:]
+
 # Partition the data into training and testing splits
 (trainX, testX, trainY, testY) = train_test_split(data, labels, test_size = validationDatasetSize,
                                                   random_state = randomSeed)
@@ -312,7 +316,7 @@ history = model.fit_generator(
     verbose = 1)
 
 predictions = model.predict_classes(testX, batchSize, 0)
-tn, fp, fn, tp = confusion_matrix(testY, predictions).ravel()
+tn, fp, fn, tp = confusion_matrix(validationDatasetLabels, predictions).ravel()
 print(tn, fp, fn, tp)
 
 sensitivity, specificity, precision = calculate_statistics(tn, fp, fn, tp)
