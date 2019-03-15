@@ -3,6 +3,7 @@ import sys
 import matplotlib
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam
+from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 from keras.preprocessing.image import img_to_array
 from keras.utils import to_categorical
@@ -12,8 +13,14 @@ from keras.layers.convolutional import MaxPooling2D
 from keras.layers.core import Activation
 from keras.layers.core import Flatten
 from keras.layers.core import Dense
-from keras import backend as K
+from keras import backend as K, metrics
+from sklearn import metrics
+import seaborn as sn
+import pandas as pd
 import matplotlib.pyplot as plt
+
+import miou_metric
+from miou_metric import MeanIoU
 import numpy as np
 import random
 import cv2
@@ -28,8 +35,8 @@ matplotlib.use("Agg")
 # Control Variables
 home = os.environ['HOME']
 datasetName = 'all-corrupted'
-resultsFileName = 'cancer-rotation-heatmap'
-rotationRange = 180  # 0, 45, 90, 135, 180
+resultsFileName = 'cancer-rotation-confusion-matrix'
+rotationRange = 0  # 0, 45, 90, 135, 180
 categoryOne = 'malignant'
 categoryTwo = 'benign'
 modelName = datasetName + "-" + str(rotationRange)
@@ -120,6 +127,71 @@ def build_network_model(width, height, depth, classes):
     # Return the model
     return model
 
+
+def calculate_statistics(tn, fp, fn, tp):
+    sensitivity = tp / (tp + fn)
+    specificity = tn / (fp + tn)
+    precision = tp / (tp + fp)
+
+    return sensitivity, specificity, precision
+
+
+def save_confusion_matrix(tp, tn, fp, fn):
+    import seaborn as sns
+    tp = int(tp)
+    tn = int(tn)
+    fp = int(fp)
+    fn = int(fn)
+
+    cm = [[tp, tn], [fp, fn]]
+    cm = np.array(cm)
+    heatmap = sns.heatmap(cm, annot = True, fmt = 'g', linewidths = 0.2)
+    fig = heatmap.get_figure()
+    fig.savefig(resultsPath + '/' + modelName + '-confusion-matrix.png')
+
+    # labels = ['benign', 'malignant']
+    # cm = confusion_matrix(validationDatasetLabels, predictions)
+    # fig = plt.figure()
+    # ax = fig.add_subplot(111)
+    # cax = ax.matshow(cm)
+    # plt.title('Confusion Matrix for ' + modelName)
+    # fig.colorbar(cax)
+    # ax.set_xticklabels([''] + labels)
+    # ax.set_yticklabels([''] + labels)
+    # plt.xlabel('Predicted')
+    # plt.ylabel('True')
+    # plt.savefig(resultsPath + '/' + modelName + '-confusion-matrix.png')
+    # plt.close()
+
+
+# Summarize history for accuracy
+def save_accuracy_graph(history):
+    plt.figure(figsize = graphSize, dpi = 75)
+    plt.grid(True, which = 'both')
+    plt.plot(history.history['acc'])
+    plt.plot(history.history['val_acc'])
+    plt.title('Model Accuracy')
+    plt.ylabel('accuracy')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc = 'upper left')
+    plt.suptitle(modelName)
+    plt.savefig(resultsPath + '/' + modelName + "-accuracy.png")
+    plt.close()
+
+
+# Summarize history for loss
+def save_loss_graph(history):
+    plt.figure(figsize = graphSize, dpi = 75)
+    plt.grid(True, which = 'both')
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.title('Model Loss')
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc = 'upper left')
+    plt.suptitle(modelName)
+    plt.savefig(resultsPath + '/' + modelName + "-loss.png")
+    plt.close()
 
 # def load_dataset_subfolder(datasetSubfolderName):
 #     print(stamp() + "Classifying Dataset Subfolder for: " + datasetSubfolderName)
@@ -218,23 +290,36 @@ augValidation = ImageDataGenerator(
     fill_mode = "nearest"
 )
 
+miou_metric = MeanIoU(2)
+
 # Initialize the model
 print(stamp() + "Compiling Network Model")
 model = build_network_model(width = imageWidth, height = imageHeight, depth = imageDepth, classes = numberOfClasses)
 opt = Adam(lr = initialLearningRate, decay = decayRate)
-model.compile(loss = "binary_crossentropy", optimizer = opt, metrics = ["accuracy"])
-
+model.compile(loss = "binary_crossentropy",
+              optimizer = opt,
+              metrics = ["accuracy",
+                         "mean_squared_error",
+                         "mean_absolute_error",
+                         miou_metric.mean_iou])
 # Train the network
 print(stamp() + "Training Network Model")
 history = model.fit_generator(
     aug.flow(trainX, trainY, batch_size = batchSize),
-    validation_data = augValidation.flow(testX, testY, batch_size = batchSize),
+    validation_data = (testX, testY),
     steps_per_epoch = len(trainX) // batchSize,
-    validation_steps = len(testX) // batchSize,
-    epochs = noEpochs, verbose = 1)
+    epochs = noEpochs,
+    verbose = 1)
 
-# Save the final scores
-save_network_stats(resultsPath, modelName, history, resultsFileName)
+predictions = model.predict_classes(testX, batchSize, 0)
+tn, fp, fn, tp = confusion_matrix(testY, predictions).ravel()
+print(tn, fp, fn, tp)
+
+sensitivity, specificity, precision = calculate_statistics(tn, fp, fn, tp)
+save_network_stats(resultsPath, modelName, history, resultsFileName, sensitivity, specificity, precision)
+save_confusion_matrix(tn, fp, fn, tp)
+save_accuracy_graph(history)
+save_loss_graph(history)
 
 # Save the model to disk
 print(stamp() + "Saving Network Model")
@@ -245,29 +330,3 @@ with open(resultsPath + '/' + modelName + ".json", "w") as json_file:
 print(stamp() + "Saving Network Weights")
 model.save_weights(resultsPath + '/' + modelName + ".h5", "w")
 save_network_stats(resultsPath, modelName, history, resultsFileName)
-
-# Summarize history for accuracy
-plt.figure(figsize = graphSize, dpi = 75)
-plt.grid(True, which = 'both')
-plt.plot(history.history['acc'])
-plt.plot(history.history['val_acc'])
-plt.title('Model Accuracy')
-plt.ylabel('accuracy')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc = 'upper left')
-plt.suptitle(modelName)
-plt.savefig(resultsPath + '/' + modelName + "-accuracy.png")
-plt.close()
-
-# Summarize history for loss
-plt.figure(figsize = graphSize, dpi = 75)
-plt.grid(True, which = 'both')
-plt.plot(history.history['loss'])
-plt.plot(history.history['val_loss'])
-plt.title('Model Loss')
-plt.ylabel('loss')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc = 'upper left')
-plt.suptitle(modelName)
-plt.savefig(resultsPath + '/' + modelName + "-loss.png")
-plt.close()
