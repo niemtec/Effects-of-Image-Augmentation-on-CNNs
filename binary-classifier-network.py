@@ -36,7 +36,7 @@ matplotlib.use("Agg")
 home = os.environ['HOME']
 datasetName = 'all-corrupted'
 resultsFileName = 'cancer-rotation-confusion-matrix'
-rotationRange = 135  # 0, 45, 90, 135, 180
+rotationRange = 90  # 0, 45, 90, 135, 180
 categoryOne = 'malignant'
 categoryTwo = 'benign'
 modelName = datasetName + "-" + str(rotationRange)
