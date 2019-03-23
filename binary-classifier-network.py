@@ -12,7 +12,10 @@ from keras.layers.convolutional import MaxPooling2D
 from keras.layers.core import Activation
 from keras.layers.core import Flatten
 from keras.layers.core import Dense
-from keras import backend as K
+from keras import backend as K, metrics
+from sklearn import metrics
+import seaborn as sn
+import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import random
@@ -128,34 +131,37 @@ def build_network_model(width, height, depth, classes):
     return model
 
 
-def load_dataset_subfolder(datasetSubfolderName):
-    print(stamp() + "Classifying Dataset Subfolder for: " + datasetSubfolderName)
-
-    imageArray = []
-    labelArray = []
-
+def calculate_statistics(tn, fp, fn, tp):
+    sensitivity = tp / (tp + fn)
+    specificity = tn / (fp + tn)
+    precision = tp / (tp + fp)
     datasetSubfolderPath = datasetPath + '/' + experimentVariantDatasetName + '/' + datasetSubfolderName + '/'
     for datasetCategory in os.listdir(datasetSubfolderPath):
         datasetCategoryPath = datasetSubfolderPath + '/' + datasetCategory
-
-        for imageSample in os.listdir(datasetCategoryPath):
-            if file_is_image(datasetCategoryPath + '/' + imageSample):
-                # Load the image
-                image = cv2.imread(datasetCategoryPath + '/' + imageSample)
-                # Convert image to array
-                image = img_to_array(image)
-                # Save image to list
-                imageArray.append(image)
-
                 # Decide on binary label
                 if datasetCategory == categoryOne:
                     label = 1
                 elif datasetCategory == categoryTwo:
                     label = 0
+    cm = [[tp, tn], [fp, fn]]
+    cm = np.array(cm)
+    heatmap = sns.heatmap(cm, annot = True, fmt = 'g', linewidths = 0.2)
+    fig = heatmap.get_figure()
+    fig.savefig(resultsPath + '/' + modelName + '-confusion-matrix.png')
 
-                labelArray.append(label)
-    return imageArray, labelArray
-
+# Summarize history for accuracy
+def save_accuracy_graph(history):
+    plt.figure(figsize = graphSize, dpi = 75)
+    plt.grid(True, which = 'both')
+    plt.plot(history.history['acc'])
+    plt.plot(history.history['val_acc'])
+    plt.title('Model Accuracy')
+    plt.ylabel('accuracy')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc = 'upper left')
+    plt.suptitle(modelName)
+    plt.savefig(resultsPath + '/' + modelName + "-accuracy.png")
+    plt.close()
 
 def calculate_statistics(tn, fp, fn, tp):
     sensitivity = tp / (tp + fn)
@@ -178,21 +184,6 @@ def save_confusion_matrix(tp, tn, fp, fn):
     heatmap = sns.heatmap(cm, annot = True, fmt = 'g', linewidths = 0.2)
     fig = heatmap.get_figure()
     fig.savefig(resultsPath + '/' + modelName + '-confusion-matrix.png')
-
-    # labels = ['benign', 'malignant']
-    # cm = confusion_matrix(validationDatasetLabels, predictions)
-    # fig = plt.figure()
-    # ax = fig.add_subplot(111)
-    # cax = ax.matshow(cm)
-    # plt.title('Confusion Matrix for ' + modelName)
-    # fig.colorbar(cax)
-    # ax.set_xticklabels([''] + labels)
-    # ax.set_yticklabels([''] + labels)
-    # plt.xlabel('Predicted')
-    # plt.ylabel('True')
-    # plt.savefig(resultsPath + '/' + modelName + '-confusion-matrix.png')
-    # plt.close()
-
 
 # Summarize history for accuracy
 def save_accuracy_graph(history):
@@ -223,7 +214,6 @@ def save_loss_graph(history):
     plt.savefig(resultsPath + '/' + modelName + "-loss.png")
     plt.close()
 
-
 # Initialize the data and labels arrays
 trainingDatasetImages = []
 trainingDatasetLabels = []
@@ -237,30 +227,74 @@ trainingCombined = list(zip(trainingDatasetImages, trainingDatasetLabels))
 random.shuffle(trainingCombined)
 trainingDatasetImages[:], trainingDatasetLabels[:] = zip(*trainingCombined)
 
-validationCombined = list(zip(validationDatasetImages, validationDatasetLabels))
-random.shuffle(validationCombined)
-validationDatasetImages[:], validationDatasetLabels[:] = zip(*validationCombined)
 
-# Join validation and training datasets together (75% - 25% split)
-combinedDatasetImages = trainingDatasetImages + validationDatasetImages
-combinedDatasetLabels = trainingDatasetLabels + validationDatasetLabels
-combinedDatasetImages = np.array(combinedDatasetImages, dtype = 'float') / 255.0
-combinedDatasetLabels = np.array(combinedDatasetLabels)
+# Summarize history for loss
+def save_loss_graph(history):
+    plt.figure(figsize = graphSize, dpi = 75)
+    plt.grid(True, which = 'both')
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.title('Model Loss')
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc = 'upper left')
+    plt.suptitle(modelName)
+    plt.savefig(resultsPath + '/' + modelName + "-loss.png")
+    plt.close()
 
-print(stamp() + 'Training Set Size: ' + str(len(trainingDatasetLabels)))
-print(stamp() + 'Validation Set Size: ' + str(len(validationDatasetLabels)))
-print(stamp() + 'Total Dataset Size: ' + str(len(combinedDatasetLabels)))
+# Initialize the data and labels arrays
+sortedData = []
+sortedLabels = []
+data = []
+labels = []
+
+# Go through dataset directory
+print(stamp() + "Classifying the Dataset")
+for datasetCategory in os.listdir(datasetPath):
+    datasetCategoryPath = datasetPath + "/" + datasetCategory
+
+    # Go through category 1 and then category 2 of the dataset
+    for sample in os.listdir(datasetCategoryPath):
+        # print(stamp() + sample)
+        if file_is_image(datasetCategoryPath + "/" + sample):
+            image = cv2.imread(datasetCategoryPath + "/" + sample)
+            image = cv2.resize(image, (
+                imageHeight, imageWidth))  # Network only accepts 28 x 28 so resize the image accordingly
+            image = img_to_array(image)
+            # Save image to the data list
+            sortedData.append(image)
+
+            # Decide on binary label
+            if datasetCategory == categoryOne:
+                label = 1
+            else:
+                label = 0
+            # Save label for the current image
+            sortedLabels.append(label)
+
+combined = list(zip(sortedData, sortedLabels))
+random.shuffle(combined)
+data[:], labels[:] = zip(*combined)
+
+# Scale the raw pixel intensities to the range [0, 1]
+data = np.array(data, dtype = "float") / 255.0
+labels = np.array(labels)
+
+validationDatasetLabels = []
+testSet = 0.25 * len(labels)
+validationDatasetLabels = labels[-540:]
 
 (trainX, testX, trainY, testY) = train_test_split(combinedDatasetImages, combinedDatasetLabels,
                                                   test_size = validationDatasetSize, random_state = randomSeed)
 
+
 # Convert the labels from integers to vectors
-trainY = to_categorical(trainY, numberOfClasses)
-testY = to_categorical(testY, numberOfClasses)
+trainY = to_categorical(trainY, num_classes = numberOfClasses)
+testY = to_categorical(testY, num_classes = numberOfClasses)
 
 # Construct the image generator for data augmentation
-aug = ImageDataGenerator()
 
+aug = ImageDataGenerator()
 
 # Initialize the model
 print(stamp() + "Compiling Network Model")
@@ -269,6 +303,7 @@ opt = Adam(lr = initialLearningRate, decay = decayRate)
 model.compile(loss = "binary_crossentropy",
               optimizer = opt,
               metrics = ["accuracy", "mean_squared_error", "mean_absolute_error"])
+
 # Train the network
 print(stamp() + "Training Network Model")
 history = model.fit_generator(
@@ -296,4 +331,3 @@ with open(resultsPath + '/' + modelName + ".json", "w") as json_file:
 
 print(stamp() + "Saving Network Weights")
 model.save_weights(resultsPath + '/' + modelName + ".h5", "w")
-

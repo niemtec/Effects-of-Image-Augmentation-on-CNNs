@@ -2,7 +2,6 @@ import tensorflow as tf
 import numpy as np
 from sklearn import metrics
 from keras import backend as K
-
 class MeanIoU(object):
     def __init__(self, num_classes):
         super().__init__()
@@ -13,21 +12,6 @@ class MeanIoU(object):
         # Takes numpy arrays as its arguments and returns numpy arrays as
         # its outputs.
         return tf.py_func(self.np_mean_iou, [y_true, y_pred], tf.float32)
-
-    # def confusion_calc(self, y_true, y_pred):
-    #     return tf.py_func(self.confusion, [y_true, y_pred], tf.float32)
-    #
-    # def confusion(self, y_true, y_pred):
-    #     target = np.argmax(y_true, axis = -1).ravel()
-    #     predicted = np.argmax(y_pred, axis = -1).ravel()
-    #
-    #     print(target)
-    #     print(predicted)
-    #     # cmatrix = metrics.confusion_matrix(target, predicted)
-    #
-    #     return K.variable(target)
-
-
 
     def np_mean_iou(self, y_true, y_pred):
         # Compute the confusion matrix to get the number of true positives,
