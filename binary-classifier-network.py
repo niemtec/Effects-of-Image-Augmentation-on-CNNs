@@ -18,9 +18,6 @@ from sklearn import metrics
 import seaborn as sn
 import pandas as pd
 import matplotlib.pyplot as plt
-
-import miou_metric
-from miou_metric import MeanIoU
 import numpy as np
 import random
 import cv2
@@ -35,7 +32,7 @@ matplotlib.use("Agg")
 # Control Variables
 home = os.environ['HOME']
 datasetName = 'all-corrupted'
-resultsFileName = 'cancer-rotation-confusion-matrix'
+resultsFileName = 'demo-run'
 rotationRange = 0  # 0, 45, 90, 135, 180
 categoryOne = 'malignant'
 categoryTwo = 'benign'
@@ -44,7 +41,7 @@ datasetPath = home + '/home/Downloads/Project-Turing/datasets/isic-resized/'
 resultsPath = home + '/home/Downloads/Project-Turing/results/cancer-rotation-experiments/heatmap'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
-noEpochs = 100
+noEpochs = 5
 initialLearningRate = 1e-5
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
@@ -83,7 +80,6 @@ def save_network_stats(resultsPath, modelName, history, fileName, sensitivity, s
     historyValLoss = str(historyValLoss[-1])  # Get last value from validated loss
     historyValAcc = history.history['val_acc']
     historyValAcc = str(historyValAcc[-1])  # Get last value from validated accuracy
-    # historyMSE = history.history['mse']
     historyMSE = 0  # str(historyMSE[-1])
     historyMAPE = 0  # history.history['mape']
     historyMAPE = 0  # str(historyMAPE[-1])
@@ -158,21 +154,6 @@ def save_confusion_matrix(tp, tn, fp, fn):
     fig = heatmap.get_figure()
     fig.savefig(resultsPath + '/' + modelName + '-confusion-matrix.png')
 
-    # labels = ['benign', 'malignant']
-    # cm = confusion_matrix(validationDatasetLabels, predictions)
-    # fig = plt.figure()
-    # ax = fig.add_subplot(111)
-    # cax = ax.matshow(cm)
-    # plt.title('Confusion Matrix for ' + modelName)
-    # fig.colorbar(cax)
-    # ax.set_xticklabels([''] + labels)
-    # ax.set_yticklabels([''] + labels)
-    # plt.xlabel('Predicted')
-    # plt.ylabel('True')
-    # plt.savefig(resultsPath + '/' + modelName + '-confusion-matrix.png')
-    # plt.close()
-
-
 # Summarize history for accuracy
 def save_accuracy_graph(history):
     plt.figure(figsize = graphSize, dpi = 75)
@@ -201,34 +182,6 @@ def save_loss_graph(history):
     plt.suptitle(modelName)
     plt.savefig(resultsPath + '/' + modelName + "-loss.png")
     plt.close()
-
-# def load_dataset_subfolder(datasetSubfolderName):
-#     print(stamp() + "Classifying Dataset Subfolder for: " + datasetSubfolderName)
-#
-#     imageArray = []
-#     labelArray = []
-#
-#     for datasetCategory in os.listdir(datasetPath + datasetName + '/' + datasetSubfolderName):
-#         datasetCategoryPath = datasetPath + datasetName + '/' + datasetSubfolderName + '/' + datasetCategory
-#
-#         for imageSample in os.listdir(datasetCategoryPath):
-#             if file_is_image(datasetCategoryPath + '/' + imageSample):
-#                 # Load the image
-#                 image = cv2.imread(datasetCategoryPath + '/' + imageSample)
-#                 # Convert image to array
-#                 image = img_to_array(image)
-#                 # Save image to list
-#                 imageArray.append(image)
-#
-#                 # Decide on binary label
-#                 if datasetCategory == categoryOne:
-#                     label = 1
-#                 else:
-#                     label = 0
-#
-#                 labelArray.append(label)
-#     return imageArray, labelArray
-
 
 # Initialize the data and labels arrays
 sortedData = []
@@ -283,27 +236,13 @@ testY = to_categorical(testY, num_classes = numberOfClasses)
 # Construct the image generator for data augmentation
 aug = ImageDataGenerator(
     rotation_range = rotationRange,
-    # vertical_flip = True
-    # horizontal_flip= True
-    # zoom_range = 1.0
-    # width_shift_range = 0.1
-    # height_shift_range = 0.1,
-    # shear_range = 0.2,
     fill_mode = "nearest"
 )
 
 augValidation = ImageDataGenerator(
     rotation_range = rotationRange,
-    # vertical_flip = True
-    # horizontal_flip= True
-    # zoom_range = 1.0
-    # width_shift_range = 0.1
-    # height_shift_range = 0.1,
-    # shear_range = 0.2,
     fill_mode = "nearest"
 )
-
-miou_metric = MeanIoU(2)
 
 # Initialize the model
 print(stamp() + "Compiling Network Model")
@@ -311,10 +250,8 @@ model = build_network_model(width = imageWidth, height = imageHeight, depth = im
 opt = Adam(lr = initialLearningRate, decay = decayRate)
 model.compile(loss = "binary_crossentropy",
               optimizer = opt,
-              metrics = ["accuracy",
-                         "mean_squared_error",
-                         "mean_absolute_error",
-                         miou_metric.mean_iou])
+              metrics = ["accuracy", "mean_squared_error", "mean_absolute_error"])
+
 # Train the network
 print(stamp() + "Training Network Model")
 history = model.fit_generator(
