@@ -150,6 +150,7 @@ def save_confusion_matrix(tp, tn, fp, fn):
     fig = heatmap.get_figure()
     fig.savefig(resultsPath + '/' + modelName + '-confusion-matrix.png')
 
+
 # Summarize history for accuracy
 def save_accuracy_graph(history):
     plt.figure(figsize = graphSize, dpi = 75)
@@ -178,6 +179,7 @@ def save_loss_graph(history):
     plt.suptitle(modelName)
     plt.savefig(resultsPath + '/' + modelName + "-loss.png")
     plt.close()
+
 
 # Initialize the data and labels arrays
 sortedData = []
