@@ -22,18 +22,18 @@ import os
 # BINARY CLASSIFIER NETWORK BASED ON THE LENET MODEL BUILT FOR IMAGE CLASSIFICATION TASKS
 # PART OF 'PROJECT TURING' - JAKUB ADRIAN NIEMIEC (@niemtec)
 # THIS MODEL IS USED AS A TOOL FOR INVESTIGATING THE PHENOMENA OF OVERFITTING IN CONVOLUTIONAL NEURAL NETWORKS
+
 # Set the matplotlib backend so figures can be saved in the background
-matplotlib.use("Agg")
 
 # Control Variables
-home = os.environ['HOME']
-experimentVariantDatasetName = 'all-corrupted'
+datasetName = 'all-corrupted'
 resultsFileName = 'demo'
-modelName = 'cancer-noise-015-' + experimentVariantDatasetName
-categoryOne = 'benign'
-categoryTwo = 'malignant'
-datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cancer-noise-015/'
-resultsPath = home + '/home/Downloads/Project-Turing/results/cancer-noise-experiments/heatmaps/'
+rotationRange = 135  # 0, 45, 90, 135, 180
+categoryOne = 'malignant'
+categoryTwo = 'benign'
+modelName = datasetName + "-" + str(rotationRange)
+datasetPath = 'demo/demo-dataset-rotation/'
+resultsPath = 'demo/demo-noise-results/'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 noEpochs = 10
@@ -41,6 +41,7 @@ initialLearningRate = 1e-5
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
 numberOfClasses = 2
+
 validationDatasetSize = 0.25  # Using 75% of the data for training and the remaining 25% for testing
 randomSeed = 42  # For repeatability
 imageHeight = 64
@@ -74,7 +75,6 @@ def save_network_stats(resultsPath, modelName, history, fileName, sensitivity, s
     historyValLoss = str(historyValLoss[-1])  # Get last value from validated loss
     historyValAcc = history.history['val_acc']
     historyValAcc = str(historyValAcc[-1])  # Get last value from validated accuracy
-    # historyMSE = history.history['mse']
     historyMSE = 0  # str(historyMSE[-1])
     historyMAPE = 0  # history.history['mape']
     historyMAPE = 0  # str(historyMAPE[-1])
@@ -104,18 +104,18 @@ def build_network_model(width, height, depth, classes):
         inputShape = (depth, height, width)
 
     # Model Structure
-    # First layer | CONV > RELU > POOL
+    # First layer
     model.add(
         Conv2D(20, (5, 5), padding = "same", input_shape = inputShape))  # Learning 20 (5 x 5) convolution filters
     model.add(Activation("relu"))
     model.add(MaxPooling2D(pool_size = (2, 2), strides = (2, 2)))
 
-    # Second layer | CONV > RELU > POOL
+    # Second layer
     model.add(Conv2D(50, (5, 5), padding = "same"))
     model.add(Activation("relu"))
     model.add(MaxPooling2D(pool_size = (2, 2), strides = (2, 2)))
 
-    # Third layer | flattening out into fully-connected layers
+    # Third layer - fully-connected layers
     model.add(Flatten())
     model.add(Dense(50))  # 500 nodes
     model.add(Activation("relu"))
@@ -126,35 +126,6 @@ def build_network_model(width, height, depth, classes):
 
     # Return the model
     return model
-
-
-def load_dataset_subfolder(datasetSubfolderName):
-    print(stamp() + "Classifying Dataset Subfolder for: " + datasetSubfolderName)
-
-    imageArray = []
-    labelArray = []
-
-    datasetSubfolderPath = datasetPath + '/' + experimentVariantDatasetName + '/' + datasetSubfolderName + '/'
-    for datasetCategory in os.listdir(datasetSubfolderPath):
-        datasetCategoryPath = datasetSubfolderPath + '/' + datasetCategory
-
-        for imageSample in os.listdir(datasetCategoryPath):
-            if file_is_image(datasetCategoryPath + '/' + imageSample):
-                # Load the image
-                image = cv2.imread(datasetCategoryPath + '/' + imageSample)
-                # Convert image to array
-                image = img_to_array(image)
-                # Save image to list
-                imageArray.append(image)
-
-                # Decide on binary label
-                if datasetCategory == categoryOne:
-                    label = 1
-                elif datasetCategory == categoryTwo:
-                    label = 0
-
-                labelArray.append(label)
-    return imageArray, labelArray
 
 
 def calculate_statistics(tn, fp, fn, tp):
@@ -177,20 +148,6 @@ def save_confusion_matrix(tp, tn, fp, fn):
     heatmap = sns.heatmap(cm, annot = True, fmt = 'g', linewidths = 0.2)
     fig = heatmap.get_figure()
     fig.savefig(resultsPath + '/' + modelName + '-confusion-matrix.png')
-
-    # labels = ['benign', 'malignant']
-    # cm = confusion_matrix(validationDatasetLabels, predictions)
-    # fig = plt.figure()
-    # ax = fig.add_subplot(111)
-    # cax = ax.matshow(cm)
-    # plt.title('Confusion Matrix for ' + modelName)
-    # fig.colorbar(cax)
-    # ax.set_xticklabels([''] + labels)
-    # ax.set_yticklabels([''] + labels)
-    # plt.xlabel('Predicted')
-    # plt.ylabel('True')
-    # plt.savefig(resultsPath + '/' + modelName + '-confusion-matrix.png')
-    # plt.close()
 
 
 # Summarize history for accuracy
@@ -224,41 +181,65 @@ def save_loss_graph(history):
 
 
 # Initialize the data and labels arrays
-trainingDatasetImages = []
-trainingDatasetLabels = []
-validationDatasetImages = []
+sortedData = []
+sortedLabels = []
+data = []
+labels = []
+
+# Go through dataset directory
+print(stamp() + "Classifying the Dataset")
+for datasetCategory in os.listdir(datasetPath):
+    datasetCategoryPath = datasetPath + "/" + datasetCategory
+
+    # Go through category 1 and then category 2 of the dataset
+    for sample in os.listdir(datasetCategoryPath):
+        # print(stamp() + sample)
+        if file_is_image(datasetCategoryPath + "/" + sample):
+            image = cv2.imread(datasetCategoryPath + "/" + sample)
+            image = cv2.resize(image, (
+                imageHeight, imageWidth))  # Network only accepts 28 x 28 so resize the image accordingly
+            image = img_to_array(image)
+            # Save image to the data list
+            sortedData.append(image)
+
+            # Decide on binary label
+            if datasetCategory == categoryOne:
+                label = 1
+            else:
+                label = 0
+            # Save label for the current image
+            sortedLabels.append(label)
+
+combined = list(zip(sortedData, sortedLabels))
+random.shuffle(combined)
+data[:], labels[:] = zip(*combined)
+
+# Scale the raw pixel intensities to the range [0, 1]
+data = np.array(data, dtype = "float") / 255.0
+labels = np.array(labels)
+
 validationDatasetLabels = []
+# testSet = 0.25 * len(labels)
+validationDatasetLabels = labels[-7:]
 
-(trainingDatasetImages, trainingDatasetLabels) = load_dataset_subfolder('train')
-(validationDatasetImages, validationDatasetLabels) = load_dataset_subfolder('validation')
-
-trainingCombined = list(zip(trainingDatasetImages, trainingDatasetLabels))
-random.shuffle(trainingCombined)
-trainingDatasetImages[:], trainingDatasetLabels[:] = zip(*trainingCombined)
-
-validationCombined = list(zip(validationDatasetImages, validationDatasetLabels))
-random.shuffle(validationCombined)
-validationDatasetImages[:], validationDatasetLabels[:] = zip(*validationCombined)
-
-# Join validation and training datasets together (75% - 25% split)
-combinedDatasetImages = trainingDatasetImages + validationDatasetImages
-combinedDatasetLabels = trainingDatasetLabels + validationDatasetLabels
-combinedDatasetImages = np.array(combinedDatasetImages, dtype = 'float') / 255.0
-combinedDatasetLabels = np.array(combinedDatasetLabels)
-
-print(stamp() + 'Training Set Size: ' + str(len(trainingDatasetLabels)))
-print(stamp() + 'Validation Set Size: ' + str(len(validationDatasetLabels)))
-print(stamp() + 'Total Dataset Size: ' + str(len(combinedDatasetLabels)))
-
-(trainX, testX, trainY, testY) = train_test_split(combinedDatasetImages, combinedDatasetLabels,
-                                                  test_size = validationDatasetSize, random_state = randomSeed)
+# Partition the data into training and testing splits
+(trainX, testX, trainY, testY) = train_test_split(data, labels, test_size = 7,  # Set manually to 7 for demo
+                                                  random_state = randomSeed)
 
 # Convert the labels from integers to vectors
-trainY = to_categorical(trainY, numberOfClasses)
-testY = to_categorical(testY, numberOfClasses)
+trainY = to_categorical(trainY, num_classes = numberOfClasses)
+testY = to_categorical(testY, num_classes = numberOfClasses)
 
 # Construct the image generator for data augmentation
-aug = ImageDataGenerator()
+aug = ImageDataGenerator(
+    rotation_range = rotationRange,
+    fill_mode = "nearest"
+)
+
+augValidation = ImageDataGenerator(
+    rotation_range = rotationRange,
+    fill_mode = "nearest"
+)
 
 # Initialize the model
 print(stamp() + "Compiling Network Model")
@@ -267,6 +248,7 @@ opt = Adam(lr = initialLearningRate, decay = decayRate)
 model.compile(loss = "binary_crossentropy",
               optimizer = opt,
               metrics = ["accuracy", "mean_squared_error", "mean_absolute_error"])
+
 # Train the network
 print(stamp() + "Training Network Model")
 history = model.fit_generator(
@@ -276,13 +258,13 @@ history = model.fit_generator(
     epochs = noEpochs,
     verbose = 1)
 
-predictions = model.predict_classes(testX, batchSize, 0)
-tn, fp, fn, tp = confusion_matrix(validationDatasetLabels, predictions).ravel()
-print(tn, fp, fn, tp)
-
-sensitivity, specificity, precision = calculate_statistics(tn, fp, fn, tp)
+# predictions = model.predict_classes(testX, batchSize, 0)
+# tn, fp, fn, tp = confusion_matrix(validationDatasetLabels, predictions).ravel()
+# print(tn, fp, fn, tp)
+sensitivity, specificity, precision = 0, 0, 0
+# sensitivity, specificity, precision = calculate_statistics(tn, fp, fn, tp)
 save_network_stats(resultsPath, modelName, history, resultsFileName, sensitivity, specificity, precision)
-save_confusion_matrix(tn, fp, fn, tp)
+# save_confusion_matrix(tn, fp, fn, tp)
 save_accuracy_graph(history)
 save_loss_graph(history)
 
