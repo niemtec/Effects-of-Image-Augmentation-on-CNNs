@@ -12,11 +12,12 @@ def resizeImage(path_to_image, path_to_processed_directory):
 
     new_image.save((path_to_processed_directory + "//" + new_filename), "PNG")
 
-working_directory = "datasets/cats-dogs/cat"
+
+working_directory = "datasets/isic/malignant"
 
 for file in os.listdir(working_directory):
     print(file)
-    output_path = "datasets/cats-dogs-resized/cat"
+    output_path = "datasets/isic-resized/malignant"
     if(file != "desktop.ini"):
         resizeImage(working_directory + "//" + file, output_path)
 
