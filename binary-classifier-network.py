@@ -1,5 +1,4 @@
 import datetime
-import sys
 import matplotlib
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam
@@ -13,13 +12,8 @@ from keras.layers.convolutional import MaxPooling2D
 from keras.layers.core import Activation
 from keras.layers.core import Flatten
 from keras.layers.core import Dense
-from keras import backend as K, metrics
-from sklearn import metrics
-import seaborn as sn
-import pandas as pd
+from keras import backend as K
 import matplotlib.pyplot as plt
-
-from miou_metric import MeanIoU
 import numpy as np
 import random
 import cv2
@@ -33,12 +27,12 @@ matplotlib.use("Agg")
 
 # Control Variables
 home = os.environ['HOME']
-experimentVariantDatasetName = 'control'
-resultsFileName = 'cancer-heatmap-control'
-modelName = 'cancer-noise-000-' + experimentVariantDatasetName
+experimentVariantDatasetName = 'all-corrupted'
+resultsFileName = 'demo'
+modelName = 'cancer-noise-015-' + experimentVariantDatasetName
 categoryOne = 'benign'
 categoryTwo = 'malignant'
-datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cancer-noise-005/'
+datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cancer-noise-015/'
 resultsPath = home + '/home/Downloads/Project-Turing/results/cancer-noise-experiments/heatmaps/'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
@@ -257,11 +251,6 @@ print(stamp() + 'Training Set Size: ' + str(len(trainingDatasetLabels)))
 print(stamp() + 'Validation Set Size: ' + str(len(validationDatasetLabels)))
 print(stamp() + 'Total Dataset Size: ' + str(len(combinedDatasetLabels)))
 
-# Safety stop for incorect dataset sizes
-# if ((len(trainingDatasetLabels) > trainingSize) or (len(validationDatasetLabels) > validationSize)):
-#     print(stamp() + 'Incorrect Dataset Size')
-#     sys.exit()
-# Partition the data into training and testing splits
 (trainX, testX, trainY, testY) = train_test_split(combinedDatasetImages, combinedDatasetLabels,
                                                   test_size = validationDatasetSize, random_state = randomSeed)
 
@@ -270,18 +259,8 @@ trainY = to_categorical(trainY, numberOfClasses)
 testY = to_categorical(testY, numberOfClasses)
 
 # Construct the image generator for data augmentation
-aug = ImageDataGenerator(
-    # rotation_range = 25
-    # vertical_flip = True
-    # horizontal_flip= True
-    # zoom_range = 1.0
-    # width_shift_range = 0.1
-    # height_shift_range = 0.1,
-    # shear_range = 0.2,
-    # fill_mode = "nearest"
-)
+aug = ImageDataGenerator()
 
-miou_metric = MeanIoU(2)
 
 # Initialize the model
 print(stamp() + "Compiling Network Model")
@@ -289,10 +268,7 @@ model = build_network_model(width = imageWidth, height = imageHeight, depth = im
 opt = Adam(lr = initialLearningRate, decay = decayRate)
 model.compile(loss = "binary_crossentropy",
               optimizer = opt,
-              metrics = ["accuracy",
-                         "mean_squared_error",
-                         "mean_absolute_error",
-                         miou_metric.mean_iou])
+              metrics = ["accuracy", "mean_squared_error", "mean_absolute_error"])
 # Train the network
 print(stamp() + "Training Network Model")
 history = model.fit_generator(
