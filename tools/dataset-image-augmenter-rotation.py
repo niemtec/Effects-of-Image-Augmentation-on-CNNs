@@ -6,6 +6,7 @@ datagen = ImageDataGenerator(
 )
 
 img = load_img('tools/network-heatmap-visualisation/malignant - rotation/0.jpg')
+
 x = img_to_array(img)
 x = x.reshape((1,) + x.shape)
 
