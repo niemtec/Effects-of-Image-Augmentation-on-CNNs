@@ -8,10 +8,6 @@ from keras.layers.core import Dense
 from keras import backend as K
 from ann_visualizer.visualize import ann_viz
 from keras_util import convert_drawer_model
-from keras_models import AlexNet
-from pptx_util import save_model_to_pptx
-from matplotlib_util import save_model_to_file
-import os
 
 
 # Build the network structure

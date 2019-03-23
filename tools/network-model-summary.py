@@ -1,12 +1,6 @@
-import datetime
-import sys
-
 import matplotlib
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam
-from sklearn.model_selection import train_test_split
-from keras.preprocessing.image import img_to_array
-from keras.utils import to_categorical
 from keras.models import Sequential
 from keras.layers.convolutional import Conv2D
 from keras.layers.convolutional import MaxPooling2D
@@ -14,11 +8,6 @@ from keras.layers.core import Activation
 from keras.layers.core import Flatten
 from keras.layers.core import Dense
 from keras import backend as K
-import matplotlib.pyplot as plt
-import numpy as np
-import random
-import cv2
-import os
 
 # BINARY CLASSIFIER NETWORK BASED ON THE LENET MODEL BUILT FOR IMAGE CLASSIFICATION TASKS
 # PART OF 'PROJECT TURING' - JAKUB ADRIAN NIEMIEC (@niemtec)
@@ -76,14 +65,6 @@ def build_network_model(width, height, depth, classes):
 
 # Construct the image generator for data augmentation
 aug = ImageDataGenerator(
-    # rotation_range = 25
-    # vertical_flip = True
-    # horizontal_flip= True
-    # zoom_range = 1.0
-    # width_shift_range = 0.1
-    # height_shift_range = 0.1,
-    # shear_range = 0.2,
-    # fill_mode = "nearest"
 )
 
 # Initialize the model
