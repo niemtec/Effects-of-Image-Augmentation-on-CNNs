@@ -166,7 +166,6 @@ def calculate_statistics(tn, fp, fn, tp):
 
 
 def save_confusion_matrix(tp, tn, fp, fn):
-
     import seaborn as sns
     tp = int(tp)
     tn = int(tn)
@@ -261,7 +260,6 @@ testY = to_categorical(testY, numberOfClasses)
 # Construct the image generator for data augmentation
 aug = ImageDataGenerator()
 
-
 # Initialize the model
 print(stamp() + "Compiling Network Model")
 model = build_network_model(width = imageWidth, height = imageHeight, depth = imageDepth, classes = numberOfClasses)
@@ -296,4 +294,3 @@ with open(resultsPath + '/' + modelName + ".json", "w") as json_file:
 
 print(stamp() + "Saving Network Weights")
 model.save_weights(resultsPath + '/' + modelName + ".h5", "w")
-
