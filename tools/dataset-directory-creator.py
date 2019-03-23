@@ -1,7 +1,7 @@
 # TOOL USED TO AUTOMATICALLY MOVE THE DATASET FILES FROM AUGMENTATON DIRECTORY TO THE CORRESPONDING DATASET SUBFOLDERS
 import os
 
-folderStructurePath = '../datasets/image-corruption-dataset/cats-dogs-noise-004'
+folderStructurePath = '../datasets/image-corruption-dataset/cats-dogs-noise-015'
 
 # Make core folders and their sub-folders
 os.makedirs(folderStructurePath + '/' + 'all-corrupted')
