@@ -27,20 +27,22 @@ matplotlib.use("Agg")
 
 # Control Variables
 home = os.environ['HOME']
-experimentVariantDatasetName = 'all-corrupted'
-resultsFileName = 'demo'
-modelName = 'cancer-noise-015-' + experimentVariantDatasetName
-categoryOne = 'benign'
-categoryTwo = 'malignant'
-datasetPath = home + '/home/Downloads/Project-Turing/datasets/image-corruption-dataset/cancer-noise-015/'
-resultsPath = home + '/home/Downloads/Project-Turing/results/cancer-noise-experiments/heatmaps/'
+datasetName = 'all-corrupted'
+resultsFileName = 'demo-run'
+rotationRange = 0  # 0, 45, 90, 135, 180
+categoryOne = 'malignant'
+categoryTwo = 'benign'
+modelName = datasetName + "-" + str(rotationRange)
+datasetPath = home + '/home/Downloads/Project-Turing/datasets/isic-resized/'
+resultsPath = home + '/home/Downloads/Project-Turing/results/cancer-rotation-experiments/heatmap'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
-noEpochs = 10
+noEpochs = 5
 initialLearningRate = 1e-5
 batchSize = 32
 decayRate = initialLearningRate / noEpochs
 numberOfClasses = 2
+
 validationDatasetSize = 0.25  # Using 75% of the data for training and the remaining 25% for testing
 randomSeed = 42  # For repeatability
 imageHeight = 64
@@ -74,7 +76,6 @@ def save_network_stats(resultsPath, modelName, history, fileName, sensitivity, s
     historyValLoss = str(historyValLoss[-1])  # Get last value from validated loss
     historyValAcc = history.history['val_acc']
     historyValAcc = str(historyValAcc[-1])  # Get last value from validated accuracy
-    # historyMSE = history.history['mse']
     historyMSE = 0  # str(historyMSE[-1])
     historyMAPE = 0  # history.history['mape']
     historyMAPE = 0  # str(historyMAPE[-1])
@@ -132,44 +133,11 @@ def calculate_statistics(tn, fp, fn, tp):
     sensitivity = tp / (tp + fn)
     specificity = tn / (fp + tn)
     precision = tp / (tp + fp)
-    datasetSubfolderPath = datasetPath + '/' + experimentVariantDatasetName + '/' + datasetSubfolderName + '/'
-    for datasetCategory in os.listdir(datasetSubfolderPath):
-        datasetCategoryPath = datasetSubfolderPath + '/' + datasetCategory
-                # Decide on binary label
-                if datasetCategory == categoryOne:
-                    label = 1
-                elif datasetCategory == categoryTwo:
-                    label = 0
-    cm = [[tp, tn], [fp, fn]]
-    cm = np.array(cm)
-    heatmap = sns.heatmap(cm, annot = True, fmt = 'g', linewidths = 0.2)
-    fig = heatmap.get_figure()
-    fig.savefig(resultsPath + '/' + modelName + '-confusion-matrix.png')
-
-# Summarize history for accuracy
-def save_accuracy_graph(history):
-    plt.figure(figsize = graphSize, dpi = 75)
-    plt.grid(True, which = 'both')
-    plt.plot(history.history['acc'])
-    plt.plot(history.history['val_acc'])
-    plt.title('Model Accuracy')
-    plt.ylabel('accuracy')
-    plt.xlabel('epoch')
-    plt.legend(['train', 'test'], loc = 'upper left')
-    plt.suptitle(modelName)
-    plt.savefig(resultsPath + '/' + modelName + "-accuracy.png")
-    plt.close()
-
-def calculate_statistics(tn, fp, fn, tp):
-    sensitivity = tp / (tp + fn)
-    specificity = tn / (fp + tn)
-    precision = tp / (tp + fp)
 
     return sensitivity, specificity, precision
 
 
 def save_confusion_matrix(tp, tn, fp, fn):
-
     import seaborn as sns
     tp = int(tp)
     tn = int(tn)
@@ -182,6 +150,7 @@ def save_confusion_matrix(tp, tn, fp, fn):
     fig = heatmap.get_figure()
     fig.savefig(resultsPath + '/' + modelName + '-confusion-matrix.png')
 
+
 # Summarize history for accuracy
 def save_accuracy_graph(history):
     plt.figure(figsize = graphSize, dpi = 75)
@@ -211,33 +180,6 @@ def save_loss_graph(history):
     plt.savefig(resultsPath + '/' + modelName + "-loss.png")
     plt.close()
 
-# Initialize the data and labels arrays
-trainingDatasetImages = []
-trainingDatasetLabels = []
-validationDatasetImages = []
-validationDatasetLabels = []
-
-(trainingDatasetImages, trainingDatasetLabels) = load_dataset_subfolder('train')
-(validationDatasetImages, validationDatasetLabels) = load_dataset_subfolder('validation')
-
-trainingCombined = list(zip(trainingDatasetImages, trainingDatasetLabels))
-random.shuffle(trainingCombined)
-trainingDatasetImages[:], trainingDatasetLabels[:] = zip(*trainingCombined)
-
-
-# Summarize history for loss
-def save_loss_graph(history):
-    plt.figure(figsize = graphSize, dpi = 75)
-    plt.grid(True, which = 'both')
-    plt.plot(history.history['loss'])
-    plt.plot(history.history['val_loss'])
-    plt.title('Model Loss')
-    plt.ylabel('loss')
-    plt.xlabel('epoch')
-    plt.legend(['train', 'test'], loc = 'upper left')
-    plt.suptitle(modelName)
-    plt.savefig(resultsPath + '/' + modelName + "-loss.png")
-    plt.close()
 
 # Initialize the data and labels arrays
 sortedData = []
@@ -281,17 +223,24 @@ validationDatasetLabels = []
 testSet = 0.25 * len(labels)
 validationDatasetLabels = labels[-540:]
 
-(trainX, testX, trainY, testY) = train_test_split(combinedDatasetImages, combinedDatasetLabels,
-                                                  test_size = validationDatasetSize, random_state = randomSeed)
-
+# Partition the data into training and testing splits
+(trainX, testX, trainY, testY) = train_test_split(data, labels, test_size = validationDatasetSize,
+                                                  random_state = randomSeed)
 
 # Convert the labels from integers to vectors
 trainY = to_categorical(trainY, num_classes = numberOfClasses)
 testY = to_categorical(testY, num_classes = numberOfClasses)
 
 # Construct the image generator for data augmentation
+aug = ImageDataGenerator(
+    rotation_range = rotationRange,
+    fill_mode = "nearest"
+)
 
-aug = ImageDataGenerator()
+augValidation = ImageDataGenerator(
+    rotation_range = rotationRange,
+    fill_mode = "nearest"
+)
 
 # Initialize the model
 print(stamp() + "Compiling Network Model")
