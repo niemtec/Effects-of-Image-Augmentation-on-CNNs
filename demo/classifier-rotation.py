@@ -32,8 +32,8 @@ rotationRange = 135  # 0, 45, 90, 135, 180
 categoryOne = 'malignant'
 categoryTwo = 'benign'
 modelName = datasetName + "-" + str(rotationRange)
-datasetPath = 'demo/demo-dataset-rotation/'
-resultsPath = 'demo/demo-noise-results/'
+datasetPath = 'demo-dataset-rotation/'
+resultsPath = 'demo-results/'
 plotName = modelName
 graphSize = (15, 10)  # Size of result plots
 noEpochs = 10
@@ -79,7 +79,7 @@ def save_network_stats(resultsPath, modelName, history, fileName, sensitivity, s
     historyMAPE = 0  # history.history['mape']
     historyMAPE = 0  # str(historyMAPE[-1])
 
-    with open(resultsPath + '/' + fileName + ".txt", "a") as history_log:
+    with open(resultsPath + fileName + ".txt", "a") as history_log:
         history_log.write(
             modelName + "," + historyLoss + "," + historyAcc + "," + historyValLoss + "," + historyValAcc + "," + str(
                 noEpochs) + "," + str(initialLearningRate) + "," + str(historyMSE) + "," + str(
@@ -271,8 +271,8 @@ save_loss_graph(history)
 # Save the model to disk
 print(stamp() + "Saving Network Model")
 model_json = model.to_json()
-with open(resultsPath + '/' + modelName + ".json", "w") as json_file:
+with open(resultsPath + modelName + ".json", "w") as json_file:
     json_file.write(model_json)
 
 print(stamp() + "Saving Network Weights")
-model.save_weights(resultsPath + '/' + modelName + ".h5", "w")
+model.save_weights(resultsPath + modelName + ".h5", "w")
