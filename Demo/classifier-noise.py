@@ -33,20 +33,23 @@ import cv2
 import os
 
 
+# Set the matplotlib backend so figures can be saved in the background
+matplotlib.use("Agg")
+
 # Control Variables
 # Name of the experiment performed (used for graph titles etc.)
-datasetName = 'all-corrupted'
-resultsFileName = 'demo'  # Name of the result files
-rotationRange = 135  # Range of rotations for the current experiment eg. 0, 45, 90, 135, 180
+experimentVariantDatasetName = 'all-corrupted'
+resultsFileName = 'Demo'    # Name of the result files
+# Name of the model used throughout graphs and results
+modelName = 'Demo-noise-' + experimentVariantDatasetName
 categoryOne = 'benign'  # Name of the first category for classification
 categoryTwo = 'malignant'   # Name of the second category for classification
-# Name of the model used throughout graphs and results
-modelName = datasetName + "-" + str(rotationRange)
 # Path to the dataset to be used for classification
-datasetPath = 'demo-dataset-rotation/'
-resultsPath = 'demo-results/'   # Path to be used for output of graphs and statistics
+datasetPath = 'Demo/Demo-dataset-noise/'
+# Path to be used for output of graphs and statistics
+resultsPath = 'Demo/Demo-noise-results/'
 plotName = modelName    # Name of the graph (using model name)
-graphSize = (15, 10)  # Size of result plots
+graphSize = (15, 10)  # Size of graph plots
 noEpochs = 100   # Number of epochs to run the model for (default 100)
 # Learning rate (determined from previous experimentation on dataset)
 initialLearningRate = 1e-5
@@ -62,9 +65,8 @@ imageWidth = 64     # Input image width
 # Input image depth (three means Red, Green, Blue coloured image)
 imageDepth = 3
 
+
 # Determine whether given file is an image
-
-
 def file_is_image(path_to_file):
     filename, extension = os.path.splitext(path_to_file)
     if extension != '.jpg':
@@ -96,7 +98,7 @@ def save_network_stats(resultsPath, modelName, history, fileName, sensitivity, s
     historyMAPE = 0  # history.history['mape']
     historyMAPE = 0  # str(historyMAPE[-1])
 
-    with open(resultsPath + fileName + ".txt", "a") as history_log:
+    with open(resultsPath + '/' + fileName + ".txt", "a") as history_log:
         history_log.write(
             modelName + "," + historyLoss + "," + historyAcc + "," + historyValLoss + "," + historyValAcc + "," + str(
                 noEpochs) + "," + str(initialLearningRate) + "," + str(historyMSE) + "," + str(
@@ -133,15 +135,55 @@ def build_network_model(width, height, depth, classes):
 
     # Third layer - fully-connected layers
     model.add(Flatten())
-    model.add(Dense(50))  # 500 nodes
+    # Originally 500 nodes, lowered to prevent overfitting
+    model.add(Dense(50))
     model.add(Activation("relu"))
 
     # Softmax classifier
-    model.add(Dense(classes))  # number of nodes = number of classes
-    model.add(Activation("softmax"))  # yields probability for each class
+    model.add(Dense(classes))  # Number of nodes = number of classes
+    model.add(Activation("softmax"))  # Yields probability for each class
 
     # Return the model
     return model
+
+
+def load_dataset_subfolder(datasetSubfolderName):
+    print(stamp() + "Classifying Dataset Subfolder for: " + datasetSubfolderName)
+
+    # Arrays used for storing the images and their corresponding labels
+    imageArray = []
+    labelArray = []
+
+    # Get path of the subfolder for a given dataset
+    datasetSubfolderPath = datasetPath + '/' + \
+        experimentVariantDatasetName + '/' + datasetSubfolderName + '/'
+
+    # Traverse the directory for a given dataset category in specified path
+    for datasetCategory in os.listdir(datasetSubfolderPath):
+        # Save current path
+        datasetCategoryPath = datasetSubfolderPath + '/' + datasetCategory
+
+        # Go through every image in the directory
+        for imageSample in os.listdir(datasetCategoryPath):
+            # Only accept image files (ignores residual files)
+            if file_is_image(datasetCategoryPath + '/' + imageSample):
+                # Load the image
+                image = cv2.imread(datasetCategoryPath + '/' + imageSample)
+                # Convert image to array
+                image = img_to_array(image)
+                # Save image to list
+                imageArray.append(image)
+
+                # Decide on binary label
+                if datasetCategory == categoryOne:
+                    label = 1
+                elif datasetCategory == categoryTwo:
+                    label = 0
+
+                labelArray.append(label)
+
+    # Return collated images and their labels as arrays
+    return imageArray, labelArray
 
 
 # Calculate confusion matrix statistics
@@ -199,65 +241,51 @@ def save_loss_graph(history):
 
 
 # Initialize the data and labels arrays
-sortedData = []
-sortedLabels = []
-data = []
-labels = []
-
-# Go through dataset directory
-print(stamp() + "Classifying the Dataset")
-for datasetCategory in os.listdir(datasetPath):
-    datasetCategoryPath = datasetPath + "/" + datasetCategory
-
-    # Go through category 1 and then category 2 of the dataset
-    for sample in os.listdir(datasetCategoryPath):
-        # print(stamp() + sample)
-        if file_is_image(datasetCategoryPath + "/" + sample):
-            image = cv2.imread(datasetCategoryPath + "/" + sample)
-            image = cv2.resize(image, (
-                imageHeight, imageWidth))  # Network only accepts 28 x 28 so resize the image accordingly
-            image = img_to_array(image)
-            # Save image to the data list
-            sortedData.append(image)
-
-            # Decide on binary label
-            if datasetCategory == categoryOne:
-                label = 1
-            else:
-                label = 0
-            # Save label for the current image
-            sortedLabels.append(label)
-
-combined = list(zip(sortedData, sortedLabels))
-random.shuffle(combined)
-data[:], labels[:] = zip(*combined)
-
-# Scale the raw pixel intensities to the range [0, 1]
-data = np.array(data, dtype="float") / 255.0
-labels = np.array(labels)
-
+trainingDatasetImages = []
+trainingDatasetLabels = []
+validationDatasetImages = []
 validationDatasetLabels = []
-# testSet = 0.25 * len(labels)
-validationDatasetLabels = labels[-7:]
 
-# Partition the data into training and testing splits
-(trainX, testX, trainY, testY) = train_test_split(data, labels, test_size=7,  # Set manually to 7 for demo
-                                                  random_state=randomSeed)
 
-# Convert the labels from integers to vectors
-trainY = to_categorical(trainY, num_classes=numberOfClasses)
-testY = to_categorical(testY, num_classes=numberOfClasses)
+# Load the training images and labels
+(trainingDatasetImages, trainingDatasetLabels) = load_dataset_subfolder('train')
+
+# Load the validation images and labels
+(validationDatasetImages, validationDatasetLabels) = load_dataset_subfolder('validation')
+
+# Combine training images and labels and shuffle them randomly whilst maintaining their relationship
+trainingCombined = list(zip(trainingDatasetImages, trainingDatasetLabels))
+random.shuffle(trainingCombined)
+trainingDatasetImages[:], trainingDatasetLabels[:] = zip(*trainingCombined)
+
+# Combine validation images and labels and shuffle them randomly whilst maintaining their relationship
+validationCombined = list(
+    zip(validationDatasetImages, validationDatasetLabels))
+random.shuffle(validationCombined)
+validationDatasetImages[:], validationDatasetLabels[:] = zip(
+    *validationCombined)
+
+# Join validation and training (shuffled) datasets together
+combinedDatasetImages = trainingDatasetImages + validationDatasetImages
+combinedDatasetLabels = trainingDatasetLabels + validationDatasetLabels
+combinedDatasetImages = np.array(combinedDatasetImages, dtype='float') / 255.0
+combinedDatasetLabels = np.array(combinedDatasetLabels)
+
+# Print statistical information for verification purposes
+print(stamp() + 'Training Set Size: ' + str(len(trainingDatasetLabels)))
+print(stamp() + 'Validation Set Size: ' + str(len(validationDatasetLabels)))
+print(stamp() + 'Total Dataset Size: ' + str(len(combinedDatasetLabels)))
+
+# Split the datasets into training and testing subsets with a split determined by control variables (75% training default)
+(trainX, testX, trainY, testY) = train_test_split(combinedDatasetImages, combinedDatasetLabels,
+                                                  test_size=validationDatasetSize, random_state=randomSeed)
+
+# Convert the labels to categorical type
+trainY = to_categorical(trainY, numberOfClasses)
+testY = to_categorical(testY, numberOfClasses)
 
 # Construct the image generator for data augmentation
-aug = ImageDataGenerator(
-    rotation_range=rotationRange,
-    fill_mode="nearest"
-)
-
-augValidation = ImageDataGenerator(
-    rotation_range=rotationRange,
-    fill_mode="nearest"
-)
+aug = ImageDataGenerator()
 
 # Initialize the model
 print(stamp() + "Compiling Network Model")
@@ -273,6 +301,7 @@ opt = Adam(lr=initialLearningRate, decay=decayRate)
 model.compile(loss="binary_crossentropy",
               optimizer=opt,
               metrics=["accuracy", "mean_squared_error", "mean_absolute_error"])
+
 # Train the network
 print(stamp() + "Training Network Model")
 

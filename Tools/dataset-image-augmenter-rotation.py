@@ -5,14 +5,14 @@ datagen = ImageDataGenerator(
     fill_mode = 'nearest'
 )
 
-img = load_img('tools/network-heatmap-visualisation/malignant - rotation/0.jpg')
+img = load_img('Tools/network-heatmap-visualisation/malignant - rotation/0.jpg')
 
 x = img_to_array(img)
 x = x.reshape((1,) + x.shape)
 
 i = 0
 for batch in datagen.flow(x, batch_size = 1,
-                          save_to_dir = 'tools/network-heatmap-visualisation/malignant - rotation/',
+                          save_to_dir = 'Tools/network-heatmap-visualisation/malignant - rotation/',
                           save_prefix = 'benign',
                           save_format = 'jpeg'):
     i += 1
