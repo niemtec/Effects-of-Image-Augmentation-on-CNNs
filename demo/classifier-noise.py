@@ -1,5 +1,3 @@
-import datetime
-import matplotlib
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam
 from sklearn.metrics import confusion_matrix
@@ -13,6 +11,8 @@ from keras.layers.core import Activation
 from keras.layers.core import Flatten
 from keras.layers.core import Dense
 from keras import backend as K
+import datetime
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import random
