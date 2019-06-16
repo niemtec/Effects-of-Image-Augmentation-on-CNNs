@@ -1,6 +1,8 @@
 # Effects of Image Augmentation on Convolutional Neural Networks
 An investigation into the effects that image augmentation has on the accuracy and loss of Convolutional Neural Networks. *This work was completed as part of dissertation project for Bachelor of Science (Honours) in Computer Science with specialism in Artificial Intelligence.*
 
+![Sample Runtime](GH-Pages-Images/Animation.gif)
+
 ## Project Aims
 ![Model Workflow](GH-Pages-Images/Model-Workflow.png)
 To generate a series of augmented dataset samples using **rotation** and **noise** and compare the effects that augmented samples have on model performance. Performance is measured in terms of general model **accuracy** and **loss** as reported by [Keras](https://keras.io/), with further calculations of **precision** and **error** rates derived through the use of [confusion matrices](https://www.dataschool.io/simple-guide-to-confusion-matrix-terminology/).
