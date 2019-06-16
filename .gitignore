@@ -524,3 +524,9 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+Demo/.DS_Store
+Demo/demo-dataset-noise/.DS_Store
+Demo/demo-dataset-noise/all-corrupted/.DS_Store
+Demo/demo-dataset-noise/all-corrupted/train/.DS_Store
+Tools/.DS_Store
+.DS_Store
