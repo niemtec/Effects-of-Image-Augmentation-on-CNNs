@@ -37,25 +37,33 @@ import os
 matplotlib.use("Agg")
 
 # Control Variables
-experimentVariantDatasetName = 'all-corrupted'  # Name of the experiment performed (used for graph titles etc.)
+# Name of the experiment performed (used for graph titles etc.)
+experimentVariantDatasetName = 'all-corrupted'
 resultsFileName = 'demo'    # Name of the result files
-modelName = 'demo-noise-' + experimentVariantDatasetName    # Name of the model used throughout graphs and results
+# Name of the model used throughout graphs and results
+modelName = 'demo-noise-' + experimentVariantDatasetName
 categoryOne = 'benign'  # Name of the first category for classification
 categoryTwo = 'malignant'   # Name of the second category for classification
-datasetPath = 'demo/demo-dataset-noise/'    # Path to the dataset to be used for classification
-resultsPath = 'demo/demo-noise-results/'    # Path to be used for output of graphs and statistics
+# Path to the dataset to be used for classification
+datasetPath = 'demo/demo-dataset-noise/'
+# Path to be used for output of graphs and statistics
+resultsPath = 'demo/demo-noise-results/'
 plotName = modelName    # Name of the graph (using model name)
 graphSize = (15, 10)  # Size of graph plots
 noEpochs = 100   # Number of epochs to run the model for (default 100)
-initialLearningRate = 1e-5  # Learning rate (determined from previous experimentation on dataset)
+# Learning rate (determined from previous experimentation on dataset)
+initialLearningRate = 1e-5
 batchSize = 32  # Size of sample batches to feed to the network
 decayRate = initialLearningRate / noEpochs
-numberOfClasses = 2 # Number of classification classes (two for binary classification)
-validationDatasetSize = 0.25  # Using 75% of the data for training and the remaining 25% for testing
+# Number of classification classes (two for binary classification)
+numberOfClasses = 2
+# Using 75% of the data for training and the remaining 25% for testing
+validationDatasetSize = 0.25
 randomSeed = 42  # For repeatability
 imageHeight = 64    # Input image height
 imageWidth = 64     # Input image width
-imageDepth = 3      # Input image depth (three means Red, Green, Blue coloured image)
+# Input image depth (three means Red, Green, Blue coloured image)
+imageDepth = 3
 
 
 # Determine whether given file is an image
@@ -81,9 +89,11 @@ def save_network_stats(resultsPath, modelName, history, fileName, sensitivity, s
     historyAcc = history.history['acc']
     historyAcc = str(historyAcc[-1])  # Get last value from accuracy
     historyValLoss = history.history['val_loss']
-    historyValLoss = str(historyValLoss[-1])  # Get last value from validated loss
+    # Get last value from validated loss
+    historyValLoss = str(historyValLoss[-1])
     historyValAcc = history.history['val_acc']
-    historyValAcc = str(historyValAcc[-1])  # Get last value from validated accuracy
+    # Get last value from validated accuracy
+    historyValAcc = str(historyValAcc[-1])
     historyMSE = 0  # str(historyMSE[-1])
     historyMAPE = 0  # history.history['mape']
     historyMAPE = 0  # str(historyMAPE[-1])
@@ -114,18 +124,19 @@ def build_network_model(width, height, depth, classes):
 
     # First layer
     model.add(
-        Conv2D(20, (5, 5), padding = "same", input_shape = inputShape))  # Learning 20 (5 x 5) convolution filters
+        Conv2D(20, (5, 5), padding="same", input_shape=inputShape))  # Learning 20 (5 x 5) convolution filters
     model.add(Activation("relu"))
-    model.add(MaxPooling2D(pool_size = (2, 2), strides = (2, 2)))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
 
     # Second layer
-    model.add(Conv2D(50, (5, 5), padding = "same"))
+    model.add(Conv2D(50, (5, 5), padding="same"))
     model.add(Activation("relu"))
-    model.add(MaxPooling2D(pool_size = (2, 2), strides = (2, 2)))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
 
     # Third layer - fully-connected layers
     model.add(Flatten())
-    model.add(Dense(50))  # Originally 500 nodes, lowered to prevent overfitting
+    # Originally 500 nodes, lowered to prevent overfitting
+    model.add(Dense(50))
     model.add(Activation("relu"))
 
     # Softmax classifier
@@ -144,8 +155,9 @@ def load_dataset_subfolder(datasetSubfolderName):
     labelArray = []
 
     # Get path of the subfolder for a given dataset
-    datasetSubfolderPath = datasetPath + '/' + experimentVariantDatasetName + '/' + datasetSubfolderName + '/'
-    
+    datasetSubfolderPath = datasetPath + '/' + \
+        experimentVariantDatasetName + '/' + datasetSubfolderName + '/'
+
     # Traverse the directory for a given dataset category in specified path
     for datasetCategory in os.listdir(datasetSubfolderPath):
         # Save current path
@@ -193,21 +205,21 @@ def save_confusion_matrix(tp, tn, fp, fn):
 
     cm = [[tp, tn], [fp, fn]]
     cm = np.array(cm)
-    heatmap = sns.heatmap(cm, annot = True, fmt = 'g', linewidths = 0.2)
+    heatmap = sns.heatmap(cm, annot=True, fmt='g', linewidths=0.2)
     fig = heatmap.get_figure()
     fig.savefig(resultsPath + '/' + modelName + '-confusion-matrix.png')
 
 
 # Summarize history for accuracy
 def save_accuracy_graph(history):
-    plt.figure(figsize = graphSize, dpi = 75)
-    plt.grid(True, which = 'both')
+    plt.figure(figsize=graphSize, dpi=75)
+    plt.grid(True, which='both')
     plt.plot(history.history['acc'])
     plt.plot(history.history['val_acc'])
     plt.title('Model Accuracy')
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
-    plt.legend(['train', 'test'], loc = 'upper left')
+    plt.legend(['train', 'test'], loc='upper left')
     plt.suptitle(modelName)
     plt.savefig(resultsPath + '/' + modelName + "-accuracy.png")
     plt.close()
@@ -215,14 +227,14 @@ def save_accuracy_graph(history):
 
 # Summarize history for loss
 def save_loss_graph(history):
-    plt.figure(figsize = graphSize, dpi = 75)
-    plt.grid(True, which = 'both')
+    plt.figure(figsize=graphSize, dpi=75)
+    plt.grid(True, which='both')
     plt.plot(history.history['loss'])
     plt.plot(history.history['val_loss'])
     plt.title('Model Loss')
     plt.ylabel('loss')
     plt.xlabel('epoch')
-    plt.legend(['train', 'test'], loc = 'upper left')
+    plt.legend(['train', 'test'], loc='upper left')
     plt.suptitle(modelName)
     plt.savefig(resultsPath + '/' + modelName + "-loss.png")
     plt.close()
@@ -247,14 +259,16 @@ random.shuffle(trainingCombined)
 trainingDatasetImages[:], trainingDatasetLabels[:] = zip(*trainingCombined)
 
 # Combine validation images and labels and shuffle them randomly whilst maintaining their relationship
-validationCombined = list(zip(validationDatasetImages, validationDatasetLabels))
+validationCombined = list(
+    zip(validationDatasetImages, validationDatasetLabels))
 random.shuffle(validationCombined)
-validationDatasetImages[:], validationDatasetLabels[:] = zip(*validationCombined)
+validationDatasetImages[:], validationDatasetLabels[:] = zip(
+    *validationCombined)
 
 # Join validation and training (shuffled) datasets together
 combinedDatasetImages = trainingDatasetImages + validationDatasetImages
 combinedDatasetLabels = trainingDatasetLabels + validationDatasetLabels
-combinedDatasetImages = np.array(combinedDatasetImages, dtype = 'float') / 255.0
+combinedDatasetImages = np.array(combinedDatasetImages, dtype='float') / 255.0
 combinedDatasetLabels = np.array(combinedDatasetLabels)
 
 # Print statistical information for verification purposes
@@ -264,7 +278,7 @@ print(stamp() + 'Total Dataset Size: ' + str(len(combinedDatasetLabels)))
 
 # Split the datasets into training and testing subsets with a split determined by control variables (75% training default)
 (trainX, testX, trainY, testY) = train_test_split(combinedDatasetImages, combinedDatasetLabels,
-                                                  test_size = validationDatasetSize, random_state = randomSeed)
+                                                  test_size=validationDatasetSize, random_state=randomSeed)
 
 # Convert the labels to categorical type
 trainY = to_categorical(trainY, numberOfClasses)
@@ -277,26 +291,27 @@ aug = ImageDataGenerator()
 print(stamp() + "Compiling Network Model")
 
 # Build the model based on control variable parameters
-model = build_network_model(width = imageWidth, height = imageHeight, depth = imageDepth, classes = numberOfClasses)
+model = build_network_model(
+    width=imageWidth, height=imageHeight, depth=imageDepth, classes=numberOfClasses)
 
-# Set optimiser 
-opt = Adam(lr = initialLearningRate, decay = decayRate)
+# Set optimiser
+opt = Adam(lr=initialLearningRate, decay=decayRate)
 
 # Compile the model using binary crossentropy, preset optimiser and selected metrics
-model.compile(loss = "binary_crossentropy",
-              optimizer = opt,
-              metrics = ["accuracy", "mean_squared_error", "mean_absolute_error"])
+model.compile(loss="binary_crossentropy",
+              optimizer=opt,
+              metrics=["accuracy", "mean_squared_error", "mean_absolute_error"])
 
 # Train the network
 print(stamp() + "Training Network Model")
 
 # Save results of training in history dictionary for statistical analysis
 history = model.fit_generator(
-    aug.flow(trainX, trainY, batch_size = batchSize),
-    validation_data = (testX, testY),
-    steps_per_epoch = len(trainX) // batchSize,
-    epochs = noEpochs,
-    verbose = 1)
+    aug.flow(trainX, trainY, batch_size=batchSize),
+    validation_data=(testX, testY),
+    steps_per_epoch=len(trainX) // batchSize,
+    epochs=noEpochs,
+    verbose=1)
 
 # The following can be used to produce confusion matrices if necessary
 # predictions = model.predict_classes(testX, batchSize, 0)
@@ -306,7 +321,8 @@ sensitivity, specificity, precision = 0, 0, 0   # Set to 0 if not used
 # sensitivity, specificity, precision = calculate_statistics(tn, fp, fn, tp)
 
 # Save all runtime statistics and plot graphs
-save_network_stats(resultsPath, modelName, history, resultsFileName, sensitivity, specificity, precision)
+save_network_stats(resultsPath, modelName, history,
+                   resultsFileName, sensitivity, specificity, precision)
 # save_confusion_matrix(tn, fp, fn, tp)
 save_accuracy_graph(history)
 save_loss_graph(history)
