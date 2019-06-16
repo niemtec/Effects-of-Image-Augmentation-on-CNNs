@@ -72,11 +72,9 @@ Rotation utilises in-built Keras libraries and loads original images from the da
 For example, an image set to 45° would rotate to a random position between -45° to 45°.
 
 ## Tools
-The [tools](tools/) directory contains various tools used during the preparation of datasets, directory creation, extraction of model heatmaps, visualisation and image reallocation.
+The [tools](tools/) directory contains various tools used during the preparation of datasets, directory creation, extraction of model heatmaps, visualisation and image reallocation. 
 
+## Credits
+The team behind the **Grad-CAM** tool as demonstrated in the paper ["Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization"](https://arxiv.org/abs/1610.02391) made heatmap visualisation prossible.
 
-
-## Credits and Acknowledgements
-GRAD-CAM
-ISDIS
-Tucker
+[The International Society for Digital Imaging of the Skin](https://isdis.net/isic-project) made their dataset publicly available for research purposes. The archive used in this investigation can be found [here](https://www.isic-archive.com/).
