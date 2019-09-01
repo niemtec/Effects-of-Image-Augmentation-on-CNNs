@@ -151,3 +151,5 @@ Tools.save_accuracy_graph(history)
 Tools.save_loss_graph(history)
 Tools.save_model_to_disk(model)
 Tools.save_weights_to_disk(model)
+
+#TODO Add heatmap generation

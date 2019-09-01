@@ -30,7 +30,6 @@ class Helper(object):
 		historyValAcc = str(historyValAcc[-1])
 		historyMSE = 0  # str(historyMSE[-1])
 
-
 		with open(self.resultsPath + self.modelName + ".txt", "a") as history_log:
 			history_log.write(
 				self.modelName + "," + historyLoss + "," + historyAcc + "," + historyValLoss + "," + historyValAcc + "," + str(noEpochs) + "," + str(initialLearningRate) + "," + str(historyMSE) + "\n")
@@ -53,20 +52,6 @@ class Helper(object):
 
 	def save_figure(self, fig, figureName):
 		fig.savefig(self.resultsPath + '/' + self.modelName + '-' + figureName + '.png')
-
-	# Save the confusion matrix as a graphical figure
-	def save_confusion_matrix(self, tp, tn, fp, fn, resultsPath, modelName):
-		import seaborn as sns
-		tp = int(tp)
-		tn = int(tn)
-		fp = int(fp)
-		fn = int(fn)
-
-		cm = [[tp, tn], [fp, fn]]
-		cm = np.array(cm)
-		heatmap = sns.heatmap(cm, annot = True, fmt = 'g', linewidths = 0.2)
-		fig = heatmap.get_figure()
-		self.save_figure(fig, 'confusion-matrix')
 
 	# Summarize history for accuracy
 	def save_accuracy_graph(self, history):
