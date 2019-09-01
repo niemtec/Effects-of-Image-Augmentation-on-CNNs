@@ -106,40 +106,34 @@ data = np.array(data, dtype = "float") / 255.0
 labels = np.array(labels)
 
 validationDatasetLabels = []
+#TODO: Fix Demo settings of 7
 # testSet = 0.25 * len(labels)
 validationDatasetLabels = labels[-7:]
-
+#TODO: Fix Demo settings of 7
 # Partition the data into training and testing splits
-(trainX, testX, trainY, testY) = train_test_split(data, labels, test_size = 7,  # Set manually to 7 for Demo
-                                                  random_state = randomSeed)
+(trainX, testX, trainY, testY) = train_test_split(data, labels, test_size = 7,
+random_state = randomSeed)
 
 # Convert the labels from integers to vectors
 trainY = to_categorical(trainY, num_classes = 2)
 testY = to_categorical(testY, num_classes = 2)
 
 # Construct the image generator for data augmentation
-aug = ImageDataGenerator(
-	rotation_range = rotationRange,
-	fill_mode = "nearest"
-)
+aug = ImageDataGenerator(rotation_range = rotationRange,fill_mode = "nearest")
 
-augValidation = ImageDataGenerator(
-	rotation_range = rotationRange,
-	fill_mode = "nearest"
-)
+augValidation = ImageDataGenerator(rotation_range = rotationRange,fill_mode = "nearest")
 
 # Initialize the model
 print(Tools.stamp() + "Compiling Network Model")
 
 # Build the model based on control variable parameters
-model = build_network_model(
-	width = 64, height = 64, depth = imageDepth, classes = 3)
+model = build_network_model(width = 64, height = 64, depth = imageDepth, classes = 3)
 
 # Set optimiser
 opt = Adam(lr = initialLearningRate, decay = decayRate)
 
 # Compile the model using binary crossentropy, preset optimiser and selected metrics
-model.compile(loss = "binary_crossentropy", optimizer = opt, metrics = ["accuracy", "mean_squared_error", "mean_absolute_error"])
+model.compile(loss = "binary_crossentropy", optimizer = opt, metrics = ["accuracy", "mean_squared_error"])
 # Train the network
 print(Tools.stamp() + "Training Network Model")
 
@@ -152,17 +146,8 @@ history = model.fit_generator(
 	verbose = 1)
 
 # Save all runtime statistics and plot graphs
-Tools.save_network_stats(resultsPath, modelName, history, resultsFileName, 0, 0, 0)
-# save_confusion_matrix(tn, fp, fn, tp)
+Tools.save_network_stats(modelName, history, resultsFileName, 0, 0, 0)
 Tools.save_accuracy_graph(history)
 Tools.save_loss_graph(history)
-
-# Save the model to disk
-print(Tools.stamp() + "Saving Network Model")
-model_json = model.to_json()
-with open(resultsPath + '/' + modelName + ".json", "w") as json_file:
-	json_file.write(model_json)
-
-# Save weights to disk
-print(Tools.stamp() + "Saving Network Weights")
-model.save_weights(resultsPath + '/' + modelName + ".h5", "w")
+Tools.save_model_to_disk(model)
+Tools.save_weights_to_disk(model)

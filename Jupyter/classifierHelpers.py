@@ -7,6 +7,7 @@ import numpy as np
 
 class Helper(object):
 	graphSize = (15, 10)
+
 	def __init__(self, resultsPath, modelName):
 		self.resultsPath = resultsPath
 		self.modelName = modelName
@@ -17,27 +18,22 @@ class Helper(object):
 		return time
 
 	# Save final model performance
-	def save_network_stats(self, resultsPath, modelName, history, fileName, sensitivity, specificity, precision, noEpochs, initialLearningRate):
+	def save_network_stats(self, history, noEpochs, initialLearningRate):
 		# Extract data from history dictionary
 		historyLoss = history.history['loss']
 		historyLoss = str(historyLoss[-1])  # Get last value from loss
 		historyAcc = history.history['acc']
 		historyAcc = str(historyAcc[-1])  # Get last value from accuracy
 		historyValLoss = history.history['val_loss']
-		# Get last value from validated loss
 		historyValLoss = str(historyValLoss[-1])
 		historyValAcc = history.history['val_acc']
-		# Get last value from validated accuracy
 		historyValAcc = str(historyValAcc[-1])
 		historyMSE = 0  # str(historyMSE[-1])
-		historyMAPE = 0  # history.history['mape']
-		historyMAPE = 0  # str(historyMAPE[-1])
 
-		with open(resultsPath + fileName + ".txt", "a") as history_log:
+
+		with open(self.resultsPath + self.modelName + ".txt", "a") as history_log:
 			history_log.write(
-				modelName + "," + historyLoss + "," + historyAcc + "," + historyValLoss + "," + historyValAcc + "," + str(
-					noEpochs) + "," + str(initialLearningRate) + "," + str(historyMSE) + "," + str(
-					historyMAPE) + "," + str(sensitivity) + "," + str(specificity) + "," + str(precision) + "\n")
+				self.modelName + "," + historyLoss + "," + historyAcc + "," + historyValLoss + "," + historyValAcc + "," + str(noEpochs) + "," + str(initialLearningRate) + "," + str(historyMSE) + "\n")
 		history_log.close()
 
 		print(self.stamp() + "Keras Log Saved")
@@ -73,7 +69,7 @@ class Helper(object):
 		self.save_figure(fig, 'confusion-matrix')
 
 	# Summarize history for accuracy
-	def save_accuracy_graph(self, history, modelName):
+	def save_accuracy_graph(self, history):
 		plt.figure(figsize = self.graphSize, dpi = 75)
 		plt.grid(True, which = 'both')
 		plt.plot(history.history['acc'])
@@ -82,12 +78,12 @@ class Helper(object):
 		plt.ylabel('accuracy')
 		plt.xlabel('epoch')
 		plt.legend(['train', 'test'], loc = 'upper left')
-		plt.suptitle(modelName)
+		plt.suptitle(self.modelName)
 		self.save_figure(plt, 'accuracy')
 		plt.close()
 
 	# Summarize history for loss
-	def save_loss_graph(self, history, modelName):
+	def save_loss_graph(self, history):
 		plt.figure(figsize = self.graphSize, dpi = 75)
 		plt.grid(True, which = 'both')
 		plt.plot(history.history['loss'])
@@ -96,10 +92,20 @@ class Helper(object):
 		plt.ylabel('loss')
 		plt.xlabel('epoch')
 		plt.legend(['train', 'test'], loc = 'upper left')
-		plt.suptitle(modelName)
+		plt.suptitle(self.modelName)
 		self.save_figure(plt, 'loss')
 		plt.close()
-
+	
+	def save_model_to_disk(self, model):
+		print(self.stamp() + "Saving Network Model")
+		model_json = model.to_json()
+		with open(self.resultsPath + '/' + self.modelName + ".json", "w") as json_file:
+			json_file.write(model_json)
+		
+	def save_weights_to_disk(self, model):
+		print(self.stamp() + "Saving Network Weights")
+		model.save_weights(self.resultsPath + '/' + self.modelName + ".h5", "w")
+	
 	@staticmethod
 	def file_is_image(path_to_file):
 		filename, extension = os.path.splitext(path_to_file)
