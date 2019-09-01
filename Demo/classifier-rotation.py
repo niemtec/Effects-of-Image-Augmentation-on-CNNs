@@ -10,7 +10,6 @@ This project has been put together as part of a dissertation in BSc (Hons) Compu
 
 __author__ = "Jakub Adrian Niemiec"
 
-
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam
 from sklearn.metrics import confusion_matrix
@@ -31,7 +30,6 @@ import numpy as np
 import random
 import cv2
 import os
-
 
 # Control Variables
 # Name of the experiment performed (used for graph titles etc.)
