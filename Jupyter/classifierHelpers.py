@@ -2,21 +2,14 @@ import datetime
 import matplotlib
 import matplotlib.pyplot as plt
 import os
+import numpy as np
 
 
 class Helper(object):
 	graphSize = (15, 10)
-
 	def __init__(self, resultsPath, modelName):
 		self.resultsPath = resultsPath
 		self.modelName = modelName
-
-	def file_is_image(self, path_to_file):
-		filename, extension = os.path.splitext(path_to_file)
-		if extension != '.jpg':
-			return False
-		else:
-			return True
 
 	# Prints current timestamp, to be used in print statements
 	def stamp(self):
@@ -24,8 +17,7 @@ class Helper(object):
 		return time
 
 	# Save final model performance
-	def save_network_stats(self, resultsPath, modelName, history, fileName, sensitivity, specificity, precision, noEpochs,
-	                       initialLearningRate):
+	def save_network_stats(self, resultsPath, modelName, history, fileName, sensitivity, specificity, precision, noEpochs, initialLearningRate):
 		# Extract data from history dictionary
 		historyLoss = history.history['loss']
 		historyLoss = str(historyLoss[-1])  # Get last value from loss
@@ -55,7 +47,8 @@ class Helper(object):
 		print(self.stamp() + "History File Saved")
 
 	# Calculate confusion matrix statistics
-	def calculate_statistics(self, tn, fp, fn, tp):
+	@staticmethod
+	def calculate_statistics(tn, fp, fn, tp):
 		sensitivity = tp / (tp + fn)
 		specificity = tn / (fp + tn)
 		precision = tp / (tp + fp)
@@ -80,7 +73,7 @@ class Helper(object):
 		self.save_figure(fig, 'confusion-matrix')
 
 	# Summarize history for accuracy
-	def save_accuracy_graph(self,history, modelName):
+	def save_accuracy_graph(self, history, modelName):
 		plt.figure(figsize = self.graphSize, dpi = 75)
 		plt.grid(True, which = 'both')
 		plt.plot(history.history['acc'])
@@ -94,7 +87,7 @@ class Helper(object):
 		plt.close()
 
 	# Summarize history for loss
-	def save_loss_graph(self,history, modelName):
+	def save_loss_graph(self, history, modelName):
 		plt.figure(figsize = self.graphSize, dpi = 75)
 		plt.grid(True, which = 'both')
 		plt.plot(history.history['loss'])
@@ -106,3 +99,11 @@ class Helper(object):
 		plt.suptitle(modelName)
 		self.save_figure(plt, 'loss')
 		plt.close()
+
+	@staticmethod
+	def file_is_image(path_to_file):
+		filename, extension = os.path.splitext(path_to_file)
+		if extension != '.jpg':
+			return False
+		else:
+			return True
