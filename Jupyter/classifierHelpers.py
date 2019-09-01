@@ -1,8 +1,6 @@
 import datetime
-import matplotlib
 import matplotlib.pyplot as plt
 import os
-import numpy as np
 
 
 class Helper(object):
@@ -36,19 +34,8 @@ class Helper(object):
 		history_log.close()
 
 		print(self.stamp() + "Keras Log Saved")
-
 		print(history.history.keys())
-
 		print(self.stamp() + "History File Saved")
-
-	# Calculate confusion matrix statistics
-	@staticmethod
-	def calculate_statistics(tn, fp, fn, tp):
-		sensitivity = tp / (tp + fn)
-		specificity = tn / (fp + tn)
-		precision = tp / (tp + fp)
-
-		return sensitivity, specificity, precision
 
 	def save_figure(self, fig, figureName):
 		fig.savefig(self.resultsPath + '/' + self.modelName + '-' + figureName + '.png')
