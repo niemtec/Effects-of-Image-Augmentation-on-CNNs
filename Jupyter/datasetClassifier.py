@@ -35,7 +35,6 @@ for dataset_category in os.listdir(dataset_path):
 				else:
 					sorted_labels.append(0)
 					
-#TODO SAVE THE ARRAY INTO A FILE FOR LATER LOADING
-np.save('sorted_data_array.txt', sorted_data)
+np.save('sorted_data_array', sorted_data)
 np.save('sorted_labels_array', sorted_labels)
 print('Saving complete')
