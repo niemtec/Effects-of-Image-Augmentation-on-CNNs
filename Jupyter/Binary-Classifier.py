@@ -76,18 +76,17 @@ labels = []
 print(Tools.stamp() + "Classifying the Dataset")
 for dataset_category in os.listdir(dataset_path):
 	dataset_category_path = dataset_path + "/" + dataset_category
+	
 	if not dataset_category.startswith('.'):
-		# Go through category 1 and then category 2 of the dataset
 		for sample in os.listdir(dataset_category_path):
 			print(Tools.stamp() + sample)
+			
 			if Tools.isFileAnImage(dataset_category_path + "/" + sample):
 				image = cv2.imread(dataset_category_path + "/" + sample)
 				image = cv2.resize(image, (64, 64))
 				image = img_to_array(image)
-				# Save image to the data list
 				sorted_data.append(image)
-	
-				# Decide on binary label
+				
 				if dataset_category == 'benign':
 					sorted_labels.append(1)
 				else:
