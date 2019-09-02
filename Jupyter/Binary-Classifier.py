@@ -104,23 +104,20 @@ data[:], labels[:] = zip(*combined)
 data = np.array(data, dtype = "float") / 255.0
 labels = np.array(labels)
 
-validationDatasetLabels = []
-#TODO: Fix Demo settings of 7
-# testSet = 0.25 * len(labels)
-validationDatasetLabels = labels[-7:]
-#TODO: Fix Demo settings of 7
+test_set = validation_dataset_size * len(labels)
+validation_dataset_labels = labels[-test_set:]
+
 # Partition the data into training and testing splits
-(trainX, testX, trainY, testY) = train_test_split(data, labels, test_size = 7,
-                                                  random_state = random_seed)
+(train_x, test_x, train_y, test_y) = train_test_split(data, labels, test_size = test_set, random_state = random_seed)
 
 # Convert the labels from integers to vectors
-trainY = to_categorical(trainY, num_classes = 2)
-testY = to_categorical(testY, num_classes = 2)
+train_y = to_categorical(train_y, num_classes = 2)
+test_y = to_categorical(test_y, num_classes = 2)
 
 # Construct the image generator for data augmentation
-aug = ImageDataGenerator(rotation_range = rotation_range, fill_mode = "nearest")
+training_augmented_image_generator = ImageDataGenerator(rotation_range = rotation_range, fill_mode = "nearest")
 
-augValidation = ImageDataGenerator(rotation_range = rotation_range, fill_mode = "nearest")
+testing_augmented_image_generator = ImageDataGenerator(rotation_range = rotation_range, fill_mode = "nearest")
 
 # Initialize the model
 print(Tools.stamp() + "Compiling Network Model")
@@ -129,23 +126,23 @@ print(Tools.stamp() + "Compiling Network Model")
 model = buildNetworkModel(width = 64, height = 64, depth = image_depth, classes = 3)
 
 # Set optimiser
-opt = Adam(lr = initial_learning_rate, decay = decay_rate)
+optimiser = Adam(lr = initial_learning_rate, decay = decay_rate)
 
 # Compile the model using binary crossentropy, preset optimiser and selected metrics
-model.compile(loss = "binary_crossentropy", optimizer = opt, metrics = ["accuracy", "mean_squared_error"])
+model.compile(loss = "binary_crossentropy", optimizer = optimiser, metrics = ["accuracy", "mean_squared_error"])
 # Train the network
 print(Tools.stamp() + "Training Network Model")
 
 # Save results of training in history dictionary for statistical analysis
 history = model.fit_generator(
-	aug.flow(trainX, trainY, batch_size = batch_size),
-	validation_data = (testX, testY),
-	steps_per_epoch = len(trainX) // batch_size,
+	training_augmented_image_generator.flow(train_x, train_y, batch_size = batch_size),
+	validation_data = (test_x, test_y),
+	steps_per_epoch = len(train_x) // batch_size,
 	epochs = epochs,
 	verbose = 1)
 
 # Save all runtime statistics and plot graphs
-Tools.saveNetworkStats(model_name, history, results_file_name, 0, 0, 0)
+Tools.saveNetworkStats(model_name, history, results_file_name)
 Tools.saveAccuracyGraph(history)
 Tools.saveLossGraph(history)
 Tools.saveModelToDisk(model)
