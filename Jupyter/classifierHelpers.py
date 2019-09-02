@@ -16,7 +16,7 @@ class Helper(object):
 		return time
 
 	# Save final model performance
-	def save_network_stats(self, history, noEpochs, initialLearningRate):
+	def saveNetworkStats(self, history, noEpochs, initialLearningRate):
 		# Extract data from history dictionary
 		historyLoss = history.history['loss']
 		historyLoss = str(historyLoss[-1])  # Get last value from loss
@@ -37,11 +37,11 @@ class Helper(object):
 		print(history.history.keys())
 		print(self.stamp() + "History File Saved")
 
-	def save_figure(self, fig, figureName):
+	def saveFigureStats(self, fig, figureName):
 		fig.savefig(self.resultsPath + '/' + self.modelName + '-' + figureName + '.png')
 
 	# Summarize history for accuracy
-	def save_accuracy_graph(self, history):
+	def saveAccuracyGraph(self, history):
 		plt.figure(figsize = self.graphSize, dpi = 75)
 		plt.grid(True, which = 'both')
 		plt.plot(history.history['acc'])
@@ -51,11 +51,11 @@ class Helper(object):
 		plt.xlabel('epoch')
 		plt.legend(['train', 'test'], loc = 'upper left')
 		plt.suptitle(self.modelName)
-		self.save_figure(plt, 'accuracy')
+		self.saveFigureStats(plt, 'accuracy')
 		plt.close()
 
 	# Summarize history for loss
-	def save_loss_graph(self, history):
+	def saveLossGraph(self, history):
 		plt.figure(figsize = self.graphSize, dpi = 75)
 		plt.grid(True, which = 'both')
 		plt.plot(history.history['loss'])
@@ -65,21 +65,21 @@ class Helper(object):
 		plt.xlabel('epoch')
 		plt.legend(['train', 'test'], loc = 'upper left')
 		plt.suptitle(self.modelName)
-		self.save_figure(plt, 'loss')
+		self.saveFigureStats(plt, 'loss')
 		plt.close()
 	
-	def save_model_to_disk(self, model):
+	def saveModelToDisk(self, model):
 		print(self.stamp() + "Saving Network Model")
 		model_json = model.to_json()
 		with open(self.resultsPath + '/' + self.modelName + ".json", "w") as json_file:
 			json_file.write(model_json)
 		
-	def save_weights_to_disk(self, model):
+	def saveWeightsToDisk(self, model):
 		print(self.stamp() + "Saving Network Weights")
 		model.save_weights(self.resultsPath + '/' + self.modelName + ".h5", "w")
 	
 	@staticmethod
-	def file_is_image(path_to_file):
+	def isFileAnImage(path_to_file):
 		filename, extension = os.path.splitext(path_to_file)
 		if extension != '.jpg':
 			return False
