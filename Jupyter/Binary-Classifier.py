@@ -67,36 +67,36 @@ def buildNetworkModel(width, height, depth, classes):
 
 
 # Initialize the data and labels arrays
-sortedData = []
-sortedLabels = []
+sorted_data = []
+sorted_labels = []
 data = []
 labels = []
 
 # Go through dataset directory
 print(Tools.stamp() + "Classifying the Dataset")
-for datasetCategory in os.listdir(dataset_path):
-	datasetCategoryPath = dataset_path + "/" + datasetCategory
+for dataset_category in os.listdir(dataset_path):
+	dataset_category_path = dataset_path + "/" + dataset_category
 
 	# Go through category 1 and then category 2 of the dataset
-	for sample in os.listdir(datasetCategoryPath):
+	for sample in os.listdir(dataset_category_path):
 		# print(stamp() + sample)
-		if Tools.isFileAnImage(datasetCategoryPath + "/" + sample):
-			image = cv2.imread(datasetCategoryPath + "/" + sample)
+		if Tools.isFileAnImage(dataset_category_path + "/" + sample):
+			image = cv2.imread(dataset_category_path + "/" + sample)
 			image = cv2.resize(image, (
 				64, 64))
 			image = img_to_array(image)
 			# Save image to the data list
-			sortedData.append(image)
+			sorted_data.append(image)
 
 			# Decide on binary label
-			if datasetCategory == 'benign':
+			if dataset_category == 'benign':
 				label = 1
 			else:
 				label = 0
 			# Save label for the current image
-			sortedLabels.append(label)
+			sorted_labels.append(label)
 
-combined = list(zip(sortedData, sortedLabels))
+combined = list(zip(sorted_data, sorted_labels))
 random.shuffle(combined)
 data[:], labels[:] = zip(*combined)
 
