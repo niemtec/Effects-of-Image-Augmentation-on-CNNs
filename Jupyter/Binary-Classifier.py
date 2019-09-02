@@ -16,9 +16,9 @@ import cv2
 import os
 from classifierHelpers import Helper
 
-results_file_name = 'Demo'
-dataset_path = 'Demo-dataset-rotation/'
-rotation_range = 135
+results_file_name = 'Rotation-180'
+dataset_path = '../Cancer-Dataset/'
+rotation_range = 180
 epochs = 100
 initial_learning_rate = 1e-5
 batch_size = 32
@@ -27,7 +27,7 @@ validation_dataset_size = 0.25
 random_seed = 42
 image_depth = 3
 
-results_path = 'Demo-results/'
+results_path = 'Jupyter/Results/'
 model_name = results_file_name + "-" + str(rotation_range)
 plot_name = model_name
 
@@ -76,25 +76,22 @@ labels = []
 print(Tools.stamp() + "Classifying the Dataset")
 for dataset_category in os.listdir(dataset_path):
 	dataset_category_path = dataset_path + "/" + dataset_category
-
-	# Go through category 1 and then category 2 of the dataset
-	for sample in os.listdir(dataset_category_path):
-		# print(stamp() + sample)
-		if Tools.isFileAnImage(dataset_category_path + "/" + sample):
-			image = cv2.imread(dataset_category_path + "/" + sample)
-			image = cv2.resize(image, (
-				64, 64))
-			image = img_to_array(image)
-			# Save image to the data list
-			sorted_data.append(image)
-
-			# Decide on binary label
-			if dataset_category == 'benign':
-				label = 1
-			else:
-				label = 0
-			# Save label for the current image
-			sorted_labels.append(label)
+	if not dataset_category.startswith('.'):
+		# Go through category 1 and then category 2 of the dataset
+		for sample in os.listdir(dataset_category_path):
+			print(Tools.stamp() + sample)
+			if Tools.isFileAnImage(dataset_category_path + "/" + sample):
+				image = cv2.imread(dataset_category_path + "/" + sample)
+				image = cv2.resize(image, (64, 64))
+				image = img_to_array(image)
+				# Save image to the data list
+				sorted_data.append(image)
+	
+				# Decide on binary label
+				if dataset_category == 'benign':
+					sorted_labels.append(1)
+				else:
+					sorted_labels.append(0)
 
 combined = list(zip(sorted_data, sorted_labels))
 random.shuffle(combined)
