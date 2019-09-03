@@ -1,7 +1,6 @@
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam
 from sklearn.model_selection import train_test_split
-from keras.preprocessing.image import img_to_array
 from keras.utils import to_categorical
 from keras.models import Sequential
 from keras.layers.convolutional import Conv2D
@@ -12,14 +11,12 @@ from keras.layers.core import Dense
 from keras import backend as K
 import numpy as np
 import random
-import cv2
-import os
-from classifierHelpers import Helper
+import classifierHelpers as tools
 
 results_file_name = 'Rotation-180'
 dataset_path = '../Cancer-Dataset/'
 rotation_range = 180
-epochs = 100
+epochs = 5
 initial_learning_rate = 1e-5
 batch_size = 32
 decay_rate = initial_learning_rate / epochs
@@ -27,24 +24,21 @@ validation_dataset_size = 0.25
 random_seed = 42
 image_depth = 3
 
-results_path = 'Jupyter/Results/'
+results_path = 'Results/'
 model_name = results_file_name + "-" + str(rotation_range)
 plot_name = model_name
-
-Tools = Helper(results_path, model_name)
-
 
 # Build the network structure
 def buildNetworkModel(width, height, depth, classes):
 	model = Sequential()
-	inputShape = (height, width, depth)
+	input_shape = (height, width, depth)
 
 	# If 'channel first' is being used, update the input shape
 	if K.image_data_format() == 'channel_first':
-		inputShape = (depth, height, width)
+		input_shape = (depth, height, width)
 
 	# First layer
-	model.add(Conv2D(20, (5, 5), padding = "same", input_shape = inputShape))  # Learning 20 (5 x 5) convolution filters
+	model.add(Conv2D(20, (5, 5), padding = "same", input_shape = input_shape))  # Learning 20 (5 x 5) convolution filters
 	model.add(Activation("relu"))
 	model.add(MaxPooling2D(pool_size = (2, 2), strides = (2, 2)))
 
@@ -65,32 +59,11 @@ def buildNetworkModel(width, height, depth, classes):
 	# Return the model
 	return model
 
-
-# Initialize the data and labels arrays
-sorted_data = []
-sorted_labels = []
+# Load the dataset
+sorted_data = np.load('sorted_data_array.npy')
+sorted_labels = np.load('sorted_labels_array.npy')
 data = []
 labels = []
-
-# Go through dataset directory
-print(Tools.stamp() + "Classifying the Dataset")
-for dataset_category in os.listdir(dataset_path):
-	dataset_category_path = dataset_path + "/" + dataset_category
-	
-	if not dataset_category.startswith('.'):
-		for sample in os.listdir(dataset_category_path):
-			print(Tools.stamp() + sample)
-			
-			if Tools.isFileAnImage(dataset_category_path + "/" + sample):
-				image = cv2.imread(dataset_category_path + "/" + sample)
-				image = cv2.resize(image, (64, 64))
-				image = img_to_array(image)
-				sorted_data.append(image)
-				
-				if dataset_category == 'benign':
-					sorted_labels.append(1)
-				else:
-					sorted_labels.append(0)
 
 combined = list(zip(sorted_data, sorted_labels))
 random.shuffle(combined)
@@ -100,7 +73,8 @@ data[:], labels[:] = zip(*combined)
 data = np.array(data, dtype = "float") / 255.0
 labels = np.array(labels)
 
-test_set = validation_dataset_size * len(labels)
+#TODO Fix the below: It should carry the number of items in the test set
+test_set = int(validation_dataset_size * len(labels))
 validation_dataset_labels = labels[-test_set:]
 
 # Partition the data into training and testing splits
@@ -116,10 +90,10 @@ training_augmented_image_generator = ImageDataGenerator(rotation_range = rotatio
 testing_augmented_image_generator = ImageDataGenerator(rotation_range = rotation_range, fill_mode = "nearest")
 
 # Initialize the model
-print(Tools.stamp() + "Compiling Network Model")
+print(tools.stamp() + "Compiling Network Model")
 
 # Build the model based on control variable parameters
-model = buildNetworkModel(width = 64, height = 64, depth = image_depth, classes = 3)
+model = buildNetworkModel(width = 64, height = 64, depth = image_depth, classes = 2)
 
 # Set optimiser
 optimiser = Adam(lr = initial_learning_rate, decay = decay_rate)
@@ -127,7 +101,7 @@ optimiser = Adam(lr = initial_learning_rate, decay = decay_rate)
 # Compile the model using binary crossentropy, preset optimiser and selected metrics
 model.compile(loss = "binary_crossentropy", optimizer = optimiser, metrics = ["accuracy", "mean_squared_error"])
 # Train the network
-print(Tools.stamp() + "Training Network Model")
+print(tools.stamp() + "Training Network Model")
 
 # Save results of training in history dictionary for statistical analysis
 history = model.fit_generator(
@@ -138,10 +112,10 @@ history = model.fit_generator(
 	verbose = 1)
 
 # Save all runtime statistics and plot graphs
-Tools.saveNetworkStats(model_name, history, results_file_name)
-Tools.saveAccuracyGraph(history)
-Tools.saveLossGraph(history)
-Tools.saveModelToDisk(model)
-Tools.saveWeightsToDisk(model)
+tools.saveNetworkStats(history, epochs, initial_learning_rate,model_name, results_path)
+tools.saveAccuracyGraph(history, plot_name, results_path)
+tools.saveLossGraph(history, plot_name, results_path)
+tools.saveModelToDisk(model, model_name, results_path)
+tools.saveWeightsToDisk(model, model_name, results_path)
 
 #TODO Add heatmap generation
