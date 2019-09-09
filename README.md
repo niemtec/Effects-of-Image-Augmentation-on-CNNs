@@ -1,4 +1,4 @@
-# Effects of Image Augmentation on Convolutional Neural Networks
+# Investigation Into the Effects of Image Augmentation on Classification Accuracy of Convolutional Neural Networks
 An investigation into the effects that image augmentation has on the accuracy and loss of Convolutional Neural Networks. *This work was completed as part of dissertation project for Bachelor of Science (Honours) in Computer Science with specialism in Artificial Intelligence.*
 
 ![Sample Runtime](GH-Pages-Images/Animation.gif)
