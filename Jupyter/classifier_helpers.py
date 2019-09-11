@@ -72,12 +72,14 @@ def saveLossGraph(history, model_name, results_path):
 def saveLearningRateGraph(history, model_name, results_path):
 	plt.figure(figsize = graph_size, dpi = 75)
 	plt.grid(True, which = 'both')
-	plt.plot(history.history['lr_metric'])
-	plt.title('Model Learning Rate')
-	plt.ylabel('loss')
+	plt.plot(history.history['lr'])
+	plt.plot(history.history['val_lr'])
+	plt.title('Learning Rate')
+	plt.ylabel('learning_rate')
 	plt.xlabel('epoch')
+	plt.legend(['train', 'test'], loc = 'upper left')
 	plt.suptitle(model_name)
-	saveFigureStats(plt, 'lr_metric', model_name, results_path)
+	saveFigureStats(plt, 'learning_rate', model_name, results_path)
 	plt.close()
 
 

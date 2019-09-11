@@ -13,10 +13,10 @@ import numpy as np
 import random
 import classifier_helpers as tools
 
-results_file_name = 'Batch-Size-2'
+results_file_name = 'Batch-Size-000'
 dataset_path = '../Cancer-Dataset/'
 rotation_range = 0
-epochs = 150
+epochs = 10
 initial_learning_rate = 1e-5
 batch_size = 2
 decay_rate = initial_learning_rate / epochs  # TODO: Determine the manual decay rate
