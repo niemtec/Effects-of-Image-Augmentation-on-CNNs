@@ -13,13 +13,13 @@ import numpy as np
 import random
 import classifierHelpers as tools
 
-results_file_name = 'Rotation-180'
+results_file_name = 'Batch-Size-2'
 dataset_path = '../Cancer-Dataset/'
-rotation_range = 180
-epochs = 5
+rotation_range = 0
+epochs = 150
 initial_learning_rate = 1e-5
-batch_size = 32
-decay_rate = initial_learning_rate / epochs
+batch_size = 2
+decay_rate = initial_learning_rate / epochs  # TODO: Determine the manual decay rate
 validation_dataset_size = 0.25
 random_seed = 42
 image_depth = 3
@@ -28,34 +28,36 @@ results_path = 'Results/'
 model_name = results_file_name + "-" + str(rotation_range)
 plot_name = model_name
 
+
 # Build the network structure
 def buildNetworkModel(width, height, depth, classes):
 	model = Sequential()
 	input_shape = (height, width, depth)
-
+	
 	# If 'channel first' is being used, update the input shape
 	if K.image_data_format() == 'channel_first':
 		input_shape = (depth, height, width)
-
+	
 	# First layer
-	model.add(Conv2D(20, (5, 5), padding = "same", input_shape = input_shape))  # Learning 20 (5 x 5) convolution filters
+	model.add(
+		Conv2D(20, (5, 5), padding = "same", input_shape = input_shape))  # Learning 20 (5 x 5) convolution filters
 	model.add(Activation("relu"))
 	model.add(MaxPooling2D(pool_size = (2, 2), strides = (2, 2)))
-
+	
 	# Second layer
 	model.add(Conv2D(50, (5, 5), padding = "same"))
 	model.add(Activation("relu"))
 	model.add(MaxPooling2D(pool_size = (2, 2), strides = (2, 2)))
-
+	
 	# Third layer - fully-connected layers
 	model.add(Flatten())
 	model.add(Dense(50))  # 500 nodes
 	model.add(Activation("relu"))
-
+	
 	# Softmax classifier
 	model.add(Dense(classes))  # number of nodes = number of classes
 	model.add(Activation("softmax"))  # yields probability for each class
-
+	
 	# Return the model
 	return model
 
@@ -73,7 +75,6 @@ data[:], labels[:] = zip(*combined)
 data = np.array(data, dtype = "float") / 255.0
 labels = np.array(labels)
 
-#TODO Fix the below: It should carry the number of items in the test set
 test_set = int(validation_dataset_size * len(labels))
 validation_dataset_labels = labels[-test_set:]
 
@@ -109,13 +110,13 @@ history = model.fit_generator(
 	validation_data = (test_x, test_y),
 	steps_per_epoch = len(train_x) // batch_size,
 	epochs = epochs,
-	verbose = 1)
+	verbose = 2)
 
 # Save all runtime statistics and plot graphs
-tools.saveNetworkStats(history, epochs, initial_learning_rate,model_name, results_path)
+tools.saveNetworkStats(history, epochs, initial_learning_rate, model_name, results_path)
 tools.saveAccuracyGraph(history, plot_name, results_path)
 tools.saveLossGraph(history, plot_name, results_path)
 tools.saveModelToDisk(model, model_name, results_path)
 tools.saveWeightsToDisk(model, model_name, results_path)
 
-#TODO Add heatmap generation
+# TODO Add heatmap generation
