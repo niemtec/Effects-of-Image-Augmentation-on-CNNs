@@ -1,3 +1,4 @@
+from keras.callbacks import Callback, LearningRateScheduler
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam
 from sklearn.model_selection import train_test_split
@@ -13,13 +14,14 @@ import numpy as np
 import random
 import classifier_helpers as tools
 
-results_file_name = 'Batch-Size-000'
+results_file_name = 'Batch-Size-2'
 dataset_path = '../Cancer-Dataset/'
 rotation_range = 0
-epochs = 10
-initial_learning_rate = 1e-5
+epochs = 100
+initial_learning_rate = 1e-2  # 1e-5
 batch_size = 2
 decay_rate = initial_learning_rate / epochs  # TODO: Determine the manual decay rate
+print("Decay Rate:", decay_rate)
 validation_dataset_size = 0.25
 random_seed = 42
 image_depth = 3
@@ -29,7 +31,7 @@ model_name = results_file_name + "-" + str(rotation_range)
 plot_name = model_name
 
 
-def get_learning_rate_metric(optimizer):
+def get_lr_metric(optimizer):
 	def lr(y_true, y_pred):
 		return optimizer.lr
 	
@@ -46,7 +48,8 @@ def buildNetworkModel(width, height, depth, classes):
 		input_shape = (depth, height, width)
 	
 	# First layer
-	model.add(Conv2D(20, (5, 5), padding = "same", input_shape = input_shape))  # Learning 20 (5 x 5) convolution filters
+	model.add(
+		Conv2D(20, (5, 5), padding = "same", input_shape = input_shape))  # Learning 20 (5 x 5) convolution filters
 	model.add(Activation("relu"))
 	model.add(MaxPooling2D(pool_size = (2, 2), strides = (2, 2)))
 	
@@ -66,6 +69,7 @@ def buildNetworkModel(width, height, depth, classes):
 	
 	# Return the model
 	return model
+
 
 # Load the dataset
 sorted_data = np.load('sorted_data_array.npy')
@@ -102,14 +106,28 @@ print(tools.stamp() + "Compiling Network Model")
 model = buildNetworkModel(width = 64, height = 64, depth = image_depth, classes = 2)
 
 # Set optimiser
-optimiser = Adam(lr = initial_learning_rate, decay = decay_rate)
-
-lr_metric = get_learning_rate_metric(optimiser)
+optimiser = Adam(lr = initial_learning_rate)
+lr_metric = get_lr_metric(optimiser)
 
 # Compile the model using binary crossentropy, preset optimiser and selected metrics
 model.compile(loss = "binary_crossentropy", optimizer = optimiser, metrics = ["accuracy", "mean_squared_error", lr_metric])
 # Train the network
 print(tools.stamp() + "Training Network Model")
+
+
+def stepDecay(epoch):
+	dropEvery = 10
+	initAlpha = 0.01
+	factor = 0.25
+	# Compute learning rate for current epoch
+	exp = np.floor((1 + epoch) / dropEvery)
+	alpha = initAlpha * (factor ** exp)
+	
+	return float(alpha)
+
+
+# reducing the learning rate by half every 2 epochs
+learning_rate_schedule = [LearningRateScheduler(stepDecay)]
 
 # Save results of training in history dictionary for statistical analysis
 history = model.fit_generator(
@@ -117,7 +135,8 @@ history = model.fit_generator(
 	validation_data = (test_x, test_y),
 	steps_per_epoch = len(train_x) // batch_size,
 	epochs = epochs,
-	verbose = 2)
+	verbose = 2,
+	callbacks = learning_rate_schedule)
 
 # Save all runtime statistics and plot graphs
 tools.saveNetworkStats(history, epochs, initial_learning_rate, model_name, results_path)

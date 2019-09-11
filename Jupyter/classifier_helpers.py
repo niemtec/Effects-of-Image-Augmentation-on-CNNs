@@ -24,11 +24,15 @@ def saveNetworkStats(history, epochs, initial_learning_rate, model_name, results
 	history_val_acc = str(history_val_acc[-1])
 	history_mse = history.history['mean_squared_error']
 	history_mse = str(history_mse[-1])
+	history_lr = history.history['lr']
+	history_lr = str(history_lr[-1])
+	history_val_lr = history.history['val_lr']
+	history_val_lr = str(history_val_lr[-1])
 	
 	with open(results_path + model_name + ".txt", "a") as history_log:
 		history_log.write(
 			model_name + "," + history_loss + "," + history_acc + "," + history_val_loss + "," + history_val_acc + "," + str(
-				epochs) + "," + str(initial_learning_rate) + "," + str(history_mse) + "\n")
+				epochs) + "," + str(initial_learning_rate) + "," + str(history_mse) + "," + history_lr + "," + history_val_lr + "\n")
 	history_log.close()
 	
 	print(stamp() + "Keras Log Saved")
