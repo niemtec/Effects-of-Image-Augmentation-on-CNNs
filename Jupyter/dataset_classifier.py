@@ -3,7 +3,7 @@ from keras.preprocessing.image import img_to_array
 import numpy as np
 import cv2
 import os
-from classifierHelpers import Helper
+from classifier_helpers import Helper
 
 Tools = Helper(None, None)
 

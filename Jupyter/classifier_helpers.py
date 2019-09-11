@@ -68,6 +68,17 @@ def saveLossGraph(history, model_name, results_path):
 	plt.suptitle(model_name)
 	saveFigureStats(plt, 'loss', model_name, results_path)
 	plt.close()
+	
+def saveLearningRateGraph(history, model_name, results_path):
+	plt.figure(figsize = graph_size, dpi = 75)
+	plt.grid(True, which = 'both')
+	plt.plot(history.history['lr_metric'])
+	plt.title('Model Learning Rate')
+	plt.ylabel('loss')
+	plt.xlabel('epoch')
+	plt.suptitle(model_name)
+	saveFigureStats(plt, 'lr_metric', model_name, results_path)
+	plt.close()
 
 
 def saveModelToDisk(model, model_name, results_path):
