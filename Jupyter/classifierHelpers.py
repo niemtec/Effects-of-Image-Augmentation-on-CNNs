@@ -22,7 +22,8 @@ def saveNetworkStats(history, epochs, initial_learning_rate, model_name, results
 	history_val_loss = str(history_val_loss[-1])
 	history_val_acc = history.history['val_acc']
 	history_val_acc = str(history_val_acc[-1])
-	history_mse = str(history.history['mean_squared_error'])
+	history_mse = history.history['mean_squared_error']
+	history_mse = str(history_mse[-1])
 	
 	with open(results_path + model_name + ".txt", "a") as history_log:
 		history_log.write(
