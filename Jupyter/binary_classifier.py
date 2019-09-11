@@ -11,7 +11,7 @@ from keras.layers.core import Dense
 from keras import backend as K
 import numpy as np
 import random
-import classifierHelpers as tools
+import classifier_helpers as tools
 
 results_file_name = 'Batch-Size-2'
 dataset_path = '../Cancer-Dataset/'
@@ -29,6 +29,13 @@ model_name = results_file_name + "-" + str(rotation_range)
 plot_name = model_name
 
 
+def get_learning_rate_metric(optimizer):
+	def lr(y_true, y_pred):
+		return optimizer.lr
+	
+	return lr
+
+
 # Build the network structure
 def buildNetworkModel(width, height, depth, classes):
 	model = Sequential()
@@ -39,8 +46,7 @@ def buildNetworkModel(width, height, depth, classes):
 		input_shape = (depth, height, width)
 	
 	# First layer
-	model.add(
-		Conv2D(20, (5, 5), padding = "same", input_shape = input_shape))  # Learning 20 (5 x 5) convolution filters
+	model.add(Conv2D(20, (5, 5), padding = "same", input_shape = input_shape))  # Learning 20 (5 x 5) convolution filters
 	model.add(Activation("relu"))
 	model.add(MaxPooling2D(pool_size = (2, 2), strides = (2, 2)))
 	
@@ -87,7 +93,6 @@ test_y = to_categorical(test_y, num_classes = 2)
 
 # Construct the image generator for data augmentation
 training_augmented_image_generator = ImageDataGenerator(rotation_range = rotation_range, fill_mode = "nearest")
-
 testing_augmented_image_generator = ImageDataGenerator(rotation_range = rotation_range, fill_mode = "nearest")
 
 # Initialize the model
@@ -99,8 +104,10 @@ model = buildNetworkModel(width = 64, height = 64, depth = image_depth, classes 
 # Set optimiser
 optimiser = Adam(lr = initial_learning_rate, decay = decay_rate)
 
+lr_metric = get_learning_rate_metric(optimiser)
+
 # Compile the model using binary crossentropy, preset optimiser and selected metrics
-model.compile(loss = "binary_crossentropy", optimizer = optimiser, metrics = ["accuracy", "mean_squared_error"])
+model.compile(loss = "binary_crossentropy", optimizer = optimiser, metrics = ["accuracy", "mean_squared_error", lr_metric])
 # Train the network
 print(tools.stamp() + "Training Network Model")
 
@@ -116,6 +123,7 @@ history = model.fit_generator(
 tools.saveNetworkStats(history, epochs, initial_learning_rate, model_name, results_path)
 tools.saveAccuracyGraph(history, plot_name, results_path)
 tools.saveLossGraph(history, plot_name, results_path)
+tools.saveLearningRateGraph(history, plot_name, results_path)
 tools.saveModelToDisk(model, model_name, results_path)
 tools.saveWeightsToDisk(model, model_name, results_path)
 
