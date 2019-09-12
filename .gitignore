@@ -766,8 +766,8 @@ $RECYCLE.BIN/
 *.lnk
 
 /Cancer-Dataset/
-/res-net/sorted_data_array.npy
-/res-net/sorted_labels_array.npy
+/classifier-v3/sorted_data_array.npy
+/classifier-v3/sorted_labels_array.npy
 /Jupyter/sorted_data_array.npy
 /Jupyter/sorted_labels_array.npy
 ### Example user template template
