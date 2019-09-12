@@ -105,12 +105,11 @@ print(tools.stamp() + "Compiling Network Model")
 # Build the model based on control variable parameters
 model = buildNetworkModel(width = 64, height = 64, depth = image_depth, classes = 2)
 
-# Set optimiser
-optimiser = Adam(lr = initial_learning_rate)
-lr_metric = get_lr_metric(optimiser)
+# lr_metric = get_lr_metric(optimiser)
 
 # Compile the model using binary crossentropy, preset optimiser and selected metrics
-model.compile(loss = "binary_crossentropy", optimizer = optimiser, metrics = ["accuracy", "mean_squared_error", lr_metric])
+model.compile(loss = "binary_crossentropy", optimizer = 'rmsprop',
+              metrics = ["accuracy", "mean_squared_error"])
 # Train the network
 print(tools.stamp() + "Training Network Model")
 
@@ -125,9 +124,6 @@ def stepDecay(epoch):
 	
 	return float(alpha)
 
-
-# reducing the learning rate by half every 2 epochs
-learning_rate_schedule = [LearningRateScheduler(stepDecay)]
 
 # Save results of training in history dictionary for statistical analysis
 history = model.fit_generator(

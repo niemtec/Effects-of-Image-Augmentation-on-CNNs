@@ -1,3 +1,10 @@
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+
+
 # Created by .ignore support plugin (hsz.mobi)
 
 experiments-archive/binary-classifier-v4/Results/*
@@ -763,3 +770,11 @@ $RECYCLE.BIN/
 /res-net/sorted_labels_array.npy
 /Jupyter/sorted_data_array.npy
 /Jupyter/sorted_labels_array.npy
+### Example user template template
+### Example user template
+
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
