@@ -1,7 +1,7 @@
 # Investigation Into the Effects of Image Augmentation on Classification Accuracy of Convolutional Neural Networks
 An investigation into the effects that image augmentation has on the accuracy and loss of Convolutional Neural Networks. *This work was completed as part of dissertation project for Bachelor of Science (Honours) in Computer Science with specialism in Artificial Intelligence.*
 
-The summarised research notes can be found [here](Investigation of the Effects of Medical Image Augmentation on the Robustness of Convolutional Neural Networks - A summary of Undergraduate Dissertation in Computer Science with Artificial Intelligence.pdf).
+*The summarised research notes can be found [here](Investigation of the Effects of Medical Image Augmentation on the Robustness of Convolutional Neural Networks - A summary of Undergraduate Dissertation in Computer Science with Artificial Intelligence.pdf)*.
 
 
 ![Sample Runtime](GH-Pages-Images/Animation.gif)
