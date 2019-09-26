@@ -1,6 +1,9 @@
 # Investigation Into the Effects of Image Augmentation on Classification Accuracy of Convolutional Neural Networks
 An investigation into the effects that image augmentation has on the accuracy and loss of Convolutional Neural Networks. *This work was completed as part of dissertation project for Bachelor of Science (Honours) in Computer Science with specialism in Artificial Intelligence.*
 
+The summarised research notes can be found [here](Investigation of the Effects of Medical Image Augmentation on the Robustness of Convolutional Neural Networks - A summary of Undergraduate Dissertation in Computer Science with Artificial Intelligence.pdf).
+
+
 ![Sample Runtime](GH-Pages-Images/Animation.gif)
 
 ## Project Aims
@@ -70,11 +73,11 @@ Noise has been artificially added to the sample image using black pixels; an aug
 Black pixels are then placed at random locations along the X and Y axis of the image. New, augmented, image is then saved for model training and testing.
 
 ### Rotation Augmentation
-Rotation utilises in-built Keras libraries and loads original images from the dataset directories, rotating them prior to being fed into the model. Rotation degree represents the rotation between positive and negative rotation of the image. 
+Rotation utilises in-built Keras libraries and loads original images from the dataset directories, rotating them prior to being fed into the model. Rotation degree represents the rotation between positive and negative rotation of the image.
 For example, an image set to 45° would rotate to a random position between -45° to 45°.
 
 ## Tools
-The [tools](Tools/) directory contains various tools used during the preparation of datasets, directory creation, extraction of model heatmaps, visualisation and image reallocation. 
+The [tools](Tools/) directory contains various tools used during the preparation of datasets, directory creation, extraction of model heatmaps, visualisation and image reallocation.
 
 ## Credits
 The team behind the **Grad-CAM** tool as demonstrated in the paper ["Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization"](https://arxiv.org/abs/1610.02391) made heatmap visualisation prossible.
