@@ -18,7 +18,7 @@ results_file_name = 'Batch-Size-2'
 dataset_path = '../dataset/'
 rotation_range = 0
 epochs = 100
-initial_learning_rate = 1e-2  # 1e-5
+initial_learning_rate = 1e-5  # 1e-5
 batch_size = 2
 decay_rate = initial_learning_rate / epochs  # TODO: Determine the manual decay rate
 print("Decay Rate:", decay_rate)
