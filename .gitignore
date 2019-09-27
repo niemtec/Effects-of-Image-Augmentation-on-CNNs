@@ -778,3 +778,11 @@ $RECYCLE.BIN/
 *.iml
 out
 gen
+.DS_Store
+Experimental-Results/Learning-Rate-Variations-Results/.DS_Store
+Experimental-Results/Cancer-Rotation-Experiment-Results/.DS_Store
+Experimental-Results/Cancer-Noise-Experiment-Results/.DS_Store
+Experimental-Results/.DS_Store
+Demo/demo-dataset-noise/all-corrupted/train/.DS_Store
+Demo/demo-dataset-noise/all-corrupted/.DS_Store
+Demo/demo-dataset-noise/.DS_Store
