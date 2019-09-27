@@ -34,15 +34,15 @@ import os
 # Control Variables
 # Name of the experiment performed (used for graph titles etc.)
 datasetName = 'all-corrupted'
-resultsFileName = 'Demo'  # Name of the result files
+resultsFileName = 'made-in-brunel-demo-code'  # Name of the result files
 rotationRange = 135  # Range of rotations for the current experiment eg. 0, 45, 90, 135, 180
 categoryOne = 'benign'  # Name of the first category for classification
 categoryTwo = 'malignant'   # Name of the second category for classification
 # Name of the model used throughout graphs and results
 modelName = datasetName + "-" + str(rotationRange)
 # Path to the dataset to be used for classification
-datasetPath = 'Demo-dataset-rotation/'
-resultsPath = 'Demo-results/'   # Path to be used for output of graphs and statistics
+datasetPath = 'made-in-brunel-demo-code-dataset-rotation/'
+resultsPath = 'made-in-brunel-demo-code-results/'   # Path to be used for output of graphs and statistics
 plotName = modelName    # Name of the graph (using model name)
 graphSize = (15, 10)  # Size of result plots
 noEpochs = 100   # Number of epochs to run the model for (default 100)
@@ -239,7 +239,7 @@ validationDatasetLabels = []
 validationDatasetLabels = labels[-7:]
 
 # Partition the data into training and testing splits
-(trainX, testX, trainY, testY) = train_test_split(data, labels, test_size=7,  # Set manually to 7 for Demo
+(trainX, testX, trainY, testY) = train_test_split(data, labels, test_size=7,  # Set manually to 7 for made-in-brunel-demo-code
                                                   random_state=randomSeed)
 
 # Convert the labels from integers to vectors

@@ -7,7 +7,7 @@ from classifier_helpers import Helper
 
 Tools = Helper(None, None)
 
-dataset_path = '../Cancer-Dataset/'
+dataset_path = '../dataset/'
 
 # Initialize the data and labels arrays
 sorted_data = []

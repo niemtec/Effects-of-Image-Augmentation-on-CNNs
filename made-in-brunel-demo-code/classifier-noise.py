@@ -39,15 +39,15 @@ matplotlib.use("Agg")
 # Control Variables
 # Name of the experiment performed (used for graph titles etc.)
 experimentVariantDatasetName = 'all-corrupted'
-resultsFileName = 'Demo'    # Name of the result files
+resultsFileName = 'made-in-brunel-demo-code'    # Name of the result files
 # Name of the model used throughout graphs and results
-modelName = 'Demo-noise-' + experimentVariantDatasetName
+modelName = 'made-in-brunel-demo-code-noise-' + experimentVariantDatasetName
 categoryOne = 'benign'  # Name of the first category for classification
 categoryTwo = 'malignant'   # Name of the second category for classification
 # Path to the dataset to be used for classification
-datasetPath = 'Demo/Demo-dataset-noise/'
+datasetPath = 'made-in-brunel-demo-code/made-in-brunel-demo-code-dataset-noise/'
 # Path to be used for output of graphs and statistics
-resultsPath = 'Demo/Demo-noise-results/'
+resultsPath = 'made-in-brunel-demo-code/made-in-brunel-demo-code-noise-results/'
 plotName = modelName    # Name of the graph (using model name)
 graphSize = (15, 10)  # Size of graph plots
 noEpochs = 100   # Number of epochs to run the model for (default 100)

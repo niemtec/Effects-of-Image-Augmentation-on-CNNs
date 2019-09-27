@@ -15,10 +15,10 @@ import random
 import classifier_helpers as tools
 
 results_file_name = 'Batch-Size-2'
-dataset_path = '../Cancer-Dataset/'
+dataset_path = '../dataset/'
 rotation_range = 0
 epochs = 100
-initial_learning_rate = 1e-2  # 1e-5
+initial_learning_rate = 1e-5  # 1e-5
 batch_size = 2
 decay_rate = initial_learning_rate / epochs  # TODO: Determine the manual decay rate
 print("Decay Rate:", decay_rate)
@@ -26,7 +26,7 @@ validation_dataset_size = 0.25
 random_seed = 42
 image_depth = 3
 
-results_path = 'Results/'
+results_path = 'results/'
 model_name = results_file_name + "-" + str(rotation_range)
 plot_name = model_name
 

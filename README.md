@@ -1,19 +1,19 @@
 # Investigation Into the Effects of Image Augmentation on Classification Accuracy of Convolutional Neural Networks
 An investigation into the effects that image augmentation has on the accuracy and loss of Convolutional Neural Networks. *This work was completed as part of dissertation project for Bachelor of Science (Honours) in Computer Science with specialism in Artificial Intelligence.*
 
-*The summarised research notes can be found [here](Investigation of the Effects of Medical Image Augmentation on the Robustness of Convolutional Neural Networks - A summary of Undergraduate Dissertation in Computer Science with Artificial Intelligence.pdf)*.
 
+*The summarised research notes can be found [here](github-pages/Investigation of the Effects of Medical Image Augmentation on the Robustness of Convolutional Neural Networks - A summary of Undergraduate Dissertation in Computer Science with Artificial Intelligence.pdf)*.
 
-![Sample Runtime](GH-Pages-Images/Animation.gif)
+![Sample Runtime](github-pages/Animation.gif)
 
 ## Project Aims
-![Model Workflow](GH-Pages-Images/Model-Workflow.png)
+![Model Workflow](github-pages/Model-Workflow.png)
 To generate a series of augmented dataset samples using **rotation** and **noise** and compare the effects that augmented samples have on model performance. Performance is measured in terms of general model **accuracy** and **loss** as reported by [Keras](https://keras.io/), with further calculations of **precision** and **error** rates derived through the use of [confusion matrices](https://www.dataschool.io/simple-guide-to-confusion-matrix-terminology/).
 
 Varying factor of image augmentation is used in model training and/or testing (depending on the experiment performed) to determine how it affects the model's ability to correctly classify samples.
 
 ## CNN Model
-![Model Structure](GH-Pages-Images/Model-Structure.png)
+![Model Structure](github-pages/Model-Structure.png)
 The Convolutional Neural Network Model used is based on the LeNet architecture design with some modifications necessary to achieve a reliable classification rate. It consists of 666,722 trainable parameters distributed across the following layers:
 
 | Layer Type                    | Output Shape       | No. of Parameters |
@@ -43,27 +43,27 @@ Selected dataset is then split into 1620 (75%) training samples and 540 (25%) va
 The model was trained over 100 epochs for each experiement variation using continuous integration TeamCity server.
 
 ### Network Structure Variation Results
-Initial results from varying network structure and hyper parameters can be found in the [learning rate](Experimental-Results/Learning-Rate-Variations-Results) and [network density](Experimental-Results/Network-Density-Change-Variation-Results) result directories. Each containing the accuracy and loss graphs at varying parameter setting for the given investigation.
+Initial results from varying network structure and hyper parameters can be found in the [learning rate](experiment-results/Learning-Rate-Variations-Results) and [network density](experiment-results/Network-Density-Change-Variation-Results) result directories. Each containing the accuracy and loss graphs at varying parameter setting for the given investigation.
 
 Once the optimal trade-off has been selected, the finalised parameters were used in all of the following experiments.
 
 ### Cancer Noise Augmentation Results
-![Image Corruption Process](GH-Pages-Images/Image-Corruption-Process.png)
+![Image Corruption Process](github-pages/Image-Corruption-Process.png)
 Noise augmentation has been applied to the images at varying settings ranging from 0% (control data with no noise) to 15% (maximum corruption in experimental design) with a 5% increase between stages (0%, 5%, 10%, 15%).
 
-The results can be found [here](Experimental-Results/Cancer-Noise-Experiment-Results).
+The results can be found [here](experiment-results/Cancer-Noise-Experiment-Results).
 
 ### Cancer Rotation Augmentation Results
 Rotation augmentation has been applied to the samples at various settings using a built-in Keras library function for pre-processing the images on-the-fly as they are fed into the network model.
 The rotations were applied from 0° to 180° at 45° incremenets (0°, 45°, 90°, 135°, 180°).
 
-The results can be found [here](Experimental-Results/Cancer-Rotation-Experiment-Results).
+The results can be found [here](experiment-results/Cancer-Rotation-Experiment-Results).
 
 ### Network Activation Heatmaps
-![Heatmap Summary](GH-Pages-Images/Heatmap-Summary.png)
+![Heatmap Summary](github-pages/Heatmap-Summary.png)
 To support the experimental results above, heatmaps were generated which highlight the areas of focus for the model. They demonstrate which areas of the image the network focuses on through a "thermal" overaly atop the original sample.
 
-Heatmaps for [noise experiments can be found here](Experimental-Results/Cancer-Noise-Experiment-Heatmaps) and [rotation experiments here](Experimental-Results/Cancer-Rotation-Experiment-Heatmaps).
+Heatmaps for [noise experiments can be found here](experiment-results/Cancer-Noise-Experiment-Heatmaps) and [rotation experiments here](experiment-results/Cancer-Rotation-Experiment-Heatmaps).
 
 ## Augmentation Methods
 Images have been augmented to a varying degree using the following methods.
@@ -77,7 +77,7 @@ Rotation utilises in-built Keras libraries and loads original images from the da
 For example, an image set to 45° would rotate to a random position between -45° to 45°.
 
 ## Tools
-The [tools](Tools/) directory contains various tools used during the preparation of datasets, directory creation, extraction of model heatmaps, visualisation and image reallocation.
+The [tools](tools/) directory contains various tools used during the preparation of datasets, directory creation, extraction of model heatmaps, visualisation and image reallocation. 
 
 ## Credits
 The team behind the **Grad-CAM** tool as demonstrated in the paper ["Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization"](https://arxiv.org/abs/1610.02391) made heatmap visualisation prossible.
