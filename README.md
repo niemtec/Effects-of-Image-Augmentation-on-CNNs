@@ -61,6 +61,7 @@ The results can be found [here](experiment-results/Cancer-Rotation-Experiment-Re
 
 ### Network Activation Heatmaps
 ![Heatmap Summary](github-pages/Heatmap-Summary.png)
+
 To support the experimental results above, heatmaps were generated which highlight the areas of focus for the model. They demonstrate which areas of the image the network focuses on through a "thermal" overaly atop the original sample.
 
 Heatmaps for [noise experiments can be found here](experiment-results/Cancer-Noise-Experiment-Heatmaps) and [rotation experiments here](experiment-results/Cancer-Rotation-Experiment-Heatmaps).
@@ -77,7 +78,7 @@ Rotation utilises in-built Keras libraries and loads original images from the da
 For example, an image set to 45° would rotate to a random position between -45° to 45°.
 
 ## Tools
-The [tools](tools/) directory contains various tools used during the preparation of datasets, directory creation, extraction of model heatmaps, visualisation and image reallocation. 
+The [tools](tools/) directory contains various tools used during the preparation of datasets, directory creation, extraction of model heatmaps, visualisation and image reallocation.
 
 ## Credits
 The team behind the **Grad-CAM** tool as demonstrated in the paper ["Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization"](https://arxiv.org/abs/1610.02391) made heatmap visualisation prossible.
