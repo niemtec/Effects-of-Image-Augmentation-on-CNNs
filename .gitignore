@@ -111,7 +111,7 @@ docs/_build/
 # PyBuilder
 target/
 
-# Jupyter Notebook
+# jupyter-notebook Notebook
 .ipynb_checkpoints
 
 # pyenv
@@ -455,7 +455,7 @@ docs/_build/
 # PyBuilder
 target/
 
-# Jupyter Notebook
+# jupyter-notebook Notebook
 .ipynb_checkpoints
 
 # IPython
@@ -531,11 +531,11 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-Demo/.DS_Store
-Demo/demo-dataset-noise/.DS_Store
-Demo/demo-dataset-noise/all-corrupted/.DS_Store
-Demo/demo-dataset-noise/all-corrupted/train/.DS_Store
-Tools/.DS_Store
+made-in-brunel-demo-code/.DS_Store
+made-in-brunel-demo-code/demo-dataset-noise/.DS_Store
+made-in-brunel-demo-code/demo-dataset-noise/all-corrupted/.DS_Store
+made-in-brunel-demo-code/demo-dataset-noise/all-corrupted/train/.DS_Store
+tools/.DS_Store
 .DS_Store
 ### Python template
 # Byte-compiled / optimized / DLL files
@@ -613,7 +613,7 @@ docs/_build/
 # PyBuilder
 target/
 
-# Jupyter Notebook
+# jupyter-notebook Notebook
 .ipynb_checkpoints
 
 # IPython
@@ -664,7 +664,7 @@ dmypy.json
 .pyre/
 
 ### JupyterNotebooks template
-# gitignore template for Jupyter Notebooks
+# gitignore template for jupyter-notebook Notebooks
 # website: http://jupyter.org/
 
 .ipynb_checkpoints
@@ -765,11 +765,11 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-/Cancer-Dataset/
-/classifier-v3/sorted_data_array.npy
-/classifier-v3/sorted_labels_array.npy
-/Jupyter/sorted_data_array.npy
-/Jupyter/sorted_labels_array.npy
+/dataset/
+/dataset/sorted_data_array.npy
+/dataset/sorted_labels_array.npy
+/jupyter-notebook/sorted_data_array.npy
+/jupyter-notebook/sorted_labels_array.npy
 ### Example user template template
 ### Example user template
 
